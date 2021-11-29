@@ -2,17 +2,21 @@ import 'package:dartz/dartz.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expireance/common/error/app_error.dart';
 import 'package:expireance/data/local/expire_item_entity.dart';
+import 'package:expireance/domain/models/expire_item_model.dart';
 import 'package:expireance/domain/repositories/i_expire_repository.dart';
 
 class ExpireRepository implements IExpireRepository {
   final Box<ExpireItemEntity> _expireItemBox;
 
-  ExpireRepository({required Box<ExpireItemEntity> box}) : _expireItemBox = box;
+  ExpireRepository({
+    required Box<ExpireItemEntity> expireItemBox,
+  }) : _expireItemBox = expireItemBox;
 
   @override
-  Either<AppError, List<ExpireItemEntity>> fetchExpireItems() {
+  Either<AppError, List<ExpireItemModel>> fetchExpireItems() {
     try {
-      final result = _expireItemBox.values.toList();
+      final result =
+          _expireItemBox.values.map((item) => item.toModel()).toList();
 
       return right(result);
     } on Exception catch (error) {
@@ -21,11 +25,12 @@ class ExpireRepository implements IExpireRepository {
   }
 
   @override
-  Either<AppError, ExpireItemEntity> fetchSingleExpireItem(
+  Either<AppError, ExpireItemModel> fetchSingleExpireItem(
       {required String id}) {
     try {
-      final result =
-          _expireItemBox.get(id, defaultValue: ExpireItemEntity.empty());
+      final result = _expireItemBox
+          .get(id, defaultValue: ExpireItemEntity.empty())
+          ?.toModel();
 
       return right(result!);
     } on Exception catch (error) {
@@ -35,9 +40,9 @@ class ExpireRepository implements IExpireRepository {
 
   @override
   Future<Either<AppError, Unit>> storeExpireItem(
-      {required ExpireItemEntity entity}) async {
+      {required ExpireItemModel model}) async {
     try {
-      await _expireItemBox.put(entity.id, entity);
+      await _expireItemBox.put(model.id, ExpireItemEntity.fromModel(model));
 
       return right(unit);
     } on Exception catch (error) {
@@ -47,9 +52,9 @@ class ExpireRepository implements IExpireRepository {
 
   @override
   Future<Either<AppError, Unit>> updateExpireItem(
-      {required String id, required ExpireItemEntity entity}) async {
+      {required String id, required ExpireItemModel model}) async {
     try {
-      await _expireItemBox.put(id, entity);
+      await _expireItemBox.put(id, ExpireItemEntity.fromModel(model));
 
       return right(unit);
     } on Exception catch (error) {

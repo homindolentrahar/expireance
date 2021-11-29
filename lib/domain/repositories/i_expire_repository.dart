@@ -1,21 +1,21 @@
 import 'package:dartz/dartz.dart';
 import 'package:expireance/common/error/app_error.dart';
-import 'package:expireance/data/local/expire_item_entity.dart';
+import 'package:expireance/domain/models/expire_item_model.dart';
 
 abstract class IExpireRepository {
-  Either<AppError, List<ExpireItemEntity>> fetchExpireItems();
+  Either<AppError, List<ExpireItemModel>> fetchExpireItems();
 
-  Either<AppError, ExpireItemEntity> fetchSingleExpireItem({
+  Either<AppError, ExpireItemModel> fetchSingleExpireItem({
     required String id,
   });
 
   Future<Either<AppError, Unit>> storeExpireItem({
-    required ExpireItemEntity entity,
+    required ExpireItemModel model,
   });
 
   Future<Either<AppError, Unit>> updateExpireItem({
     required String id,
-    required ExpireItemEntity entity,
+    required ExpireItemModel model,
   });
 
   Future<Either<AppError, Unit>> deleteExpireItem({
