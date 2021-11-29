@@ -4,7 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class FAB extends StatelessWidget {
-  const FAB({Key? key}) : super(key: key);
+  final VoidCallback onPressed;
+
+  const FAB({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +29,7 @@ class FAB extends StatelessWidget {
         width: 48,
         height: 48,
       ),
-      onPressed: () {},
+      onPressed: onPressed,
     );
   }
 }

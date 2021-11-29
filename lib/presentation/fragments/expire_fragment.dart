@@ -9,8 +9,6 @@ class ExpireFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _expireController = Get.find<ExpireController>()..fetchExpireItems();
-
     return NestedScrollView(
       physics: const BouncingScrollPhysics(),
       headerSliverBuilder: (ctx, _) => [
@@ -21,7 +19,7 @@ class ExpireFragment extends StatelessWidget {
         ),
       ],
       body: GetX<ExpireController>(
-        init: _expireController,
+        init: Get.find<ExpireController>()..fetchExpireItems(),
         builder: (controller) {
           return ListView.builder(
             padding: const EdgeInsets.all(16),

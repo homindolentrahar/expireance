@@ -21,7 +21,9 @@ class Root extends StatelessWidget {
           itemCount: rootMenu.length,
           itemBuilder: (ctx, index) => rootMenu[index],
         ),
-        floatingActionButton: const FAB(),
+        floatingActionButton: FAB(
+          onPressed: () {},
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
