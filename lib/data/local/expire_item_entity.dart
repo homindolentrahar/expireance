@@ -1,10 +1,9 @@
-import 'dart:typed_data';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expireance/domain/models/expire_item_model.dart';
 
 part 'expire_item_entity.g.dart';
 
-@HiveType(typeId: 1)
+@HiveType(typeId: 101)
 class ExpireItemEntity extends HiveObject {
   @HiveField(0)
   String id;
@@ -17,7 +16,7 @@ class ExpireItemEntity extends HiveObject {
   @HiveField(4)
   String date;
   @HiveField(5)
-  Uint8List image;
+  String image;
   @HiveField(6)
   String categoryId;
 
@@ -32,7 +31,7 @@ class ExpireItemEntity extends HiveObject {
   );
 
   factory ExpireItemEntity.empty() =>
-      ExpireItemEntity("", "", "", 0, "", Uint8List(0), "");
+      ExpireItemEntity("", "", "", 0, "", "", "");
 
   factory ExpireItemEntity.fromModel(ExpireItemModel model) {
     return ExpireItemEntity(

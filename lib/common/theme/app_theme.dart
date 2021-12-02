@@ -39,6 +39,10 @@ class AppTheme {
         fontSize: 12,
         fontWeight: FontWeight.w500,
       ),
+      button: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+      ),
     ),
   );
 }

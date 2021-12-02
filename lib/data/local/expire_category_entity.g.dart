@@ -1,50 +1,38 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'expire_item_entity.dart';
+part of 'expire_category_entity.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ExpireItemEntityAdapter extends TypeAdapter<ExpireItemEntity> {
+class ExpireCategoryEntityAdapter extends TypeAdapter<ExpireCategoryEntity> {
   @override
-  final int typeId = 101;
+  final int typeId = 201;
 
   @override
-  ExpireItemEntity read(BinaryReader reader) {
+  ExpireCategoryEntity read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ExpireItemEntity(
+    return ExpireCategoryEntity(
       fields[0] as String,
       fields[1] as String,
       fields[2] as String,
-      fields[3] as int,
-      fields[4] as String,
-      fields[5] as String,
-      fields[6] as String,
     );
   }
 
   @override
-  void write(BinaryWriter writer, ExpireItemEntity obj) {
+  void write(BinaryWriter writer, ExpireCategoryEntity obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.name)
+      ..write(obj.slug)
       ..writeByte(2)
-      ..write(obj.desc)
-      ..writeByte(3)
-      ..write(obj.amount)
-      ..writeByte(4)
-      ..write(obj.date)
-      ..writeByte(5)
-      ..write(obj.image)
-      ..writeByte(6)
-      ..write(obj.categoryId);
+      ..write(obj.name);
   }
 
   @override
@@ -53,7 +41,7 @@ class ExpireItemEntityAdapter extends TypeAdapter<ExpireItemEntity> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ExpireItemEntityAdapter &&
+      other is ExpireCategoryEntityAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

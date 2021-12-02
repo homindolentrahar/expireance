@@ -1,12 +1,10 @@
-import 'dart:typed_data';
-
 class ExpireItemModel {
   String id;
   String name;
   String desc;
   int amount;
   DateTime date;
-  Uint8List image;
+  String image;
   String categoryId;
 
   ExpireItemModel({

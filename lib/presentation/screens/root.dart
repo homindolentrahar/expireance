@@ -1,6 +1,7 @@
 import 'package:expireance/presentation/fragments/expire_fragment.dart';
 import 'package:expireance/presentation/fragments/shop_fragment.dart';
-import 'package:expireance/presentation/widgets/fab.dart';
+import 'package:expireance/presentation/widgets/core/buttons.dart';
+import 'package:expireance/presentation/widgets/expire/expire_sheets.dart';
 import 'package:flutter/material.dart';
 
 class Root extends StatelessWidget {
@@ -22,7 +23,9 @@ class Root extends StatelessWidget {
           itemBuilder: (ctx, index) => rootMenu[index],
         ),
         floatingActionButton: FAB(
-          onPressed: () {},
+          onPressed: () {
+            ExpireSheets.addExpireItem();
+          },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),

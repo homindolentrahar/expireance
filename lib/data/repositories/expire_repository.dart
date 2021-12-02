@@ -9,8 +9,8 @@ class ExpireRepository implements IExpireRepository {
   final Box<ExpireItemEntity> _expireItemBox;
 
   ExpireRepository({
-    required Box<ExpireItemEntity> expireItemBox,
-  }) : _expireItemBox = expireItemBox;
+    required Box<ExpireItemEntity> box,
+  }) : _expireItemBox = box;
 
   @override
   Either<AppError, List<ExpireItemModel>> fetchExpireItems() {
