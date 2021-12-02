@@ -5,12 +5,14 @@ import 'package:get/get.dart';
 class IconTiles extends StatelessWidget {
   final Widget icon;
   final String title;
+  final TextStyle? textStyle;
   final VoidCallback onTap;
 
   const IconTiles({
     Key? key,
     required this.icon,
     required this.title,
+    this.textStyle,
     required this.onTap,
   }) : super(key: key);
 
@@ -30,7 +32,8 @@ class IconTiles extends StatelessWidget {
               const SizedBox(width: 16),
               Text(
                 title,
-                style: Get.textTheme.bodyText2?.copyWith(color: AppColor.dark),
+                style: textStyle ??
+                    Get.textTheme.bodyText2?.copyWith(color: AppColor.dark),
               )
             ],
           ),

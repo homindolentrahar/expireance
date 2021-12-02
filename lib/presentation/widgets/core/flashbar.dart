@@ -1,7 +1,7 @@
 import 'package:flash/flash.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:ionicons/ionicons.dart';
 import 'package:expireance/common/theme/app_color.dart';
 
 enum FlashbarType { SUCCESS, ERROR }
@@ -40,10 +40,10 @@ class Flashbar {
         forwardAnimationCurve: Curves.easeInQuint,
         reverseAnimationCurve: Curves.easeOutQuint,
         child: FlashBar(
-          icon: Icon(
+          icon: SvgPicture.asset(
             _type == FlashbarType.SUCCESS
-                ? Ionicons.checkmark_circle
-                : Ionicons.remove_circle,
+                ? "assets/icons/success.svg"
+                : "assets/icons/error.svg",
             color:
                 _type == FlashbarType.SUCCESS ? AppColor.green : AppColor.red,
           ),

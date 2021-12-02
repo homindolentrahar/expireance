@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/splash",
       localizationsDelegates: const [
         FormBuilderLocalizations.delegate,
+        RefreshLocalizations.delegate,
       ],
     );
   }

@@ -4,7 +4,6 @@ import 'package:expireance/domain/models/expire_category_model.dart';
 import 'package:expireance/domain/repositories/i_category_repository.dart';
 import 'package:get/get.dart';
 import 'package:expireance/presentation/widgets/core/flashbar.dart';
-import 'package:expireance/presentation/widgets/core/loading.dart';
 import 'package:expireance/domain/models/expire_item_model.dart';
 import 'package:expireance/domain/repositories/i_expire_repository.dart';
 
@@ -60,8 +59,6 @@ class ExpireController extends GetxController {
   }
 
   void fetchSingleExpireItem(String id) {
-    Loading.load();
-
     final result = _expireRepository.fetchSingleExpireItem(id: id);
 
     result.fold(
@@ -122,8 +119,6 @@ class ExpireController extends GetxController {
   }
 
   Future<void> deleteExpireItem(String id) async {
-    Loading.load();
-
     final result = await _expireRepository.deleteExpireItem(id: id);
 
     result.fold(

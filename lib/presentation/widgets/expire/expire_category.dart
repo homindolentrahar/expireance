@@ -6,20 +6,22 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class ExpireCategory extends StatelessWidget {
-  final ExpireCategoryModel? value;
+  final String valueId;
   final List<ExpireCategoryModel> models;
   final ValueChanged<ExpireCategoryModel> selectCategory;
 
   const ExpireCategory({
     Key? key,
+    this.valueId = "",
     required this.models,
-    this.value,
     required this.selectCategory,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final String _selectedCategory = value == null ? "Category" : value!.name;
+    final String _selectedCategory = valueId.isEmpty
+        ? "Category"
+        : models.firstWhere((el) => el.id == valueId).name;
 
     return InkWell(
       onTap: () {

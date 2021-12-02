@@ -280,13 +280,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  form_builder_image_picker:
-    dependency: "direct main"
-    description:
-      name: form_builder_image_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   form_builder_validators:
     dependency: "direct main"
     description:
@@ -399,13 +392,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  ionicons:
-    dependency: "direct main"
-    description:
-      name: ionicons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
   js:
     dependency: transitive
     description:
@@ -581,6 +567,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  pull_to_refresh:
+    dependency: "direct main"
+    description:
+      name: pull_to_refresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   shelf:
     dependency: transitive
     description:

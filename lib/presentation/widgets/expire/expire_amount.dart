@@ -5,45 +5,39 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 
-class ExpireAmount extends StatefulWidget {
-  final TextEditingController amountController;
+class ExpireAmount extends StatelessWidget {
+  final int value;
   final VoidCallback increase;
   final VoidCallback decrease;
 
   const ExpireAmount({
     Key? key,
-    required this.amountController,
+    required this.value,
     required this.increase,
     required this.decrease,
   }) : super(key: key);
 
   @override
-  State<ExpireAmount> createState() => _ExpireAmountState();
-}
-
-class _ExpireAmountState extends State<ExpireAmount> {
-  @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _AmountButton(
-          enable: int.parse(widget.amountController.text) > 1,
+          enable: value > 1,
           icon: SvgPicture.asset(
             "assets/icons/minus.svg",
-            color: int.parse(widget.amountController.text) > 1
-                ? AppColor.white
-                : AppColor.gray,
+            color: value > 1 ? AppColor.white : AppColor.gray,
             width: 16,
             height: 16,
           ),
-          onPressed: widget.decrease,
+          onPressed: decrease,
         ),
         const SizedBox(width: 16),
         Expanded(
           child: OutlinedField(
-            controller: widget.amountController,
+            controller: TextEditingController(text: value.toString()),
             name: "amount",
             textAlign: TextAlign.center,
             placeholder: "0",
@@ -65,7 +59,7 @@ class _ExpireAmountState extends State<ExpireAmount> {
             width: 16,
             height: 16,
           ),
-          onPressed: widget.increase,
+          onPressed: increase,
         ),
       ],
     );
