@@ -20,6 +20,8 @@ class AppModule {
   }
 
   static Future<void> openBoxes() async {
+    await Hive.close();
+
     await Hive.openBox<ExpireItemEntity>(BoxConstants.EXPIRE_ITEMS_BOX);
     await Hive.openBox<ExpireCategoryEntity>(
       BoxConstants.EPXIRE_CATEGORIES_BOX,

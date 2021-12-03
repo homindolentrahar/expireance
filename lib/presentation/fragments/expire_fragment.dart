@@ -1,10 +1,9 @@
-import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/presentation/controller/expire/expire_controller.dart';
 import 'package:expireance/presentation/widgets/core/refresh_header.dart';
+import 'package:expireance/presentation/widgets/expire/expire_items.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ExpireFragment extends StatelessWidget {
@@ -36,53 +35,20 @@ class ExpireFragment extends StatelessWidget {
 
               refreshController.refreshCompleted();
             },
-            child: ListView.builder(
+            child: GridView.builder(
+              physics: const BouncingScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1/1.5,
+              ),
               padding: const EdgeInsets.all(16),
               itemCount: controller.expireItems.length,
               itemBuilder: (ctx, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              controller.expireItems[index].name,
-                              style: Get.textTheme.headline6,
-                            ),
-                            Text(
-                              controller.expireItems[index].desc,
-                              style: Get.textTheme.bodyText2?.copyWith(
-                                color: AppColor.dark,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            DateFormat.yMMMd().format(
-                              controller.expireItems[index].date,
-                            ),
-                            style: const TextStyle(color: AppColor.gray),
-                          ),
-                          Text(
-                            controller.expireItems[index].amount.toString(),
-                            style: Get.textTheme.headline6?.copyWith(
-                              color: AppColor.dark,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
+                final model = controller.expireItems[index];
+
+                return ExpireItemGrid(model: model);
               },
             ),
           );

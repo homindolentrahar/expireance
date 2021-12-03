@@ -7,23 +7,27 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 
 class OutlinedField extends StatelessWidget {
   final TextEditingController? controller;
+  final String? initialValue;
   final String name;
   final String placeholder;
   final TextAlign textAlign;
   final TextInputAction action;
   final TextInputType type;
   final bool obscure;
+  final ValueChanged<String?> onChanged;
   final List<String? Function(String?)> validators;
 
   const OutlinedField({
     Key? key,
     this.controller,
+    this.initialValue,
     required this.name,
     required this.placeholder,
     this.textAlign = TextAlign.start,
     this.action = TextInputAction.done,
     this.type = TextInputType.text,
     this.obscure = false,
+    required this.onChanged,
     required this.validators,
   }) : super(key: key);
 
@@ -31,6 +35,7 @@ class OutlinedField extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       controller: controller,
+      initialValue: initialValue,
       name: name,
       textInputAction: action,
       keyboardType: type,
@@ -73,34 +78,40 @@ class OutlinedField extends StatelessWidget {
       ),
       cursorColor: AppColor.black,
       cursorRadius: const Radius.circular(2),
+      onChanged: onChanged,
       validator: FormBuilderValidators.compose(validators),
     );
   }
 }
 
 class UnderlinedField extends StatelessWidget {
+  final String? initialValue;
   final String name;
   final String placeholder;
   final TextAlign textAlign;
   final TextInputAction action;
   final TextInputType type;
   final bool obscure;
+  final ValueChanged<String?> onChanged;
   final List<String? Function(String?)> validators;
 
   const UnderlinedField({
     Key? key,
+    this.initialValue,
     required this.name,
     required this.placeholder,
     this.textAlign = TextAlign.start,
     this.action = TextInputAction.done,
     this.type = TextInputType.text,
     this.obscure = false,
+    required this.onChanged,
     required this.validators,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
+      initialValue: initialValue,
       name: name,
       textAlign: textAlign,
       textInputAction: action,
@@ -143,6 +154,7 @@ class UnderlinedField extends StatelessWidget {
       ),
       cursorColor: AppColor.black,
       cursorRadius: const Radius.circular(2),
+      onChanged: onChanged,
       validator: FormBuilderValidators.compose(validators),
     );
   }

@@ -9,12 +9,14 @@ class ExpireAmount extends StatelessWidget {
   final int value;
   final VoidCallback increase;
   final VoidCallback decrease;
+  final ValueChanged<String> listenTyping;
 
   const ExpireAmount({
     Key? key,
     required this.value,
     required this.increase,
     required this.decrease,
+    required this.listenTyping,
   }) : super(key: key);
 
   @override
@@ -49,6 +51,11 @@ class ExpireAmount extends StatelessWidget {
                 errorText: "Item cannot be empty",
               ),
             ],
+            onChanged: (value) {
+              if (value != null) {
+                listenTyping(value);
+              }
+            },
           ),
         ),
         const SizedBox(width: 16),

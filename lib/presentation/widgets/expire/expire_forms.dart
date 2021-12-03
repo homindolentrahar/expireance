@@ -7,6 +7,7 @@ import 'package:expireance/presentation/controller/expire/expire_form_controller
 import 'package:expireance/presentation/widgets/core/buttons.dart';
 import 'package:expireance/presentation/widgets/core/fields.dart';
 import 'package:expireance/presentation/widgets/expire/expire_amount.dart';
+import 'package:expireance/presentation/widgets/expire/expire_badges.dart';
 import 'package:expireance/presentation/widgets/expire/expire_category.dart';
 import 'package:expireance/presentation/widgets/expire/expire_date.dart';
 import 'package:expireance/presentation/widgets/expire/expire_image.dart';
@@ -50,12 +51,11 @@ class _AddExpireFormState extends State<AddExpireForm> {
     if (_formKey.currentState!.saveAndValidate() &&
         formCtl.expiredDateValid &&
         formCtl.categoryValid) {
-      final formData = _formKey.currentState!.value;
       //  Do store expire item
       final model = ExpireItemModel(
         id: const Uuid().v4(),
-        name: formData['name'],
-        desc: formData['desc'],
+        name: formCtl.nameObs,
+        desc: formCtl.descObs,
         amount: formCtl.amountObs,
         date: DateTime.parse(formCtl.expiredDateObs),
         image: formCtl.imageObs,
@@ -142,6 +142,11 @@ class _AddExpireFormState extends State<AddExpireForm> {
                                 errorText: "Must have at least 3 characters",
                               ),
                             ],
+                            onChanged: (value) {
+                              if (value != null) {
+                                ctl.setName(value);
+                              }
+                            },
                           ),
                           const SizedBox(height: 8),
                           Padding(
@@ -153,6 +158,9 @@ class _AddExpireFormState extends State<AddExpireForm> {
                               },
                               decrease: () {
                                 ctl.setAmount(ctl.amountObs - 1);
+                              },
+                              listenTyping: (value) {
+                                ctl.setAmount(int.parse(value));
                               },
                             ),
                           ),
@@ -167,16 +175,24 @@ class _AddExpireFormState extends State<AddExpireForm> {
                               Get.back();
                             },
                           ),
-                          if (ctl.runValidation) const SizedBox(height: 4),
-                          if (ctl.runValidation)
-                            Text(
-                              ctl.errorMessages["category"] ?? "",
-                              style: const TextStyle(
-                                color: AppColor.red,
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
+                          ctl.runValidation &&
+                                  ctl.errorMessages.containsKey("category")
+                              ? Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      ctl.errorMessages["category"] ?? "",
+                                      style: const TextStyle(
+                                        color: AppColor.red,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : const SizedBox.shrink()
                         ],
                       ),
                     ),
@@ -194,6 +210,11 @@ class _AddExpireFormState extends State<AddExpireForm> {
                       errorText: "Must have at least 3 characters",
                     ),
                   ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      ctl.setDesc(value);
+                    }
+                  },
                 ),
                 const SizedBox(height: 16),
                 Column(
@@ -219,16 +240,23 @@ class _AddExpireFormState extends State<AddExpireForm> {
                         );
                       },
                     ),
-                    if (ctl.runValidation) const SizedBox(height: 4),
-                    if (ctl.runValidation)
-                      Text(
-                        ctl.errorMessages["date"] ?? "",
-                        style: const TextStyle(
-                          color: AppColor.red,
-                          fontSize: 12,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
+                    ctl.runValidation && ctl.errorMessages.containsKey("date")
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              Text(
+                                ctl.errorMessages["date"] ?? "",
+                                style: const TextStyle(
+                                  color: AppColor.red,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              )
+                            ],
+                          )
+                        : const SizedBox.shrink()
                   ],
                 ),
               ],
@@ -242,5 +270,293 @@ class _AddExpireFormState extends State<AddExpireForm> {
         ),
       ),
     );
+  }
+}
+
+class UpdateExpireForm extends StatefulWidget {
+  final String id;
+
+  const UpdateExpireForm({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
+
+  @override
+  State<UpdateExpireForm> createState() => _UpdateExpireFormState();
+}
+
+class _UpdateExpireFormState extends State<UpdateExpireForm> {
+  late GlobalKey<FormBuilderState> _formKey;
+  late ExpireController _controller;
+
+  @override
+  void initState() {
+    _formKey = GlobalKey<FormBuilderState>();
+    _controller = Get.find<ExpireController>()
+      ..fetchSingleExpireItem(widget.id)
+      ..fetchCategories();
+
+    super.initState();
+  }
+
+  Future<void> handleSave(ExpireFormController formCtl) async {
+    //Run validation
+    if (!formCtl.expiredDateValid) {
+      formCtl.errorMessages.putIfAbsent("date", () => "Expired date required");
+    }
+    if (!formCtl.categoryValid) {
+      formCtl.errorMessages.putIfAbsent("category", () => "Category required");
+    }
+
+    formCtl.setRunValidation(true);
+
+    if (_formKey.currentState!.saveAndValidate() &&
+        formCtl.expiredDateValid &&
+        formCtl.categoryValid) {
+      //  Do store expire item
+      final model = ExpireItemModel(
+        id: widget.id,
+        name: formCtl.nameObs,
+        desc: formCtl.descObs,
+        amount: formCtl.amountObs,
+        date: DateTime.parse(formCtl.expiredDateObs),
+        image: formCtl.imageObs,
+        categoryId: formCtl.categoryObs,
+      );
+
+      await _controller.updateExpireItem(widget.id, model);
+
+      Get.back();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GetX<ExpireFormController>(
+        init: ExpireFormController()
+          ..populateInitialData(_controller.singleExpireItem),
+        builder: (ctl) {
+          return FormBuilder(
+            key: _formKey,
+            autovalidateMode: ctl.runValidation
+                ? AutovalidateMode.always
+                : AutovalidateMode.disabled,
+            autoFocusOnValidationFailure: true,
+            child: ListView(
+              padding: const EdgeInsets.all(24),
+              physics: const BouncingScrollPhysics(),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const PlainBackButton(),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Update Expire Item",
+                          style: Get.textTheme.headline6,
+                        ),
+                      ],
+                    ),
+                    DeleteButton(
+                      onPressed: () {
+                        _controller.deleteExpireItem(widget.id);
+
+                        Get.back();
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ExpireImage(
+                          imageFile:
+                              ctl.imageObs.isEmpty ? null : File(ctl.imageObs),
+                          removeImage: () {
+                            ctl.clearImage();
+
+                            Get.back();
+                          },
+                          pickImage: () async {
+                            await ctl.setImage(ImageSource.gallery);
+
+                            Get.back();
+                          },
+                          capturePhoto: () async {
+                            await ctl.setImage(ImageSource.camera);
+
+                            Get.back();
+                          },
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              OutlinedField(
+                                name: "name",
+                                initialValue: ctl.nameObs,
+                                placeholder: "Name your item",
+                                validators: [
+                                  FormBuilderValidators.required(context),
+                                  FormBuilderValidators.minLength(
+                                    context,
+                                    3,
+                                    errorText:
+                                        "Must have at least 3 characters",
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    ctl.setName(value);
+                                  }
+                                },
+                              ),
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 48),
+                                child: ExpireAmount(
+                                  value: ctl.amountObs,
+                                  increase: () {
+                                    ctl.setAmount(ctl.amountObs + 1);
+                                  },
+                                  decrease: () {
+                                    ctl.setAmount(ctl.amountObs - 1);
+                                  },
+                                  listenTyping: (value) {
+                                    ctl.setAmount(int.parse(value));
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ExpireCategory(
+                                valueId: ctl.categoryObs,
+                                models: _controller.expireCategories,
+                                selectCategory: (model) {
+                                  ctl.errorMessages.remove("category");
+                                  ctl.setCategory(model.id);
+
+                                  Get.back();
+                                },
+                              ),
+                              ctl.runValidation &&
+                                      ctl.errorMessages.containsKey("category")
+                                  ? Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          ctl.errorMessages["category"] ?? "",
+                                          style: const TextStyle(
+                                            color: AppColor.red,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    UnderlinedField(
+                      name: "desc",
+                      initialValue: ctl.descObs,
+                      placeholder: "Describe your item",
+                      validators: [
+                        FormBuilderValidators.required(context),
+                        FormBuilderValidators.minLength(
+                          context,
+                          3,
+                          errorText: "Must have at least 3 characters",
+                        ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          ctl.setDesc(value);
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            ExpireDate(
+                              date: ctl.expiredDateObs.isEmpty
+                                  ? null
+                                  : DateTime.parse(ctl.expiredDateObs),
+                              showDate: () {
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(DateTime.now().year + 8),
+                                ).then(
+                                  (pickedDate) {
+                                    if (pickedDate != null) {
+                                      ctl.errorMessages.remove("date");
+                                      ctl.setExpiredDate(pickedDate);
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 32),
+                            ExpireTimeBadge(
+                              expiredDate: DateTime.parse(ctl.expiredDateObs),
+                            ),
+                          ],
+                        ),
+                        ctl.runValidation &&
+                                ctl.errorMessages.containsKey("date")
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    ctl.errorMessages["date"] ?? "",
+                                    style: const TextStyle(
+                                      color: AppColor.red,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  )
+                                ],
+                              )
+                            : const SizedBox.shrink(),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                PrimaryButton(
+                  title: "Save",
+                  onPressed: () => handleSave(ctl),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

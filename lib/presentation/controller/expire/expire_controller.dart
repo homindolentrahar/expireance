@@ -18,6 +18,7 @@ class ExpireController extends GetxController {
         _categoryRepository = categoryRepository;
 
   RxList<ExpireItemModel> expireItems = <ExpireItemModel>[].obs;
+  ExpireItemModel? singleExpireItem;
   RxList<ExpireCategoryModel> expireCategories = <ExpireCategoryModel>[].obs;
 
   void fetchCategories() {
@@ -70,7 +71,9 @@ class ExpireController extends GetxController {
           type: FlashbarType.ERROR,
         ).flash();
       },
-      (data) {},
+      (data) {
+        singleExpireItem = data;
+      },
     );
   }
 
@@ -107,14 +110,7 @@ class ExpireController extends GetxController {
           type: FlashbarType.ERROR,
         ).flash();
       },
-      (_) {
-        Flashbar(
-          context: Get.context!,
-          title: "Expire item updated!",
-          content: "Success updating item in the box",
-          type: FlashbarType.SUCCESS,
-        ).flash();
-      },
+      (_) {},
     );
   }
 
@@ -130,14 +126,7 @@ class ExpireController extends GetxController {
           type: FlashbarType.ERROR,
         ).flash();
       },
-      (_) {
-        Flashbar(
-          context: Get.context!,
-          title: "Expire item deleted!",
-          content: "Success deleting item from the box",
-          type: FlashbarType.SUCCESS,
-        ).flash();
-      },
+      (_) {},
     );
   }
 }

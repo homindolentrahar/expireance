@@ -1,0 +1,77 @@
+import 'package:expireance/common/theme/app_color.dart';
+import 'package:flutter/material.dart';
+
+class ExpireTimeBadge extends StatelessWidget {
+  final DateTime expiredDate;
+
+  const ExpireTimeBadge({
+    Key? key,
+    required this.expiredDate,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final color = AppColor.red;
+    final days = expiredDate.difference(DateTime.now()).inDays;
+
+    return DateTime.now().isAfter(expiredDate)
+        ? const _Expired()
+        : _ExpireTime(
+            text: "${days}d",
+            color: color,
+          );
+  }
+}
+
+class _ExpireTime extends StatelessWidget {
+  final String text;
+  final Color color;
+
+  const _ExpireTime({
+    Key? key,
+    required this.text,
+    required this.color,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(2),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+class _Expired extends StatelessWidget {
+  const _Expired({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColor.red,
+        borderRadius: BorderRadius.circular(2),
+      ),
+      child: Text(
+        "Expired".toUpperCase(),
+        style: const TextStyle(
+          color: AppColor.white,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}

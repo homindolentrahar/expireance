@@ -20,6 +20,35 @@ class PlainBackButton extends StatelessWidget {
   }
 }
 
+class DeleteButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const DeleteButton({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      minWidth: 0,
+      height: 0,
+      elevation: 0,
+      highlightElevation: 0,
+      color: AppColor.red.withOpacity(0.15),
+      padding: const EdgeInsets.all(4),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      child: SvgPicture.asset(
+        "assets/icons/delete.svg",
+        width: 16,
+        height: 16,
+        color: AppColor.red,
+      ),
+      onPressed: onPressed,
+    );
+  }
+}
+
 class FAB extends StatelessWidget {
   final VoidCallback onPressed;
 

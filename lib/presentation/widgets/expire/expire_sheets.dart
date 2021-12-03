@@ -15,4 +15,17 @@ class ExpireSheets {
       ),
     );
   }
+
+  static void updateExpireItem(String id) {
+    Get.bottomSheet(
+      UpdateExpireForm(id: id),
+      backgroundColor: Get.theme.canvasColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(2),
+          topRight: Radius.circular(2),
+        ),
+      ),
+    );
+  }
 }
