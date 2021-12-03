@@ -5,6 +5,7 @@ import 'package:expireance/domain/models/expire_item_model.dart';
 import 'package:expireance/presentation/controller/expire/expire_controller.dart';
 import 'package:expireance/presentation/controller/expire/expire_form_controller.dart';
 import 'package:expireance/presentation/widgets/core/buttons.dart';
+import 'package:expireance/presentation/widgets/core/dialogs.dart';
 import 'package:expireance/presentation/widgets/core/fields.dart';
 import 'package:expireance/presentation/widgets/expire/expire_amount.dart';
 import 'package:expireance/presentation/widgets/expire/expire_badges.dart';
@@ -59,7 +60,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
         amount: formCtl.amountObs,
         date: DateTime.parse(formCtl.expiredDateObs),
         image: formCtl.imageObs,
-        categoryId: formCtl.categoryObs,
+        category: formCtl.categoryObs,
       );
 
       await _controller.storeExpireItem(model);
@@ -149,28 +150,25 @@ class _AddExpireFormState extends State<AddExpireForm> {
                             },
                           ),
                           const SizedBox(height: 8),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 48),
-                            child: ExpireAmount(
-                              value: ctl.amountObs,
-                              increase: () {
-                                ctl.setAmount(ctl.amountObs + 1);
-                              },
-                              decrease: () {
-                                ctl.setAmount(ctl.amountObs - 1);
-                              },
-                              listenTyping: (value) {
-                                ctl.setAmount(int.parse(value));
-                              },
-                            ),
+                          ExpireAmount(
+                            value: ctl.amountObs,
+                            increase: () {
+                              ctl.setAmount(ctl.amountObs + 1);
+                            },
+                            decrease: () {
+                              ctl.setAmount(ctl.amountObs - 1);
+                            },
+                            incrementalChange: (value) {
+                              ctl.setAmount(ctl.amountObs + value);
+                            },
                           ),
                           const SizedBox(height: 16),
                           ExpireCategory(
-                            valueId: ctl.categoryObs,
+                            value: ctl.categoryObs,
                             models: _controller.expireCategories,
                             selectCategory: (model) {
                               ctl.errorMessages.remove("category");
-                              ctl.setCategory(model.id);
+                              ctl.setCategory(model);
 
                               Get.back();
                             },
@@ -321,7 +319,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
         amount: formCtl.amountObs,
         date: DateTime.parse(formCtl.expiredDateObs),
         image: formCtl.imageObs,
-        categoryId: formCtl.categoryObs,
+        category: formCtl.categoryObs,
       );
 
       await _controller.updateExpireItem(widget.id, model);
@@ -364,9 +362,22 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                     ),
                     DeleteButton(
                       onPressed: () {
-                        _controller.deleteExpireItem(widget.id);
+                        Get.dialog(
+                          DangerConfirmationDialog(
+                            title: "Delete ${ctl.nameObs}?",
+                            message:
+                                "You cannot recover this items once it's deleted",
+                            onPositive: () {
+                              _controller.deleteExpireItem(widget.id);
 
-                        Get.back();
+                              Get.back(); // Cancel dialog
+                              Get.back(); // Close sheet
+                            },
+                            onNegative: () {
+                              Get.back();
+                            },
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -434,18 +445,18 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                   decrease: () {
                                     ctl.setAmount(ctl.amountObs - 1);
                                   },
-                                  listenTyping: (value) {
-                                    ctl.setAmount(int.parse(value));
+                                  incrementalChange: (value) {
+                                    ctl.setAmount(ctl.amountObs + value);
                                   },
                                 ),
                               ),
                               const SizedBox(height: 16),
                               ExpireCategory(
-                                valueId: ctl.categoryObs,
+                                value: ctl.categoryObs,
                                 models: _controller.expireCategories,
                                 selectCategory: (model) {
                                   ctl.errorMessages.remove("category");
-                                  ctl.setCategory(model.id);
+                                  ctl.setCategory(model);
 
                                   Get.back();
                                 },

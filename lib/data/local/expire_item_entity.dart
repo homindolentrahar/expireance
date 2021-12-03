@@ -1,3 +1,4 @@
+import 'package:expireance/data/local/expire_category_entity.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expireance/domain/models/expire_item_model.dart';
 
@@ -18,7 +19,7 @@ class ExpireItemEntity extends HiveObject {
   @HiveField(5)
   String image;
   @HiveField(6)
-  String categoryId;
+  ExpireCategoryEntity category;
 
   ExpireItemEntity(
     this.id,
@@ -27,11 +28,18 @@ class ExpireItemEntity extends HiveObject {
     this.amount,
     this.date,
     this.image,
-    this.categoryId,
+    this.category,
   );
 
-  factory ExpireItemEntity.empty() =>
-      ExpireItemEntity("", "", "", 0, "", "", "");
+  factory ExpireItemEntity.empty() => ExpireItemEntity(
+        "",
+        "",
+        "",
+        0,
+        "",
+        "",
+        ExpireCategoryEntity.empty(),
+      );
 
   factory ExpireItemEntity.fromModel(ExpireItemModel model) {
     return ExpireItemEntity(
@@ -41,7 +49,7 @@ class ExpireItemEntity extends HiveObject {
       model.amount,
       model.date.toIso8601String(),
       model.image,
-      model.categoryId,
+      ExpireCategoryEntity.fromModel(model.category),
     );
   }
 
@@ -52,6 +60,6 @@ class ExpireItemEntity extends HiveObject {
         amount: amount,
         date: DateTime.parse(date),
         image: image,
-        categoryId: categoryId,
+        category: category.toModel(),
       );
 }

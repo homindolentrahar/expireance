@@ -8,4 +8,7 @@ class ExpireCategoryModel {
     required this.slug,
     required this.name,
   });
+
+  factory ExpireCategoryModel.empty() =>
+      ExpireCategoryModel(id: "", slug: "", name: "");
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:expireance/domain/models/expire_category_model.dart';
 import 'package:expireance/domain/models/expire_item_model.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +10,7 @@ class ExpireFormController extends GetxController {
   final Rx<String> _imageObs = "".obs;
   final Rx<String> _nameObs = "".obs;
   final Rx<int> _amountObs = 1.obs;
-  final Rx<String> _categoryObs = "".obs;
+  final Rx<ExpireCategoryModel> _categoryObs = ExpireCategoryModel.empty().obs;
   final Rx<String> _descObs = "".obs;
   final Rx<String> _expiredDateObs = "".obs;
 
@@ -22,7 +23,7 @@ class ExpireFormController extends GetxController {
 
   int get amountObs => _amountObs.value;
 
-  String get categoryObs => _categoryObs.value;
+  ExpireCategoryModel get categoryObs => _categoryObs.value;
 
   String get descObs => _descObs.value;
 
@@ -31,7 +32,7 @@ class ExpireFormController extends GetxController {
   //  Validation
   bool get runValidation => _runValidation.value;
 
-  bool get categoryValid => categoryObs.isNotEmpty;
+  bool get categoryValid => categoryObs.id.isNotEmpty;
 
   bool get expiredDateValid => expiredDateObs.isNotEmpty;
 
@@ -39,7 +40,7 @@ class ExpireFormController extends GetxController {
     _imageObs.value = model?.image ?? "";
     _nameObs.value = model?.name ?? "";
     _amountObs.value = model?.amount ?? 1;
-    _categoryObs.value = model?.categoryId ?? "";
+    _categoryObs.value = model?.category ?? ExpireCategoryModel.empty();
     _descObs.value = model?.desc ?? "";
     _expiredDateObs.value = model?.date.toIso8601String() ?? "";
   }
@@ -72,8 +73,8 @@ class ExpireFormController extends GetxController {
     _amountObs.value = amount;
   }
 
-  void setCategory(String id) {
-    _categoryObs.value = id;
+  void setCategory(ExpireCategoryModel model) {
+    _categoryObs.value = model;
   }
 
   void setDesc(String value) {

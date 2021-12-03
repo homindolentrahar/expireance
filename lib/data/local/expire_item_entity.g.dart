@@ -23,7 +23,7 @@ class ExpireItemEntityAdapter extends TypeAdapter<ExpireItemEntity> {
       fields[3] as int,
       fields[4] as String,
       fields[5] as String,
-      fields[6] as String,
+      fields[6] as ExpireCategoryEntity,
     );
   }
 
@@ -44,7 +44,7 @@ class ExpireItemEntityAdapter extends TypeAdapter<ExpireItemEntity> {
       ..writeByte(5)
       ..write(obj.image)
       ..writeByte(6)
-      ..write(obj.categoryId);
+      ..write(obj.category);
   }
 
   @override

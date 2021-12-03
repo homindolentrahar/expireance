@@ -1,3 +1,5 @@
+import 'package:expireance/domain/models/expire_category_model.dart';
+
 class ExpireItemModel {
   String id;
   String name;
@@ -5,7 +7,7 @@ class ExpireItemModel {
   int amount;
   DateTime date;
   String image;
-  String categoryId;
+  ExpireCategoryModel category;
 
   ExpireItemModel({
     required this.id,
@@ -14,6 +16,6 @@ class ExpireItemModel {
     required this.amount,
     required this.date,
     required this.image,
-    required this.categoryId,
+    required this.category,
   });
 }
