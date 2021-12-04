@@ -24,7 +24,7 @@ class ExpireFragment extends StatelessWidget {
         ),
       ],
       body: GetX<ExpireController>(
-        init: Get.find<ExpireController>()..fetchExpireItems(),
+        init: Get.find<ExpireController>()..listenExpireItems(),
         builder: (controller) {
           return SmartRefresher(
             controller: refreshController,
@@ -32,7 +32,7 @@ class ExpireFragment extends StatelessWidget {
             dragStartBehavior: DragStartBehavior.down,
             header: const RefreshHeader(),
             onRefresh: () {
-              controller.fetchExpireItems();
+              controller.listenExpireItems();
 
               refreshController.refreshCompleted();
             },
@@ -44,7 +44,7 @@ class ExpireFragment extends StatelessWidget {
                     vertical: 16,
                   ),
                   child: ExpireItemCarousel(
-                    models: controller.expirePriorities,
+                    models: controller.getExpirePriorities(),
                   ),
                 ),
                 Expanded(

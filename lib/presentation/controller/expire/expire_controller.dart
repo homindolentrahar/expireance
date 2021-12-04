@@ -21,12 +21,6 @@ class ExpireController extends GetxController {
   ExpireItemModel? singleExpireItem;
   RxList<ExpireCategoryModel> expireCategories = <ExpireCategoryModel>[].obs;
 
-  List<ExpireItemModel> get expirePriorities => expireItems
-      .where((model) => model.date.difference(DateTime.now()).inDays <= 7)
-      .take(5)
-      .toList()
-    ..sort((a, b) => a.date.compareTo(b.date));
-
   void fetchCategories() {
     final result = _categoryRepository.fetchAllCategory();
 
@@ -42,6 +36,42 @@ class ExpireController extends GetxController {
       (list) {
         expireCategories.value = list;
       },
+    );
+  }
+
+  List<ExpireItemModel> getExpirePriorities() {
+    final either = _expireRepository.fetchExpireItems();
+
+    return either.fold(
+      (error) {
+        return [];
+      },
+      (list) {
+        return list
+            .where((model) => model.date.difference(DateTime.now()).inDays <= 7)
+            .take(5)
+            .toList()
+          ..sort((a, b) => a.date.compareTo(b.date));
+      },
+    );
+  }
+
+  void listenExpireItems() {
+    expireItems.bindStream(
+      _expireRepository.listenExpireItems().map(
+            (either) => either.fold(
+              (error) {
+                log("Error: ${error.message}");
+
+                return [];
+              },
+              (list) {
+                log("Listened items: ${list.length}");
+
+                return list..sort((a, b) => a.date.compareTo(b.date));
+              },
+            ),
+          ),
     );
   }
 

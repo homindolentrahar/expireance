@@ -36,7 +36,7 @@ class ExpireTimeBadge extends StatelessWidget {
       color = AppColor.red;
     }
     // --- Text
-    if (hours.toDouble() <= 1) {
+    if (minutes > 0 && minutes <= 60) {
       display = "${minutes}m";
     } else if (hours > 1 && hours <= nDay) {
       display = "${hours}h";

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expireance/common/error/app_error.dart';
 import 'package:expireance/data/local/expire_item_entity.dart';
@@ -11,6 +14,29 @@ class ExpireRepository implements IExpireRepository {
   ExpireRepository({
     required Box<ExpireItemEntity> box,
   }) : _expireItemBox = box;
+
+  @override
+  Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItems() async* {
+    yield* _expireItemBox
+        .watch()
+        .map(
+          (event) {
+            log("Event ID: ${event.key}\nEvent value: ${event.value}");
+
+            final expireItems =
+                _expireItemBox.values.map((item) => item.toModel()).toList();
+            return right<AppError, List<ExpireItemModel>>(expireItems);
+          },
+        )
+        .onErrorReturnWith(
+          (error, _) => left(AppError(error.toString())),
+        )
+        .startWith(
+          right<AppError, List<ExpireItemModel>>(
+            _expireItemBox.values.map((item) => item.toModel()).toList(),
+          ),
+        );
+  }
 
   @override
   Either<AppError, List<ExpireItemModel>> fetchExpireItems() {

@@ -3,6 +3,8 @@ import 'package:expireance/common/error/app_error.dart';
 import 'package:expireance/domain/models/expire_item_model.dart';
 
 abstract class IExpireRepository {
+  Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItems();
+
   Either<AppError, List<ExpireItemModel>> fetchExpireItems();
 
   Either<AppError, ExpireItemModel> fetchSingleExpireItem({
