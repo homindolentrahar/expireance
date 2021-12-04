@@ -222,20 +222,8 @@ class _AddExpireFormState extends State<AddExpireForm> {
                       date: ctl.expiredDateObs.isEmpty
                           ? null
                           : DateTime.parse(ctl.expiredDateObs),
-                      showDate: () {
-                        showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(DateTime.now().year + 8),
-                        ).then(
-                          (pickedDate) {
-                            if (pickedDate != null) {
-                              ctl.errorMessages.remove("date");
-                              ctl.setExpiredDate(pickedDate);
-                            }
-                          },
-                        );
+                      pickDate: (pickedDate) {
+                        ctl.setExpiredDate(pickedDate);
                       },
                     ),
                     ctl.runValidation && ctl.errorMessages.containsKey("date")
@@ -516,20 +504,8 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                               date: ctl.expiredDateObs.isEmpty
                                   ? null
                                   : DateTime.parse(ctl.expiredDateObs),
-                              showDate: () {
-                                showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime.now(),
-                                  lastDate: DateTime(DateTime.now().year + 8),
-                                ).then(
-                                  (pickedDate) {
-                                    if (pickedDate != null) {
-                                      ctl.errorMessages.remove("date");
-                                      ctl.setExpiredDate(pickedDate);
-                                    }
-                                  },
-                                );
+                              pickDate: (pickedDate) {
+                                ctl.setExpiredDate(pickedDate);
                               },
                             ),
                             const SizedBox(width: 32),

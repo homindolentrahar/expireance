@@ -23,6 +23,7 @@ class ExpireController extends GetxController {
 
   List<ExpireItemModel> get expirePriorities => expireItems
       .where((model) => model.date.difference(DateTime.now()).inDays <= 7)
+      .take(5)
       .toList()
     ..sort((a, b) => a.date.compareTo(b.date));
 

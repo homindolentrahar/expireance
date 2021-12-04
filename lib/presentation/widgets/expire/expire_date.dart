@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class ExpireDate extends StatelessWidget {
   final DateTime? date;
-  final VoidCallback showDate;
+  final ValueChanged<DateTime> pickDate;
 
   const ExpireDate({
     Key? key,
     required this.date,
-    required this.showDate,
+    required this.pickDate,
   }) : super(key: key);
 
   @override
@@ -21,7 +22,83 @@ class ExpireDate extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _PickerButton(
-          onPressed: showDate,
+          onPressed: () {
+            Get.bottomSheet(
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Get.theme.canvasColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(2),
+                    topRight: Radius.circular(2),
+                  ),
+                ),
+                child: SfDateRangePicker(
+                  backgroundColor: Get.theme.canvasColor,
+                  headerHeight: 40,
+                  headerStyle: DateRangePickerHeaderStyle(
+                    textStyle: Get.textTheme.headline6,
+                  ),
+                  minDate: DateTime.now(),
+                  initialSelectedDate: date ?? DateTime.now(),
+                  yearCellStyle: DateRangePickerYearCellStyle(
+                    textStyle:
+                        Get.textTheme.bodyText2?.copyWith(color: AppColor.dark),
+                    disabledDatesTextStyle:
+                        Get.textTheme.bodyText2?.copyWith(color: AppColor.gray),
+                    todayTextStyle: Get.textTheme.bodyText2?.copyWith(
+                      color: Get.theme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    todayCellDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border.all(
+                        color: Get.theme.primaryColor,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                  monthCellStyle: DateRangePickerMonthCellStyle(
+                    textStyle:
+                        Get.textTheme.bodyText2?.copyWith(color: AppColor.dark),
+                    disabledDatesTextStyle:
+                        Get.textTheme.bodyText2?.copyWith(color: AppColor.gray),
+                    todayTextStyle: Get.textTheme.bodyText2?.copyWith(
+                      color: Get.theme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    todayCellDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(2),
+                      border: Border.all(
+                        color: Get.theme.primaryColor,
+                        width: 1.5,
+                      ),
+                    ),
+                  ),
+                  showNavigationArrow: true,
+                  selectionColor: Get.theme.primaryColor,
+                  selectionShape: DateRangePickerSelectionShape.rectangle,
+                  selectionTextStyle: Get.textTheme.bodyText2?.copyWith(
+                    color: Get.theme.canvasColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  selectionMode: DateRangePickerSelectionMode.single,
+                  showActionButtons: true,
+                  confirmText: "Pick",
+                  cancelText: "Cancel",
+                  onCancel: () {
+                    Get.back();
+                  },
+                  onSubmit: (obj) {
+                    pickDate(obj as DateTime);
+
+                    Get.back();
+                  },
+                ),
+              ),
+            );
+          },
         ),
         const SizedBox(width: 4),
         Column(
