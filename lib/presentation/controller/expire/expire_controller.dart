@@ -21,6 +21,11 @@ class ExpireController extends GetxController {
   ExpireItemModel? singleExpireItem;
   RxList<ExpireCategoryModel> expireCategories = <ExpireCategoryModel>[].obs;
 
+  List<ExpireItemModel> get expirePriorities => expireItems
+      .where((model) => model.date.difference(DateTime.now()).inDays <= 7)
+      .toList()
+    ..sort((a, b) => a.date.compareTo(b.date));
+
   void fetchCategories() {
     final result = _categoryRepository.fetchAllCategory();
 

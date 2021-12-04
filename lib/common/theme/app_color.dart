@@ -9,5 +9,8 @@ class AppColor {
 
   //  General Color
   static const red = Color(0xFFEB4747);
-  static const green = Color(0xFF47EB7E);
+  static const orange = Color(0xFFC56E16);
+  static const yellow = Color(0xFFC5C516);
+  static const green = Color(0xFF16C56E);
+  static const teal = Color(0xFF16C5B7);
 }
