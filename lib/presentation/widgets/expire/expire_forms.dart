@@ -279,8 +279,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
   void initState() {
     _formKey = GlobalKey<FormBuilderState>();
     _controller = Get.find<ExpireController>()
-      ..fetchSingleExpireItem(widget.id)
-      ..fetchCategories();
+      ..fetchSingleExpireItem(widget.id);
 
     super.initState();
   }

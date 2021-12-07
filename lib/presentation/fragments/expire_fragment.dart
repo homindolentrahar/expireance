@@ -1,9 +1,12 @@
+import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/presentation/controller/expire/expire_controller.dart';
 import 'package:expireance/presentation/widgets/core/refresh_header.dart';
-import 'package:expireance/presentation/widgets/expire/expire_item_carousel.dart';
+import 'package:expireance/presentation/widgets/expire/expire_item_priority.dart';
 import 'package:expireance/presentation/widgets/expire/expire_items.dart';
+import 'package:expireance/presentation/widgets/expire/expire_sort.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -24,7 +27,9 @@ class ExpireFragment extends StatelessWidget {
         ),
       ],
       body: GetX<ExpireController>(
-        init: Get.find<ExpireController>()..listenExpireItems(),
+        init: Get.find<ExpireController>()
+          ..listenExpireItems()
+          ..fetchCategories(),
         builder: (controller) {
           return SmartRefresher(
             controller: refreshController,
@@ -38,33 +43,80 @@ class ExpireFragment extends StatelessWidget {
             },
             child: Column(
               children: [
+                controller.getExpirePriorities().isEmpty
+                    ? const SizedBox.shrink()
+                    : ExpireItemPriority(
+                        models: controller.getExpirePriorities(),
+                      ),
+                const SizedBox(height: 16),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 16,
-                  ),
-                  child: ExpireItemCarousel(
-                    models: controller.getExpirePriorities(),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ExpireSort(
+                    sortingRule: controller.sortingRule,
+                    categoryFilteringRule: controller.categoryFilteringRule,
+                    categories: controller.expireCategories,
+                    setSortingRule: (selected) {
+                      controller.setSortingRule(selected);
+
+                      controller.listenExpireItems();
+
+                      Get.back();
+                    },
+                    setCategoryFilteringRule: (selected) {
+                      final String rule;
+
+                      if (controller.categoryFilteringRule == selected.id) {
+                        rule = "";
+                      } else {
+                        rule = selected.id;
+                      }
+
+                      controller.setCategoryFilteringRule(rule);
+
+                      controller.listenExpireItems();
+                    },
                   ),
                 ),
                 Expanded(
-                  child: GridView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: 1 / 1.5,
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    itemCount: controller.expireItems.length,
-                    itemBuilder: (ctx, index) {
-                      final model = controller.expireItems[index];
+                  child: controller.expireItems.isNotEmpty
+                      ? GridView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            childAspectRatio: 1 / 1.5,
+                          ),
+                          padding: const EdgeInsets.all(16),
+                          itemCount: controller.expireItems.length,
+                          itemBuilder: (ctx, index) {
+                            final model = controller.expireItems[index];
 
-                      return ExpireItemGrid(model: model);
-                    },
-                  ),
+                            return ExpireItemGrid(model: model);
+                          },
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/icons/cloud-error.svg",
+                              width: 32,
+                              height: 32,
+                              color: AppColor.gray,
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              "No items found",
+                              style: TextStyle(
+                                color: AppColor.gray,
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
                 ),
               ],
             ),

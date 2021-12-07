@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:expireance/domain/models/expire_category_model.dart';
 import 'package:expireance/domain/repositories/i_category_repository.dart';
+import 'package:expireance/presentation/widgets/expire/expire_sort.dart';
 import 'package:get/get.dart';
 import 'package:expireance/presentation/widgets/core/flashbar.dart';
 import 'package:expireance/domain/models/expire_item_model.dart';
@@ -18,9 +19,27 @@ class ExpireController extends GetxController {
         _categoryRepository = categoryRepository;
 
   RxList<ExpireItemModel> expireItems = <ExpireItemModel>[].obs;
+  RxList<ExpireItemModel> priorityExpireItems = <ExpireItemModel>[].obs;
   ExpireItemModel? singleExpireItem;
   RxList<ExpireCategoryModel> expireCategories = <ExpireCategoryModel>[].obs;
 
+  //  Sorting and filtering
+  final Rx<ExpireItemSort> _sortingRule = ExpireItemSort.all.obs;
+  final Rx<String> _categoryFilteringRule = "".obs;
+
+  ExpireItemSort get sortingRule => _sortingRule.value;
+
+  String get categoryFilteringRule => _categoryFilteringRule.value;
+
+  void setSortingRule(ExpireItemSort rule) {
+    _sortingRule.value = rule;
+  }
+
+  void setCategoryFilteringRule(String id) {
+    _categoryFilteringRule.value = id;
+  }
+
+  //  Main function
   void fetchCategories() {
     final result = _categoryRepository.fetchAllCategory();
 
@@ -43,15 +62,15 @@ class ExpireController extends GetxController {
     final either = _expireRepository.fetchExpireItems();
 
     return either.fold(
-      (error) {
-        return [];
-      },
+      (error) => [],
       (list) {
         return list
-            .where((model) => model.date.difference(DateTime.now()).inDays <= 7)
-            .take(5)
-            .toList()
-          ..sort((a, b) => a.date.compareTo(b.date));
+            .where(
+              (model) =>
+                  model.date.difference(DateTime.now()).inDays <= 7 &&
+                  model.date.difference(DateTime.now()).inHours > 0,
+            )
+            .toList();
       },
     );
   }
@@ -68,30 +87,42 @@ class ExpireController extends GetxController {
               (list) {
                 log("Listened items: ${list.length}");
 
-                return list..sort((a, b) => a.date.compareTo(b.date));
+                return list
+                    .where((item) => _categoryFilteringRule.value.isNotEmpty
+                        ? item.category.id == _categoryFilteringRule.value
+                        : true)
+                    .where((item) =>
+                        _sortingRule.value == ExpireItemSort.expired
+                            ? DateTime.now().isAfter(item.date)
+                            : true)
+                    .toList()
+                  ..sort((a, b) {
+                    if (_sortingRule.value == ExpireItemSort.name) {
+                      return a.name.compareTo(b.name);
+                    } else {
+                      return a.date.compareTo(b.date);
+                    }
+                  });
               },
             ),
           ),
     );
   }
 
-  void fetchExpireItems() {
-    final result = _expireRepository.fetchExpireItems();
-
-    result.fold(
-      (error) {
-        Flashbar(
-          context: Get.context!,
-          title: "Something went wrong!",
-          content: error.message,
-          type: FlashbarType.ERROR,
-        ).flash();
-        printError(info: error.message);
-      },
-      (list) {
-        expireItems.value = list
-          ..sort((expA, expB) => expA.date.compareTo(expB.date));
-      },
+  void listenPriorityExpireItems() {
+    priorityExpireItems.bindStream(
+      _expireRepository.listenExpireItems().map(
+            (either) => either.fold(
+              (error) => [],
+              (list) => list
+                  .where(
+                    (item) =>
+                        item.date.difference(DateTime.now()).inDays <= 7 &&
+                        item.date.difference(DateTime.now()).inHours > 1,
+                  ) // A week before expired
+                  .toList(),
+            ),
+          ),
     );
   }
 

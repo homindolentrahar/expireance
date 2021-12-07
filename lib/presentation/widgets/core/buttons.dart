@@ -20,6 +20,32 @@ class PlainBackButton extends StatelessWidget {
   }
 }
 
+class SortButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const SortButton({Key? key, required this.onPressed}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      minWidth: 0,
+      height: 0,
+      elevation: 0,
+      highlightElevation: 0,
+      padding: const EdgeInsets.all(4),
+      color: Get.theme.primaryColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      child: SvgPicture.asset(
+        "assets/icons/sort.svg",
+        width: 16,
+        height: 16,
+        color: Get.theme.canvasColor,
+      ),
+      onPressed: onPressed,
+    );
+  }
+}
+
 class DeleteButton extends StatelessWidget {
   final VoidCallback onPressed;
 

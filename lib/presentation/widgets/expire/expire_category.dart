@@ -24,12 +24,8 @@ class ExpireCategory extends StatelessWidget {
     return InkWell(
       onTap: () {
         Get.bottomSheet(
-          Container(
+          SizedBox(
             height: 280,
-            decoration: BoxDecoration(
-              color: AppColor.white,
-              borderRadius: BorderRadius.circular(2),
-            ),
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
               itemCount: models.length,
@@ -44,6 +40,10 @@ class ExpireCategory extends StatelessWidget {
                 );
               },
             ),
+          ),
+          backgroundColor: Get.theme.canvasColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(2),
           ),
         );
       },
@@ -82,5 +82,39 @@ class ExpireCategory extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ExpireCategoryBadge extends StatelessWidget {
+  final ExpireCategoryModel model;
+  final bool selected;
+  final ValueChanged<ExpireCategoryModel> selectCategory;
+
+  const ExpireCategoryBadge({
+    Key? key,
+    required this.model,
+    this.selected = false,
+    required this.selectCategory,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      elevation: 0,
+      highlightElevation: 0,
+      minWidth: 0,
+      height: 0,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      color: selected ? Get.theme.primaryColor : AppColor.light,
+      child: Text(
+        model.name,
+        style: Get.textTheme.bodyText2?.copyWith(
+          color: selected ? Get.theme.canvasColor : Get.theme.primaryColor,
+          fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+        ),
+      ),
+      onPressed: () => selectCategory(model),
+    ).marginSymmetric(horizontal: 8);
   }
 }

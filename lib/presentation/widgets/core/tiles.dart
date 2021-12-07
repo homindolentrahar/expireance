@@ -1,5 +1,6 @@
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class IconTiles extends StatelessWidget {
@@ -45,29 +46,53 @@ class IconTiles extends StatelessWidget {
 
 class TextTiles extends StatelessWidget {
   final String title;
+  final bool selected;
   final VoidCallback onTap;
 
   const TextTiles({
     Key? key,
     required this.title,
+    this.selected = false,
     required this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: selected ? Get.theme.primaryColor : Colors.transparent,
       child: InkWell(
         onTap: onTap,
         splashColor: AppColor.light,
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text(
-            title,
-            style: Get.textTheme.bodyText2?.copyWith(
-              color: AppColor.dark,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              selected
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/check.svg",
+                          width: 24,
+                          height: 24,
+                          color: AppColor.white,
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+              Text(
+                title,
+                style: Get.textTheme.bodyText2?.copyWith(
+                  color:
+                      selected ? Get.theme.canvasColor : Get.theme.primaryColor,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       ),
