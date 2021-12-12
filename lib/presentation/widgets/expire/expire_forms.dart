@@ -33,7 +33,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
   @override
   void initState() {
     _formKey = GlobalKey<FormBuilderState>();
-    _controller = Get.find<ExpireController>()..fetchCategories();
+    _controller = Get.find<ExpireController>();
 
     super.initState();
   }
@@ -282,6 +282,13 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
       ..fetchSingleExpireItem(widget.id);
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.clearSingleExpireItem();
+
+    super.dispose();
   }
 
   Future<void> handleSave(ExpireFormController formCtl) async {

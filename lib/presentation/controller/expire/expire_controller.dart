@@ -26,10 +26,13 @@ class ExpireController extends GetxController {
   //  Sorting and filtering
   final Rx<ExpireItemSort> _sortingRule = ExpireItemSort.all.obs;
   final Rx<String> _categoryFilteringRule = "".obs;
+  final Rx<String> _searchQuery = "".obs;
 
   ExpireItemSort get sortingRule => _sortingRule.value;
 
   String get categoryFilteringRule => _categoryFilteringRule.value;
+
+  String get searchQuery => _searchQuery.value;
 
   void setSortingRule(ExpireItemSort rule) {
     _sortingRule.value = rule;
@@ -39,71 +42,35 @@ class ExpireController extends GetxController {
     _categoryFilteringRule.value = id;
   }
 
+  void setSearchQuery(String query) {
+    _searchQuery.value = query;
+  }
+
   //  Main function
-  void fetchCategories() {
-    final result = _categoryRepository.fetchAllCategory();
-
-    result.fold(
-      (error) {
-        Flashbar(
-          context: Get.context!,
-          title: "Something went wrong!",
-          content: error.message,
-          type: FlashbarType.ERROR,
-        );
-      },
-      (list) {
-        expireCategories.value = list;
-      },
-    );
-  }
-
-  List<ExpireItemModel> getExpirePriorities() {
-    final either = _expireRepository.fetchExpireItems();
-
-    return either.fold(
-      (error) => [],
-      (list) {
-        return list
-            .where(
-              (model) =>
-                  model.date.difference(DateTime.now()).inDays <= 7 &&
-                  model.date.difference(DateTime.now()).inHours > 0,
-            )
-            .toList();
-      },
-    );
-  }
-
   void listenExpireItems() {
     expireItems.bindStream(
       _expireRepository.listenExpireItems().map(
             (either) => either.fold(
-              (error) {
-                log("Error: ${error.message}");
-
-                return [];
-              },
-              (list) {
-                log("Listened items: ${list.length}");
-
-                return list
-                    .where((item) => _categoryFilteringRule.value.isNotEmpty
+              (error) => [],
+              (list) => list
+                  .where(
+                    (item) => _categoryFilteringRule.value.isNotEmpty
                         ? item.category.id == _categoryFilteringRule.value
-                        : true)
-                    .where((item) =>
-                        _sortingRule.value == ExpireItemSort.expired
-                            ? DateTime.now().isAfter(item.date)
-                            : true)
-                    .toList()
-                  ..sort((a, b) {
-                    if (_sortingRule.value == ExpireItemSort.name) {
-                      return a.name.compareTo(b.name);
-                    } else {
-                      return a.date.compareTo(b.date);
-                    }
-                  });
-              },
+                        : true,
+                  )
+                  .where(
+                    (item) => _sortingRule.value == ExpireItemSort.expired
+                        ? DateTime.now().isAfter(item.date)
+                        : true,
+                  )
+                  .toList()
+                ..sort((a, b) {
+                  if (_sortingRule.value == ExpireItemSort.name) {
+                    return a.name.compareTo(b.name);
+                  } else {
+                    return a.date.compareTo(b.date);
+                  }
+                }),
             ),
           ),
     );
@@ -140,6 +107,28 @@ class ExpireController extends GetxController {
       },
       (data) {
         singleExpireItem = data;
+      },
+    );
+  }
+
+  void clearSingleExpireItem() {
+    singleExpireItem = null;
+  }
+
+  void fetchCategories() {
+    final result = _categoryRepository.fetchAllCategory();
+
+    result.fold(
+      (error) {
+        Flashbar(
+          context: Get.context!,
+          title: "Something went wrong!",
+          content: error.message,
+          type: FlashbarType.ERROR,
+        );
+      },
+      (list) {
+        expireCategories.value = list;
       },
     );
   }

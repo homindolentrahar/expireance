@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:get/get.dart';
 
 class OutlinedField extends StatelessWidget {
   final TextEditingController? controller;
@@ -156,6 +158,124 @@ class UnderlinedField extends StatelessWidget {
       cursorRadius: const Radius.circular(2),
       onChanged: onChanged,
       validator: FormBuilderValidators.compose(validators),
+    );
+  }
+}
+
+class SearchField extends StatefulWidget {
+  final ValueChanged<String?> onChanged;
+
+  const SearchField({
+    Key? key,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  State<SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<SearchField> {
+  late GlobalKey<FormBuilderState> formKey;
+
+  @override
+  void initState() {
+    formKey = GlobalKey<FormBuilderState>();
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        decoration: BoxDecoration(
+          color: AppColor.light,
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Get.back();
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Get.theme.primaryColor,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                child: SvgPicture.asset(
+                  "assets/icons/back.svg",
+                  width: 20,
+                  height: 20,
+                  color: Get.theme.canvasColor,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _SearchFieldText(onChanged: widget.onChanged),
+            ),
+            const SizedBox(width: 12),
+            SvgPicture.asset(
+              "assets/icons/search.svg",
+              width: 24,
+              height: 24,
+              color: AppColor.gray,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchFieldText extends StatelessWidget {
+  final ValueChanged<String?> onChanged;
+
+  const _SearchFieldText({
+    Key? key,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilderTextField(
+      name: "search",
+      textInputAction: TextInputAction.search,
+      keyboardType: TextInputType.text,
+      style: const TextStyle(
+        color: AppColor.black,
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+      ),
+      decoration: const InputDecoration(
+        isDense: true,
+        enabledBorder: InputBorder.none,
+        focusedBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
+        hintText: "Search for items",
+        hintStyle: TextStyle(
+          color: AppColor.gray,
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+        ),
+        errorStyle: TextStyle(
+          color: AppColor.red,
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+      cursorColor: AppColor.black,
+      cursorRadius: const Radius.circular(2),
+      onChanged: onChanged,
     );
   }
 }

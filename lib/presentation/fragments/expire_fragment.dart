@@ -24,11 +24,25 @@ class ExpireFragment extends StatelessWidget {
           title: const Text("Expire Items"),
           centerTitle: true,
           titleTextStyle: Get.theme.appBarTheme.titleTextStyle,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Get.toNamed("/search");
+              },
+              icon: SvgPicture.asset(
+                "assets/icons/search.svg",
+                width: 24,
+                height: 24,
+                color: Get.theme.primaryColor,
+              ),
+            ),
+          ],
         ),
       ],
       body: GetX<ExpireController>(
         init: Get.find<ExpireController>()
           ..listenExpireItems()
+          ..listenPriorityExpireItems()
           ..fetchCategories(),
         builder: (controller) {
           return SmartRefresher(
@@ -43,10 +57,10 @@ class ExpireFragment extends StatelessWidget {
             },
             child: Column(
               children: [
-                controller.getExpirePriorities().isEmpty
+                controller.priorityExpireItems.isEmpty
                     ? const SizedBox.shrink()
                     : ExpireItemPriority(
-                        models: controller.getExpirePriorities(),
+                        models: controller.priorityExpireItems,
                       ),
                 const SizedBox(height: 16),
                 Padding(

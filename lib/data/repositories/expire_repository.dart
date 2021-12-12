@@ -39,6 +39,36 @@ class ExpireRepository implements IExpireRepository {
   }
 
   @override
+  Stream<Either<AppError, List<ExpireItemModel>>> searchExpireItems({
+    required String query,
+  }) async* {
+    yield* _expireItemBox
+        .watch()
+        .map((event) {
+          log("Event ID: ${event.key}\nEvent value: ${event.value}");
+
+          final searchedExpireItems = _expireItemBox.values
+              .map((item) => item.toModel())
+              .where((item) =>
+                  item.name.toLowerCase().contains(query.toLowerCase()))
+              .toList();
+
+          return right<AppError, List<ExpireItemModel>>(searchedExpireItems);
+        })
+        .onErrorReturnWith(
+          (error, _) => left(AppError(error.toString())),
+        )
+        .startWith(
+          right<AppError, List<ExpireItemModel>>(_expireItemBox.values
+              .map((item) => item.toModel())
+              .where((item) =>
+                  item.name.toLowerCase().contains(query.toLowerCase()))
+              .toList()),
+        )
+        .debounceTime(const Duration(milliseconds: 300));
+  }
+
+  @override
   Either<AppError, List<ExpireItemModel>> fetchExpireItems() {
     try {
       final result =

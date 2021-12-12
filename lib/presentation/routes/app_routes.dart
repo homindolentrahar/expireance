@@ -1,5 +1,8 @@
-import 'package:expireance/presentation/screens/expired_items_list.dart';
+import 'package:expireance/domain/repositories/i_expire_repository.dart';
+import 'package:expireance/presentation/controller/expire/expire_search_controller.dart';
+import 'package:expireance/presentation/screens/expired_list.dart';
 import 'package:expireance/presentation/screens/root.dart';
+import 'package:expireance/presentation/screens/search.dart';
 import 'package:expireance/presentation/screens/splash.dart';
 import 'package:get/get.dart';
 
@@ -17,9 +20,22 @@ final appRoutes = [
     transition: Transition.cupertino,
   ),
   GetPage(
-    name: "/expire-list",
+    name: "/expired-list",
     title: "Expire List",
-    page: () => const ExpiredItemsList(),
+    page: () => const ExpiredList(),
+    transition: Transition.cupertino,
+  ),
+  GetPage(
+    name: "/search",
+    title: "Search",
+    page: () => const Search(),
+    binding: BindingsBuilder(() => {
+          Get.put<ExpireSearchController>(
+            ExpireSearchController(
+              expireRepository: Get.find<IExpireRepository>(),
+            ),
+          )
+        }),
     transition: Transition.cupertino,
   ),
 ];

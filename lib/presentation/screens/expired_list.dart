@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-class ExpiredItemsList extends StatelessWidget {
-  const ExpiredItemsList({Key? key}) : super(key: key);
+class ExpiredList extends StatelessWidget {
+  const ExpiredList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

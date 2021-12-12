@@ -16,7 +16,7 @@ class ExpireItemPriority extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed("/expire-list", arguments: {models});
+        Get.toNamed("/expired-list", arguments: {models});
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
