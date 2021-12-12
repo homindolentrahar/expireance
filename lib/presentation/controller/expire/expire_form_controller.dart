@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:expireance/domain/models/expire_category_model.dart';
 import 'package:expireance/domain/models/expire_item_model.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 class ExpireFormController extends GetxController {
   final Rx<String> _imageObs = "".obs;
@@ -52,12 +49,7 @@ class ExpireFormController extends GetxController {
     if (image == null) {
       _imageObs.value = "";
     } else {
-      final path = (await getApplicationDocumentsDirectory()).path;
-      File imageFile = await File(image.path).copy(
-        "$path/${image.name}",
-      );
-
-      _imageObs.value = imageFile.path;
+      _imageObs.value = image.path;
     }
   }
 

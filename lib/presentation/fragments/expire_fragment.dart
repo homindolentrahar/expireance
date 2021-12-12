@@ -115,17 +115,17 @@ class ExpireFragment extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SvgPicture.asset(
-                              "assets/icons/cloud-error.svg",
+                              "assets/icons/expire-items.svg",
                               width: 32,
                               height: 32,
                               color: AppColor.gray,
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 16),
                             const Text(
                               "No items found",
                               style: TextStyle(
                                 color: AppColor.gray,
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.normal,
                               ),
                             ),

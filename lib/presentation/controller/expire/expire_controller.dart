@@ -138,6 +138,8 @@ class ExpireController extends GetxController {
 
     result.fold(
       (error) {
+        log(error.message);
+
         Flashbar(
           context: Get.context!,
           title: "Something went wrong!",

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
+import 'package:expireance/utils/image_utlis.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expireance/common/error/app_error.dart';
@@ -98,7 +99,20 @@ class ExpireRepository implements IExpireRepository {
   Future<Either<AppError, Unit>> storeExpireItem(
       {required ExpireItemModel model}) async {
     try {
-      await _expireItemBox.put(model.id, ExpireItemEntity.fromModel(model));
+      final expireModel = model;
+      final imageName = expireModel.image.split("/").last;
+
+      final imageFile = await ImageUtils.storeImageToDevice(
+        expireModel.image,
+        imageName,
+      );
+
+      expireModel.image = imageFile.path;
+
+      await _expireItemBox.put(
+        model.id,
+        ExpireItemEntity.fromModel(expireModel),
+      );
 
       return right(unit);
     } on Exception catch (error) {
@@ -110,7 +124,28 @@ class ExpireRepository implements IExpireRepository {
   Future<Either<AppError, Unit>> updateExpireItem(
       {required String id, required ExpireItemModel model}) async {
     try {
-      await _expireItemBox.put(id, ExpireItemEntity.fromModel(model));
+      final expireModel = model;
+      final newImageName = expireModel.image.split("/").last;
+      final savedImageName =
+          _expireItemBox.get(id)?.image.split("/").last ?? "";
+
+      if (expireModel.image.isNotEmpty) {
+        if (savedImageName != newImageName) {
+          final imageFile = await ImageUtils.updateImageAtDevice(
+            expireModel.image,
+            savedImageName,
+            newImageName,
+          );
+
+          expireModel.image = imageFile.path;
+        }
+      } else {
+        await ImageUtils.deleteImageFromDevice(newImageName);
+
+        expireModel.image = "";
+      }
+
+      await _expireItemBox.put(id, ExpireItemEntity.fromModel(expireModel));
 
       return right(unit);
     } on Exception catch (error) {
@@ -121,6 +156,10 @@ class ExpireRepository implements IExpireRepository {
   @override
   Future<Either<AppError, Unit>> deleteExpireItem({required String id}) async {
     try {
+      final savedImageName =
+          _expireItemBox.get(id)?.image.split("/").last ?? "";
+
+      await ImageUtils.deleteImageFromDevice(savedImageName);
       await _expireItemBox.delete(id);
 
       return right(unit);
