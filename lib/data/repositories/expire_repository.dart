@@ -40,6 +40,35 @@ class ExpireRepository implements IExpireRepository {
   }
 
   @override
+  Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItemsByCategory(
+      {required String categoryId}) async* {
+    yield* _expireItemBox
+        .watch()
+        .map(
+          (event) {
+            log("Event ID: ${event.key}\nEvent value: ${event.value}");
+
+            final expireItems = _expireItemBox.values
+                .map((item) => item.toModel())
+                .where((item) => item.category.id == categoryId)
+                .toList();
+            return right<AppError, List<ExpireItemModel>>(expireItems);
+          },
+        )
+        .onErrorReturnWith(
+          (error, _) => left(AppError(error.toString())),
+        )
+        .startWith(
+          right<AppError, List<ExpireItemModel>>(
+            _expireItemBox.values
+                .map((item) => item.toModel())
+                .where((item) => item.category.id == categoryId)
+                .toList(),
+          ),
+        );
+  }
+
+  @override
   Stream<Either<AppError, List<ExpireItemModel>>> searchExpireItems({
     required String query,
   }) async* {
@@ -102,12 +131,14 @@ class ExpireRepository implements IExpireRepository {
       final expireModel = model;
       final imageName = expireModel.image.split("/").last;
 
-      final imageFile = await ImageUtils.storeImageToDevice(
-        expireModel.image,
-        imageName,
-      );
+      if (model.image.isNotEmpty) {
+        final imageFile = await ImageUtils.storeImageToDevice(
+          expireModel.image,
+          imageName,
+        );
 
-      expireModel.image = imageFile.path;
+        expireModel.image = imageFile.path;
+      }
 
       await _expireItemBox.put(
         model.id,

@@ -205,3 +205,66 @@ class SecondaryButton extends StatelessWidget {
     );
   }
 }
+
+class TextualButton extends StatelessWidget {
+  final String text;
+  final Color textColor;
+  final double fontSize;
+  final Color? splashColor;
+  final VoidCallback onTap;
+
+  const TextualButton({
+    Key? key,
+    required this.text,
+    this.textColor = AppColor.black,
+    this.fontSize = 14,
+    this.splashColor,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      splashColor: splashColor,
+      borderRadius: BorderRadius.circular(2),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: textColor,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class IconBackButton extends StatelessWidget {
+  final VoidCallback? followedAction;
+
+  const IconBackButton({
+    Key? key,
+    this.followedAction,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        Get.back();
+
+        followedAction?.call();
+      },
+      icon: SvgPicture.asset(
+        "assets/icons/back.svg",
+        width: 24,
+        height: 24,
+        color: Get.theme.primaryColor,
+      ),
+    );
+  }
+}

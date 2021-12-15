@@ -163,7 +163,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          ExpireCategory(
+                          ExpireCategorySelector(
                             value: ctl.categoryObs,
                             models: _controller.expireCategories,
                             selectCategory: (model) {
@@ -445,7 +445,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              ExpireCategory(
+                              ExpireCategorySelector(
                                 value: ctl.categoryObs,
                                 models: _controller.expireCategories,
                                 selectCategory: (model) {

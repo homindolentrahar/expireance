@@ -19,7 +19,7 @@ class ExpireItemPriority extends StatelessWidget {
         Get.toNamed("/expired-list", arguments: {models});
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Get.theme.primaryColor,

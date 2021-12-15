@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 
 class AppColor {
@@ -13,4 +15,16 @@ class AppColor {
   static const yellow = Color(0xFFC5C516);
   static const green = Color(0xFF16C56E);
   static const teal = Color(0xFF16C5B7);
+
+  static Color getColor({int index = 5}) {
+    final List<Color> colors = [red, orange, yellow, green, teal, gray];
+
+    return colors[index];
+  }
+
+  static Color randomColor() {
+    final List<Color> colors = [red, orange, yellow, green, teal, light];
+
+    return colors[Random().nextInt(colors.length)];
+  }
 }

@@ -5,6 +5,10 @@ import 'package:expireance/domain/models/expire_item_model.dart';
 abstract class IExpireRepository {
   Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItems();
 
+  Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItemsByCategory({
+    required String categoryId,
+  });
+
   Stream<Either<AppError, List<ExpireItemModel>>> searchExpireItems({
     required String query,
   });

@@ -1,7 +1,6 @@
 import 'package:expireance/domain/models/expire_category_model.dart';
 import 'package:expireance/presentation/widgets/core/buttons.dart';
 import 'package:expireance/presentation/widgets/core/tiles.dart';
-import 'package:expireance/presentation/widgets/expire/expire_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -81,33 +80,7 @@ class ExpireSort extends StatelessWidget {
             ),
           ],
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(width: 8),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.zero,
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: categories.map((category) {
-                    return ExpireCategoryBadge(
-                      model: category,
-                      selected: categoryFilteringRule == category.id,
-                      selectCategory: (selected) =>
-                          setCategoryFilteringRule(selected),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-          ],
-        ),
       ],
-    );
+    ).marginSymmetric(horizontal: 16);
   }
 }

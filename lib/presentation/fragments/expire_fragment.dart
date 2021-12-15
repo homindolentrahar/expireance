@@ -1,8 +1,8 @@
-import 'package:expireance/common/theme/app_color.dart';
+import 'package:expireance/features/expire_items/presentation/widgets/expire_body.dart';
 import 'package:expireance/presentation/controller/expire/expire_controller.dart';
 import 'package:expireance/presentation/widgets/core/refresh_header.dart';
+import 'package:expireance/presentation/widgets/expire/expire_category.dart';
 import 'package:expireance/presentation/widgets/expire/expire_item_priority.dart';
-import 'package:expireance/presentation/widgets/expire/expire_items.dart';
 import 'package:expireance/presentation/widgets/expire/expire_sort.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -55,17 +55,19 @@ class ExpireFragment extends StatelessWidget {
 
               refreshController.refreshCompleted();
             },
-            child: Column(
-              children: [
-                controller.priorityExpireItems.isEmpty
-                    ? const SizedBox.shrink()
-                    : ExpireItemPriority(
-                        models: controller.priorityExpireItems,
-                      ),
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ExpireSort(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  controller.priorityExpireItems.isEmpty
+                      ? const SizedBox.shrink()
+                      : ExpireItemPriority(
+                          models: controller.priorityExpireItems,
+                        ),
+                  const SizedBox(height: 16),
+                  const ExpireCategoryMenu(),
+                  const SizedBox(height: 16),
+                  ExpireSort(
                     sortingRule: controller.sortingRule,
                     categoryFilteringRule: controller.categoryFilteringRule,
                     categories: controller.expireCategories,
@@ -90,49 +92,14 @@ class ExpireFragment extends StatelessWidget {
                       controller.listenExpireItems();
                     },
                   ),
-                ),
-                Expanded(
-                  child: controller.expireItems.isNotEmpty
-                      ? GridView.builder(
-                          physics: const BouncingScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 12,
-                            crossAxisSpacing: 12,
-                            childAspectRatio: 1 / 1.5,
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          itemCount: controller.expireItems.length,
-                          itemBuilder: (ctx, index) {
-                            final model = controller.expireItems[index];
-
-                            return ExpireItemGrid(model: model);
-                          },
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(
-                              "assets/icons/expire-items.svg",
-                              width: 32,
-                              height: 32,
-                              color: AppColor.gray,
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              "No items found",
-                              style: TextStyle(
-                                color: AppColor.gray,
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: controller.expireItems.isNotEmpty
+                        ? ExpireItemsGrid(items: controller.expireItems)
+                        : const ExpireItemsNotFound(),
+                  ),
+                ],
+              ),
             ),
           );
         },

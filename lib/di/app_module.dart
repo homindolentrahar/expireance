@@ -8,7 +8,6 @@ import 'package:expireance/domain/repositories/i_category_repository.dart';
 import 'package:get/get.dart';
 import 'package:expireance/data/repositories/expire_repository.dart';
 import 'package:expireance/domain/repositories/i_expire_repository.dart';
-import 'package:expireance/presentation/controller/expire/expire_controller.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
@@ -82,12 +81,5 @@ class AppModule {
     );
 
     _populateData();
-
-    Get.lazyPut<ExpireController>(
-      () => ExpireController(
-        expireRepository: Get.find<IExpireRepository>(),
-        categoryRepository: Get.find<ICategoryRepository>(),
-      ),
-    );
   }
 }

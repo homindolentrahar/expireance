@@ -226,6 +226,6 @@ class ExpireItemList extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ).marginAll(16);
   }
 }
