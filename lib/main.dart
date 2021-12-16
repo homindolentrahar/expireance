@@ -1,6 +1,6 @@
 import 'package:expireance/common/theme/app_theme.dart';
 import 'package:expireance/di/app_module.dart';
-import 'package:expireance/presentation/routes/app_routes.dart';
+import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';

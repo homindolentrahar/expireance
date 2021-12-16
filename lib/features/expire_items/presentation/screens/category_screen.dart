@@ -1,7 +1,7 @@
 import 'package:expireance/features/expire_items/presentation/controllers/category_controller.dart';
-import 'package:expireance/presentation/widgets/core/buttons.dart';
-import 'package:expireance/presentation/widgets/expire/expire_category.dart';
-import 'package:expireance/presentation/widgets/expire/expire_items.dart';
+import 'package:expireance/features/expire_items/presentation/widgets/expire_category.dart';
+import 'package:expireance/core/presentation/buttons.dart';
+import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

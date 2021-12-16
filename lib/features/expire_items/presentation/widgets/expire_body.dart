@@ -1,6 +1,6 @@
 import 'package:expireance/common/theme/app_color.dart';
-import 'package:expireance/domain/models/expire_item_model.dart';
-import 'package:expireance/presentation/widgets/expire/expire_items.dart';
+import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
+import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
