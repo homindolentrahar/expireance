@@ -31,6 +31,10 @@
 .pub/
 /build/
 
+# Generated Dart Files
+**/*.g.dart
+**/*.freezed.dart
+
 # Web related
 lib/generated_plugin_registrant.dart
 
