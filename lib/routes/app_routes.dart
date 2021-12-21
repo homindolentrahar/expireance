@@ -22,14 +22,14 @@ final appRoutes = [
     title: "Root",
     page: () => const Root(),
     binding: BindingsBuilder(() {
-      Get.lazyPut<ExpireController>(
-        () => ExpireController(
+      Get.put<ExpireController>(
+        ExpireController(
           expireRepository: Get.find<IExpireRepository>(),
           categoryRepository: Get.find<ICategoryRepository>(),
         ),
       );
-      Get.lazyPut<CategoryController>(
-        () => CategoryController(
+      Get.put<CategoryController>(
+        CategoryController(
           expireRepository: Get.find<IExpireRepository>(),
           categoryRepository: Get.find<ICategoryRepository>(),
         ),

@@ -5,6 +5,7 @@ import 'package:expireance/features/expire_items/presentation/controllers/catego
 import 'package:expireance/features/expire_items/presentation/screens/category_screen.dart';
 import 'package:expireance/core/presentation/buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -137,9 +138,9 @@ class ExpireCategoryMenu extends StatelessWidget {
         children: [
           SizedBox(
             height: 128,
-            child: GetX<CategoryController>(
-              init: Get.find<CategoryController>()..fetchPrimaryCategories(),
-              builder: (controller) => GridView.builder(
+            child: BlocBuilder<CategoryCubit, List<CategoryModel>>(
+              bloc: context.read<CategoryCubit>(),
+              builder: (ctx, state) => GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   mainAxisSpacing: 8,
@@ -147,11 +148,11 @@ class ExpireCategoryMenu extends StatelessWidget {
                   crossAxisCount: 3,
                   mainAxisExtent: 64,
                 ),
-                itemCount: controller.primaryCategories.length,
+                itemCount: state.take(6).toList().length,
                 itemBuilder: (ctx, index) {
                   return _ExpireCategoryMenuItem(
                     index: index,
-                    category: controller.primaryCategories[index],
+                    category: state.take(6).toList()[index],
                   );
                 },
               ),

@@ -7,10 +7,14 @@ import 'package:expireance/features/expire_items/data/repositories/expire_reposi
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
+import 'package:expireance/features/expire_items/presentation/controllers/category_controller.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+
+final injector = GetIt.instance;
 
 class AppModule {
   static registerAdapters() {
@@ -27,50 +31,56 @@ class AppModule {
     );
   }
 
-  static void _populateInitialCategory(ICategoryRepository repository) {
-    final List<CategoryModel> categoryModels = [];
-    final categories = <String>[
-      "Food",
-      "Beverage",
-      "Spices",
-      "Meat",
-      "Dairy",
-      "Veggies",
-      "Fruits",
-      "Meds",
-      "Other"
-    ];
-
-    for (var cat in categories) {
-      final id = "category_${const Uuid().v4()}";
-      final model = CategoryModel(
-        id: id,
-        slug: cat.toLowerCase(),
-        name: cat,
-      );
-
-      categoryModels.add(model);
-    }
-
-    repository.populateInitialCategory(categoryModels);
-  }
-
-  static void _populateData() {
-    final categoryBox = Hive.box<CategoryEntity>(
-      BoxConstants.EPXIRE_CATEGORIES_BOX,
-    );
-    final categoryRepository = Get.find<ICategoryRepository>();
-
-    if (categoryBox.isEmpty) {
-      _populateInitialCategory(categoryRepository);
-    }
-  }
+  static List<CategoryModel> getInitialCategories() => [
+        "Food",
+        "Beverage",
+        "Spices",
+        "Meat",
+        "Dairy",
+        "Veggies",
+        "Fruits",
+        "Meds",
+        "Other"
+      ]
+          .map((name) => CategoryModel(
+                id: "category_${const Uuid().v4()}",
+                slug: name.toLowerCase(),
+                name: name,
+              ))
+          .toList();
 
   static void inject() {
-    //General class injection
-    Get.put<ImagePicker>(ImagePicker());
-
+    //  Get It injection
     LocalModule.inject();
+
+    //  General
+    injector.registerLazySingleton<ImagePicker>(() => ImagePicker());
+
+    //  Repositories
+    injector.registerLazySingleton<IExpireRepository>(
+      () => ExpireRepository(box: injector.get<Box<ExpireItemEntity>>()),
+    );
+    injector.registerLazySingleton<ICategoryRepository>(
+      () => CategoryRepository(box: injector.get<Box<CategoryEntity>>()),
+    );
+
+    //  Controllers
+    injector.registerLazySingleton<CategoryCubit>(
+      () => CategoryCubit(injector.get<ICategoryRepository>()),
+    );
+
+    //  Populate initial category
+    final categoryBox = injector.get<Box<CategoryEntity>>();
+
+    if (categoryBox.isEmpty) {
+      injector
+          .get<ICategoryRepository>()
+          .populateInitialCategory(getInitialCategories());
+    }
+
+    // Deleted after migration
+    // ==============================
+    Get.put<ImagePicker>(ImagePicker());
 
     Get.put<IExpireRepository>(
       ExpireRepository(box: Get.find<Box<ExpireItemEntity>>()),
@@ -79,7 +89,6 @@ class AppModule {
     Get.put<ICategoryRepository>(
       CategoryRepository(box: Get.find<Box<CategoryEntity>>()),
     );
-
-    _populateData();
+    // ==============================
   }
 }
