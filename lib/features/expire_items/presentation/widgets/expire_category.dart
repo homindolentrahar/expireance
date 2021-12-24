@@ -10,7 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class ExpireCategorySelector extends StatelessWidget {
-  final CategoryModel value;
+  final CategoryModel? value;
   final List<CategoryModel> models;
   final ValueChanged<CategoryModel> selectCategory;
 
@@ -23,7 +23,8 @@ class ExpireCategorySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String _selectedCategory = value.id.isEmpty ? "Category" : value.name;
+    // final String _selectedCategory = value.id.isEmpty ? "Category" : value.name;
+    final String _selectedCategory = value?.name ?? "Category";
 
     return InkWell(
       onTap: () {
@@ -38,7 +39,7 @@ class ExpireCategorySelector extends StatelessWidget {
 
                 return TextTiles(
                   title: model.name,
-                  selected: model.id == value.id,
+                  selected: model.id == value?.id,
                   onTap: () {
                     selectCategory(model);
                   },

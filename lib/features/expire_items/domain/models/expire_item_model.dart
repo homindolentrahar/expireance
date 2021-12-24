@@ -1,4 +1,3 @@
-
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 
 class ExpireItemModel {
@@ -19,4 +18,19 @@ class ExpireItemModel {
     required this.image,
     required this.category,
   });
+
+  @override
+  String toString() {
+    return """
+    {
+        "id: $id"
+        "name: $name"
+        "desc: $desc"
+        "amount: $amount"
+        "expireDate: ${date.toIso8601String()}"
+        "image: $image"
+        "category: ${category.slug}"
+    }
+    """;
+  }
 }

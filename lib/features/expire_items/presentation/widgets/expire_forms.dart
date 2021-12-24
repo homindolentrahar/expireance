@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/core/presentation/dialogs.dart';
 import 'package:expireance/core/presentation/fields.dart';
+import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
+import 'package:expireance/features/expire_items/presentation/controllers/category_controller.dart';
 import 'package:expireance/features/expire_items/presentation/controllers/expire_controller.dart';
 import 'package:expireance/features/expire_items/presentation/controllers/expire_form_controller.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_badges.dart';
@@ -13,6 +15,7 @@ import 'package:expireance/core/presentation/buttons.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_amount.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_date.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
@@ -38,29 +41,32 @@ class _AddExpireFormState extends State<AddExpireForm> {
     super.initState();
   }
 
-  Future<void> handleSave(ExpireFormController formCtl) async {
+  Future<void> handleSave(BuildContext context) async {
+    final cubit = context.read<ExpireFormCubit>();
     //Run validation
-    if (!formCtl.expiredDateValid) {
-      formCtl.errorMessages.putIfAbsent("date", () => "Expired date required");
+    if (context.read<ExpireFormCubit>().state.expireDate.isEmpty) {
+      cubit.addErrors(ExpireFormError.expireDate, "Expire date required");
     }
-    if (!formCtl.categoryValid) {
-      formCtl.errorMessages.putIfAbsent("category", () => "Category required");
+    if (context.read<ExpireFormCubit>().state.category == null) {
+      cubit.addErrors(ExpireFormError.category, "Category required");
     }
 
-    formCtl.setRunValidation(true);
+    cubit.runValidation();
+    cubit.validate();
 
     if (_formKey.currentState!.saveAndValidate() &&
-        formCtl.expiredDateValid &&
-        formCtl.categoryValid) {
+        context.read<ExpireFormCubit>().state.formValid) {
       //  Do store expire item
+      final state = context.read<ExpireFormCubit>().state;
+
       final model = ExpireItemModel(
         id: const Uuid().v4(),
-        name: formCtl.nameObs,
-        desc: formCtl.descObs,
-        amount: formCtl.amountObs,
-        date: DateTime.parse(formCtl.expiredDateObs),
-        image: formCtl.imageObs,
-        category: formCtl.categoryObs,
+        name: state.name,
+        desc: state.desc,
+        amount: state.amount,
+        date: DateTime.parse(state.expireDate),
+        image: state.image,
+        category: state.category ?? CategoryModel.empty(),
       );
 
       await _controller.storeExpireItem(model);
@@ -71,188 +77,215 @@ class _AddExpireFormState extends State<AddExpireForm> {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ExpireFormController>(
-      init: ExpireFormController(),
-      builder: (ctl) => FormBuilder(
-        key: _formKey,
-        autovalidateMode: ctl.runValidation
-            ? AutovalidateMode.always
-            : AutovalidateMode.disabled,
-        autoFocusOnValidationFailure: true,
-        child: ListView(
-          padding: const EdgeInsets.all(24),
-          physics: const BouncingScrollPhysics(),
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const PlainBackButton(),
-                const SizedBox(width: 8),
-                Text(
-                  "Add Expire Item",
-                  style: Get.textTheme.headline6,
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        ExpireImage(
-                          imageFile:
-                              ctl.imageObs.isEmpty ? null : File(ctl.imageObs),
-                          removeImage: () {
-                            ctl.clearImage();
-
-                            Get.back();
-                          },
-                          pickImage: () async {
-                            await ctl.setImage(ImageSource.gallery);
-
-                            Get.back();
-                          },
-                          capturePhoto: () async {
-                            await ctl.setImage(ImageSource.camera);
-
-                            Get.back();
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+    return BlocProvider<ExpireFormCubit>(
+      create: (ctx) => ExpireFormCubit(),
+      child: BlocBuilder<ExpireFormCubit, ExpireFormState>(
+        builder: (formCtx, state) => FormBuilder(
+          key: _formKey,
+          autovalidateMode: state.runValidation
+              ? AutovalidateMode.always
+              : AutovalidateMode.disabled,
+          autoFocusOnValidationFailure: true,
+          child: ListView(
+            padding: const EdgeInsets.all(24),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const PlainBackButton(),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Add Expire Item",
+                    style: Get.textTheme.headline6,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
                         children: [
-                          OutlinedField(
-                            name: "name",
-                            placeholder: "Name your item",
-                            validators: [
-                              FormBuilderValidators.required(context),
-                              FormBuilderValidators.minLength(
-                                context,
-                                3,
-                                errorText: "Must have at least 3 characters",
-                              ),
-                            ],
-                            onChanged: (value) {
-                              if (value != null) {
-                                ctl.setName(value);
-                              }
+                          ExpireImage(
+                            imageFile:
+                                state.image.isEmpty ? null : File(state.image),
+                            removeImage: () {
+                              formCtx.read<ExpireFormCubit>().clearImage();
+
+                              Get.back();
                             },
-                          ),
-                          const SizedBox(height: 8),
-                          ExpireAmount(
-                            value: ctl.amountObs,
-                            increase: () {
-                              ctl.setAmount(ctl.amountObs + 1);
+                            pickImage: () {
+                              formCtx
+                                  .read<ExpireFormCubit>()
+                                  .setImage(ImageSource.gallery);
+
+                              Get.back();
                             },
-                            decrease: () {
-                              ctl.setAmount(ctl.amountObs - 1);
-                            },
-                            incrementalChange: (value) {
-                              ctl.setAmount(ctl.amountObs + value);
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          ExpireCategorySelector(
-                            value: ctl.categoryObs,
-                            models: _controller.expireCategories,
-                            selectCategory: (model) {
-                              ctl.errorMessages.remove("category");
-                              ctl.setCategory(model);
+                            capturePhoto: () {
+                              formCtx
+                                  .read<ExpireFormCubit>()
+                                  .setImage(ImageSource.camera);
 
                               Get.back();
                             },
                           ),
-                          ctl.runValidation &&
-                                  ctl.errorMessages.containsKey("category")
-                              ? Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      ctl.errorMessages["category"] ?? "",
-                                      style: const TextStyle(
-                                        color: AppColor.red,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                    )
-                                  ],
-                                )
-                              : const SizedBox.shrink()
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                UnderlinedField(
-                  name: "desc",
-                  placeholder: "Describe your item",
-                  validators: [
-                    FormBuilderValidators.required(context),
-                    FormBuilderValidators.minLength(
-                      context,
-                      3,
-                      errorText: "Must have at least 3 characters",
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      ctl.setDesc(value);
-                    }
-                  },
-                ),
-                const SizedBox(height: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ExpireDate(
-                      date: ctl.expiredDateObs.isEmpty
-                          ? null
-                          : DateTime.parse(ctl.expiredDateObs),
-                      pickDate: (pickedDate) {
-                        ctl.setExpiredDate(pickedDate);
-                      },
-                    ),
-                    ctl.runValidation && ctl.errorMessages.containsKey("date")
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 4),
-                              Text(
-                                ctl.errorMessages["date"] ?? "",
-                                style: const TextStyle(
-                                  color: AppColor.red,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.normal,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            OutlinedField(
+                              name: "name",
+                              placeholder: "Name your item",
+                              validators: [
+                                FormBuilderValidators.required(context),
+                                FormBuilderValidators.minLength(
+                                  context,
+                                  3,
+                                  errorText: "Must have at least 3 characters",
                                 ),
-                              )
-                            ],
-                          )
-                        : const SizedBox.shrink()
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            PrimaryButton(
-              title: "Save",
-              onPressed: () => handleSave(ctl),
-            ),
-          ],
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  formCtx
+                                      .read<ExpireFormCubit>()
+                                      .nameChanged(value);
+                                }
+                              },
+                            ),
+                            const SizedBox(height: 8),
+                            ExpireAmount(
+                              value: state.amount,
+                              increase: () {
+                                formCtx
+                                    .read<ExpireFormCubit>()
+                                    .amountChanged(state.amount + 1);
+                              },
+                              decrease: () {
+                                formCtx
+                                    .read<ExpireFormCubit>()
+                                    .amountChanged(state.amount - 1);
+                              },
+                              incrementalChange: (value) {
+                                formCtx
+                                    .read<ExpireFormCubit>()
+                                    .amountChanged(state.amount + value);
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                            BlocBuilder<CategoryCubit, List<CategoryModel>>(
+                              builder: (categoryCtx, categories) =>
+                                  ExpireCategorySelector(
+                                value: state.category,
+                                models: categories,
+                                selectCategory: (model) {
+                                  formCtx
+                                      .read<ExpireFormCubit>()
+                                      .removeErrors(ExpireFormError.category);
+                                  formCtx
+                                      .read<ExpireFormCubit>()
+                                      .categoryChanged(model);
+
+                                  Get.back();
+                                },
+                              ),
+                            ),
+                            state.runValidation &&
+                                    state.categoryErrorMsg.isNotEmpty
+                                ? Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        state.categoryErrorMsg,
+                                        style: const TextStyle(
+                                          color: AppColor.red,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : const SizedBox.shrink()
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  UnderlinedField(
+                    name: "desc",
+                    placeholder: "Describe your item",
+                    validators: [
+                      FormBuilderValidators.required(context),
+                      FormBuilderValidators.minLength(
+                        context,
+                        3,
+                        errorText: "Must have at least 3 characters",
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        formCtx.read<ExpireFormCubit>().descChanged(value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ExpireDate(
+                        date: state.expireDate.isEmpty
+                            ? null
+                            : DateTime.parse(state.expireDate),
+                        pickDate: (pickedDate) {
+                          formCtx
+                              .read<ExpireFormCubit>()
+                              .removeErrors(ExpireFormError.expireDate);
+                          formCtx
+                              .read<ExpireFormCubit>()
+                              .expireChanged(pickedDate);
+                        },
+                      ),
+                      state.runValidation && state.expireDateErrorMsg.isNotEmpty
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 4),
+                                Text(
+                                  state.expireDateErrorMsg,
+                                  style: const TextStyle(
+                                    color: AppColor.red,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                )
+                              ],
+                            )
+                          : const SizedBox.shrink()
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+              PrimaryButton(
+                title: "Save",
+                onPressed: () => handleSave(formCtx),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -284,36 +317,31 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _controller.clearSingleExpireItem();
-
-    super.dispose();
-  }
-
-  Future<void> handleSave(ExpireFormController formCtl) async {
+  Future<void> handleSave(BuildContext context) async {
+    final cubit = context.read<ExpireFormCubit>();
     //Run validation
-    if (!formCtl.expiredDateValid) {
-      formCtl.errorMessages.putIfAbsent("date", () => "Expired date required");
+    if (context.read<ExpireFormCubit>().state.expireDate.isEmpty) {
+      cubit.addErrors(ExpireFormError.expireDate, "Expired date required");
     }
-    if (!formCtl.categoryValid) {
-      formCtl.errorMessages.putIfAbsent("category", () => "Category required");
+    if (context.read<ExpireFormCubit>().state.category == null) {
+      cubit.addErrors(ExpireFormError.expireDate, "Category required");
     }
 
-    formCtl.setRunValidation(true);
+    cubit.runValidation();
+    cubit.validate();
 
     if (_formKey.currentState!.saveAndValidate() &&
-        formCtl.expiredDateValid &&
-        formCtl.categoryValid) {
+        context.read<ExpireFormCubit>().state.formValid) {
+      final state = context.read<ExpireFormCubit>().state;
       //  Do store expire item
       final model = ExpireItemModel(
         id: widget.id,
-        name: formCtl.nameObs,
-        desc: formCtl.descObs,
-        amount: formCtl.amountObs,
-        date: DateTime.parse(formCtl.expiredDateObs),
-        image: formCtl.imageObs,
-        category: formCtl.categoryObs,
+        name: state.name,
+        desc: state.desc,
+        amount: state.amount,
+        date: DateTime.parse(state.expireDate),
+        image: state.image,
+        category: state.category ?? CategoryModel.empty(),
       );
 
       await _controller.updateExpireItem(widget.id, model);
@@ -324,13 +352,14 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<ExpireFormController>(
-        init: ExpireFormController()
-          ..populateInitialData(_controller.singleExpireItem),
-        builder: (ctl) {
+    return BlocProvider<ExpireFormCubit>(
+      create: (ctx) =>
+          ExpireFormCubit()..populateInitialData(_controller.singleExpireItem!),
+      child: BlocBuilder<ExpireFormCubit, ExpireFormState>(
+        builder: (formCtx, state) {
           return FormBuilder(
             key: _formKey,
-            autovalidateMode: ctl.runValidation
+            autovalidateMode: state.runValidation
                 ? AutovalidateMode.always
                 : AutovalidateMode.disabled,
             autoFocusOnValidationFailure: true,
@@ -358,7 +387,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                       onPressed: () {
                         Get.dialog(
                           DangerConfirmationDialog(
-                            title: "Delete ${ctl.nameObs}?",
+                            title: "Delete ${state.name}?",
                             message:
                                 "You cannot recover this items once it's deleted",
                             onPositive: () {
@@ -385,19 +414,23 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                       children: [
                         ExpireImage(
                           imageFile:
-                              ctl.imageObs.isEmpty ? null : File(ctl.imageObs),
+                              state.image.isEmpty ? null : File(state.image),
                           removeImage: () {
-                            ctl.clearImage();
+                            formCtx.read<ExpireFormCubit>().clearImage();
 
                             Get.back();
                           },
-                          pickImage: () async {
-                            await ctl.setImage(ImageSource.gallery);
+                          pickImage: () {
+                            formCtx
+                                .read<ExpireFormCubit>()
+                                .setImage(ImageSource.gallery);
 
                             Get.back();
                           },
-                          capturePhoto: () async {
-                            await ctl.setImage(ImageSource.camera);
+                          capturePhoto: () {
+                            formCtx
+                                .read<ExpireFormCubit>()
+                                .setImage(ImageSource.camera);
 
                             Get.back();
                           },
@@ -411,7 +444,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                             children: [
                               OutlinedField(
                                 name: "name",
-                                initialValue: ctl.nameObs,
+                                initialValue: state.name,
                                 placeholder: "Name your item",
                                 validators: [
                                   FormBuilderValidators.required(context),
@@ -424,7 +457,9 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                 ],
                                 onChanged: (value) {
                                   if (value != null) {
-                                    ctl.setName(value);
+                                    formCtx
+                                        .read<ExpireFormCubit>()
+                                        .nameChanged(value);
                                   }
                                 },
                               ),
@@ -432,31 +467,47 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 48),
                                 child: ExpireAmount(
-                                  value: ctl.amountObs,
+                                  value: state.amount,
                                   increase: () {
-                                    ctl.setAmount(ctl.amountObs + 1);
+                                    formCtx
+                                        .read<ExpireFormCubit>()
+                                        .amountChanged(state.amount + 1);
                                   },
                                   decrease: () {
-                                    ctl.setAmount(ctl.amountObs - 1);
+                                    formCtx
+                                        .read<ExpireFormCubit>()
+                                        .amountChanged(state.amount - 1);
                                   },
                                   incrementalChange: (value) {
-                                    ctl.setAmount(ctl.amountObs + value);
+                                    formCtx
+                                        .read<ExpireFormCubit>()
+                                        .amountChanged(
+                                          state.amount + value,
+                                        );
                                   },
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              ExpireCategorySelector(
-                                value: ctl.categoryObs,
-                                models: _controller.expireCategories,
-                                selectCategory: (model) {
-                                  ctl.errorMessages.remove("category");
-                                  ctl.setCategory(model);
+                              BlocBuilder<CategoryCubit, List<CategoryModel>>(
+                                bloc: formCtx.watch<CategoryCubit>(),
+                                builder: (categoryCtx, categories) =>
+                                    ExpireCategorySelector(
+                                  value: state.category,
+                                  models: categories,
+                                  selectCategory: (model) {
+                                    formCtx
+                                        .read<ExpireFormCubit>()
+                                        .removeErrors(ExpireFormError.category);
+                                    formCtx
+                                        .read<ExpireFormCubit>()
+                                        .categoryChanged(model);
 
-                                  Get.back();
-                                },
+                                    Get.back();
+                                  },
+                                ),
                               ),
-                              ctl.runValidation &&
-                                      ctl.errorMessages.containsKey("category")
+                              state.runValidation &&
+                                      state.categoryErrorMsg.isNotEmpty
                                   ? Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
@@ -464,7 +515,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                       children: [
                                         const SizedBox(height: 4),
                                         Text(
-                                          ctl.errorMessages["category"] ?? "",
+                                          state.categoryErrorMsg,
                                           style: const TextStyle(
                                             color: AppColor.red,
                                             fontSize: 12,
@@ -482,7 +533,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                     const SizedBox(height: 16),
                     UnderlinedField(
                       name: "desc",
-                      initialValue: ctl.descObs,
+                      initialValue: state.desc,
                       placeholder: "Describe your item",
                       validators: [
                         FormBuilderValidators.required(context),
@@ -494,7 +545,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                       ],
                       onChanged: (value) {
                         if (value != null) {
-                          ctl.setDesc(value);
+                          formCtx.read<ExpireFormCubit>().descChanged(value);
                         }
                       },
                     ),
@@ -507,28 +558,30 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             ExpireDate(
-                              date: ctl.expiredDateObs.isEmpty
+                              date: state.expireDate.isEmpty
                                   ? null
-                                  : DateTime.parse(ctl.expiredDateObs),
+                                  : DateTime.parse(state.expireDate),
                               pickDate: (pickedDate) {
-                                ctl.setExpiredDate(pickedDate);
+                                formCtx
+                                    .read<ExpireFormCubit>()
+                                    .expireChanged(pickedDate);
                               },
                             ),
                             const SizedBox(width: 32),
                             ExpireTimeBadge(
-                              expiredDate: DateTime.parse(ctl.expiredDateObs),
+                              expiredDate: DateTime.parse(state.expireDate),
                             ),
                           ],
                         ),
-                        ctl.runValidation &&
-                                ctl.errorMessages.containsKey("date")
+                        state.runValidation &&
+                                state.expireDateErrorMsg.isNotEmpty
                             ? Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const SizedBox(height: 4),
                                   Text(
-                                    ctl.errorMessages["date"] ?? "",
+                                    state.expireDateErrorMsg,
                                     style: const TextStyle(
                                       color: AppColor.red,
                                       fontSize: 12,
@@ -545,11 +598,13 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                 const SizedBox(height: 32),
                 PrimaryButton(
                   title: "Save",
-                  onPressed: () => handleSave(ctl),
+                  onPressed: () => handleSave(formCtx),
                 ),
               ],
             ),
           );
-        });
+        },
+      ),
+    );
   }
 }

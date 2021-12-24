@@ -17,15 +17,21 @@ class ExpireRepository implements IExpireRepository {
   }) : _expireItemBox = box;
 
   @override
-  Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItems() async* {
+  Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItems({
+    String? categoryId,
+  }) async* {
     yield* _expireItemBox
         .watch()
         .map(
           (event) {
             log("Event ID: ${event.key}\nEvent value: ${event.value}");
 
-            final expireItems =
-                _expireItemBox.values.map((item) => item.toModel()).toList();
+            final expireItems = categoryId == null
+                ? _expireItemBox.values.map((item) => item.toModel()).toList()
+                : _expireItemBox.values
+                    .where((item) => item.category.id == categoryId)
+                    .map((item) => item.toModel())
+                    .toList();
             return right<AppError, List<ExpireItemModel>>(expireItems);
           },
         )
@@ -34,36 +40,12 @@ class ExpireRepository implements IExpireRepository {
         )
         .startWith(
           right<AppError, List<ExpireItemModel>>(
-            _expireItemBox.values.map((item) => item.toModel()).toList(),
-          ),
-        );
-  }
-
-  @override
-  Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItemsByCategory(
-      {required String categoryId}) async* {
-    yield* _expireItemBox
-        .watch()
-        .map(
-          (event) {
-            log("Event ID: ${event.key}\nEvent value: ${event.value}");
-
-            final expireItems = _expireItemBox.values
-                .map((item) => item.toModel())
-                .where((item) => item.category.id == categoryId)
-                .toList();
-            return right<AppError, List<ExpireItemModel>>(expireItems);
-          },
-        )
-        .onErrorReturnWith(
-          (error, _) => left(AppError(error.toString())),
-        )
-        .startWith(
-          right<AppError, List<ExpireItemModel>>(
-            _expireItemBox.values
-                .map((item) => item.toModel())
-                .where((item) => item.category.id == categoryId)
-                .toList(),
+            categoryId == null
+                ? _expireItemBox.values.map((item) => item.toModel()).toList()
+                : _expireItemBox.values
+                    .where((item) => item.category.id == categoryId)
+                    .map((item) => item.toModel())
+                    .toList(),
           ),
         );
   }

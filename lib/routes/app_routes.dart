@@ -1,6 +1,5 @@
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/category_controller.dart';
 import 'package:expireance/features/expire_items/presentation/controllers/expire_search_controller.dart';
 import 'package:expireance/features/expire_items/presentation/screens/category_screen.dart';
 import 'package:expireance/features/expire_items/presentation/controllers/expire_controller.dart';
@@ -24,12 +23,6 @@ final appRoutes = [
     binding: BindingsBuilder(() {
       Get.put<ExpireController>(
         ExpireController(
-          expireRepository: Get.find<IExpireRepository>(),
-          categoryRepository: Get.find<ICategoryRepository>(),
-        ),
-      );
-      Get.put<CategoryController>(
-        CategoryController(
           expireRepository: Get.find<IExpireRepository>(),
           categoryRepository: Get.find<ICategoryRepository>(),
         ),
