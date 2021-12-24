@@ -3,8 +3,10 @@ import 'package:expireance/features/expire_items/presentation/widgets/expire_she
 import 'package:expireance/core/presentation/buttons.dart';
 import 'package:flutter/material.dart';
 
-class Root extends StatelessWidget {
-  const Root({Key? key}) : super(key: key);
+class RootScreen extends StatelessWidget {
+  static const route = "/";
+
+  const RootScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

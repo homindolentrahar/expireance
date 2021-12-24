@@ -93,22 +93,6 @@ class ExpireRepository implements IExpireRepository {
   }
 
   @override
-  Either<AppError, List<ExpireItemModel>> fetchExpireItemsByCategory({
-    required String categoryId,
-  }) {
-    try {
-      final result = _expireItemBox.values
-          .map((item) => item.toModel())
-          .where((item) => item.category.id == categoryId)
-          .toList();
-
-      return right(result);
-    } on Exception catch (error) {
-      return left(AppError(error.toString()));
-    }
-  }
-
-  @override
   Either<AppError, ExpireItemModel> fetchSingleExpireItem(
       {required String id}) {
     try {

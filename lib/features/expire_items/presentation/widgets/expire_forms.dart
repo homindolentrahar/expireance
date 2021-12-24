@@ -3,11 +3,14 @@ import 'dart:io';
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/core/presentation/dialogs.dart';
 import 'package:expireance/core/presentation/fields.dart';
+import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/category_controller.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/expire_controller.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/expire_form_controller.dart';
+import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
+import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_actor.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_form_controller.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_badges.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_category.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_image.dart';
@@ -31,33 +34,31 @@ class AddExpireForm extends StatefulWidget {
 
 class _AddExpireFormState extends State<AddExpireForm> {
   late GlobalKey<FormBuilderState> _formKey;
-  late ExpireController _controller;
 
   @override
   void initState() {
     _formKey = GlobalKey<FormBuilderState>();
-    _controller = Get.find<ExpireController>();
 
     super.initState();
   }
 
   Future<void> handleSave(BuildContext context) async {
-    final cubit = context.read<ExpireFormCubit>();
+    final controller = context.read<ExpireFormController>();
     //Run validation
-    if (context.read<ExpireFormCubit>().state.expireDate.isEmpty) {
-      cubit.addErrors(ExpireFormError.expireDate, "Expire date required");
+    if (context.read<ExpireFormController>().state.expireDate.isEmpty) {
+      controller.addErrors(ExpireFormError.expireDate, "Expire date required");
     }
-    if (context.read<ExpireFormCubit>().state.category == null) {
-      cubit.addErrors(ExpireFormError.category, "Category required");
+    if (context.read<ExpireFormController>().state.category == null) {
+      controller.addErrors(ExpireFormError.category, "Category required");
     }
 
-    cubit.runValidation();
-    cubit.validate();
+    controller.runValidation();
+    controller.validate();
 
     if (_formKey.currentState!.saveAndValidate() &&
-        context.read<ExpireFormCubit>().state.formValid) {
+        context.read<ExpireFormController>().state.formValid) {
       //  Do store expire item
-      final state = context.read<ExpireFormCubit>().state;
+      final state = context.read<ExpireFormController>().state;
 
       final model = ExpireItemModel(
         id: const Uuid().v4(),
@@ -69,7 +70,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
         category: state.category ?? CategoryModel.empty(),
       );
 
-      await _controller.storeExpireItem(model);
+      await context.read<ExpireActor>().storeExpireItem(model);
 
       Get.back();
     }
@@ -77,9 +78,9 @@ class _AddExpireFormState extends State<AddExpireForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ExpireFormCubit>(
-      create: (ctx) => ExpireFormCubit(),
-      child: BlocBuilder<ExpireFormCubit, ExpireFormState>(
+    return BlocProvider(
+      create: (ctx) => ExpireFormController(),
+      child: BlocBuilder<ExpireFormController, ExpireFormState>(
         builder: (formCtx, state) => FormBuilder(
           key: _formKey,
           autovalidateMode: state.runValidation
@@ -115,20 +116,20 @@ class _AddExpireFormState extends State<AddExpireForm> {
                             imageFile:
                                 state.image.isEmpty ? null : File(state.image),
                             removeImage: () {
-                              formCtx.read<ExpireFormCubit>().clearImage();
+                              formCtx.read<ExpireFormController>().clearImage();
 
                               Get.back();
                             },
                             pickImage: () {
                               formCtx
-                                  .read<ExpireFormCubit>()
+                                  .read<ExpireFormController>()
                                   .setImage(ImageSource.gallery);
 
                               Get.back();
                             },
                             capturePhoto: () {
                               formCtx
-                                  .read<ExpireFormCubit>()
+                                  .read<ExpireFormController>()
                                   .setImage(ImageSource.camera);
 
                               Get.back();
@@ -157,7 +158,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
                               onChanged: (value) {
                                 if (value != null) {
                                   formCtx
-                                      .read<ExpireFormCubit>()
+                                      .read<ExpireFormController>()
                                       .nameChanged(value);
                                 }
                               },
@@ -167,32 +168,32 @@ class _AddExpireFormState extends State<AddExpireForm> {
                               value: state.amount,
                               increase: () {
                                 formCtx
-                                    .read<ExpireFormCubit>()
+                                    .read<ExpireFormController>()
                                     .amountChanged(state.amount + 1);
                               },
                               decrease: () {
                                 formCtx
-                                    .read<ExpireFormCubit>()
+                                    .read<ExpireFormController>()
                                     .amountChanged(state.amount - 1);
                               },
                               incrementalChange: (value) {
                                 formCtx
-                                    .read<ExpireFormCubit>()
+                                    .read<ExpireFormController>()
                                     .amountChanged(state.amount + value);
                               },
                             ),
                             const SizedBox(height: 16),
-                            BlocBuilder<CategoryCubit, List<CategoryModel>>(
+                            BlocBuilder<CategoryWatcher, List<CategoryModel>>(
                               builder: (categoryCtx, categories) =>
                                   ExpireCategorySelector(
                                 value: state.category,
                                 models: categories,
                                 selectCategory: (model) {
                                   formCtx
-                                      .read<ExpireFormCubit>()
+                                      .read<ExpireFormController>()
                                       .removeErrors(ExpireFormError.category);
                                   formCtx
-                                      .read<ExpireFormCubit>()
+                                      .read<ExpireFormController>()
                                       .categoryChanged(model);
 
                                   Get.back();
@@ -237,7 +238,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
                     ],
                     onChanged: (value) {
                       if (value != null) {
-                        formCtx.read<ExpireFormCubit>().descChanged(value);
+                        formCtx.read<ExpireFormController>().descChanged(value);
                       }
                     },
                   ),
@@ -251,10 +252,10 @@ class _AddExpireFormState extends State<AddExpireForm> {
                             : DateTime.parse(state.expireDate),
                         pickDate: (pickedDate) {
                           formCtx
-                              .read<ExpireFormCubit>()
+                              .read<ExpireFormController>()
                               .removeErrors(ExpireFormError.expireDate);
                           formCtx
-                              .read<ExpireFormCubit>()
+                              .read<ExpireFormController>()
                               .expireChanged(pickedDate);
                         },
                       ),
@@ -306,33 +307,35 @@ class UpdateExpireForm extends StatefulWidget {
 
 class _UpdateExpireFormState extends State<UpdateExpireForm> {
   late GlobalKey<FormBuilderState> _formKey;
-  late ExpireController _controller;
+  late SingleExpireWatcher _singleWatcher;
 
   @override
   void initState() {
     _formKey = GlobalKey<FormBuilderState>();
-    _controller = Get.find<ExpireController>()
-      ..fetchSingleExpireItem(widget.id);
+    _singleWatcher = SingleExpireWatcher(
+      injector.get<IExpireRepository>(),
+      id: widget.id,
+    );
 
     super.initState();
   }
 
   Future<void> handleSave(BuildContext context) async {
-    final cubit = context.read<ExpireFormCubit>();
+    final controller = context.read<ExpireFormController>();
     //Run validation
-    if (context.read<ExpireFormCubit>().state.expireDate.isEmpty) {
-      cubit.addErrors(ExpireFormError.expireDate, "Expired date required");
+    if (context.read<ExpireFormController>().state.expireDate.isEmpty) {
+      controller.addErrors(ExpireFormError.expireDate, "Expired date required");
     }
-    if (context.read<ExpireFormCubit>().state.category == null) {
-      cubit.addErrors(ExpireFormError.expireDate, "Category required");
+    if (context.read<ExpireFormController>().state.category == null) {
+      controller.addErrors(ExpireFormError.expireDate, "Category required");
     }
 
-    cubit.runValidation();
-    cubit.validate();
+    controller.runValidation();
+    controller.validate();
 
     if (_formKey.currentState!.saveAndValidate() &&
-        context.read<ExpireFormCubit>().state.formValid) {
-      final state = context.read<ExpireFormCubit>().state;
+        context.read<ExpireFormController>().state.formValid) {
+      final state = context.read<ExpireFormController>().state;
       //  Do store expire item
       final model = ExpireItemModel(
         id: widget.id,
@@ -344,7 +347,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
         category: state.category ?? CategoryModel.empty(),
       );
 
-      await _controller.updateExpireItem(widget.id, model);
+      await context.read<ExpireActor>().updateExpireItem(widget.id, model);
 
       Get.back();
     }
@@ -352,10 +355,10 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ExpireFormCubit>(
+    return BlocProvider<ExpireFormController>(
       create: (ctx) =>
-          ExpireFormCubit()..populateInitialData(_controller.singleExpireItem!),
-      child: BlocBuilder<ExpireFormCubit, ExpireFormState>(
+          ExpireFormController()..populateInitialData(_singleWatcher.state!),
+      child: BlocBuilder<ExpireFormController, ExpireFormState>(
         builder: (formCtx, state) {
           return FormBuilder(
             key: _formKey,
@@ -391,7 +394,9 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                             message:
                                 "You cannot recover this items once it's deleted",
                             onPositive: () {
-                              _controller.deleteExpireItem(widget.id);
+                              formCtx
+                                  .read<ExpireActor>()
+                                  .deleteExpireItem(widget.id);
 
                               Get.back(); // Cancel dialog
                               Get.back(); // Close sheet
@@ -416,20 +421,20 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                           imageFile:
                               state.image.isEmpty ? null : File(state.image),
                           removeImage: () {
-                            formCtx.read<ExpireFormCubit>().clearImage();
+                            formCtx.read<ExpireFormController>().clearImage();
 
                             Get.back();
                           },
                           pickImage: () {
                             formCtx
-                                .read<ExpireFormCubit>()
+                                .read<ExpireFormController>()
                                 .setImage(ImageSource.gallery);
 
                             Get.back();
                           },
                           capturePhoto: () {
                             formCtx
-                                .read<ExpireFormCubit>()
+                                .read<ExpireFormController>()
                                 .setImage(ImageSource.camera);
 
                             Get.back();
@@ -458,7 +463,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                 onChanged: (value) {
                                   if (value != null) {
                                     formCtx
-                                        .read<ExpireFormCubit>()
+                                        .read<ExpireFormController>()
                                         .nameChanged(value);
                                   }
                                 },
@@ -470,17 +475,17 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                   value: state.amount,
                                   increase: () {
                                     formCtx
-                                        .read<ExpireFormCubit>()
+                                        .read<ExpireFormController>()
                                         .amountChanged(state.amount + 1);
                                   },
                                   decrease: () {
                                     formCtx
-                                        .read<ExpireFormCubit>()
+                                        .read<ExpireFormController>()
                                         .amountChanged(state.amount - 1);
                                   },
                                   incrementalChange: (value) {
                                     formCtx
-                                        .read<ExpireFormCubit>()
+                                        .read<ExpireFormController>()
                                         .amountChanged(
                                           state.amount + value,
                                         );
@@ -488,18 +493,18 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              BlocBuilder<CategoryCubit, List<CategoryModel>>(
-                                bloc: formCtx.watch<CategoryCubit>(),
+                              BlocBuilder<CategoryWatcher, List<CategoryModel>>(
+                                bloc: formCtx.watch<CategoryWatcher>(),
                                 builder: (categoryCtx, categories) =>
                                     ExpireCategorySelector(
                                   value: state.category,
                                   models: categories,
                                   selectCategory: (model) {
                                     formCtx
-                                        .read<ExpireFormCubit>()
+                                        .read<ExpireFormController>()
                                         .removeErrors(ExpireFormError.category);
                                     formCtx
-                                        .read<ExpireFormCubit>()
+                                        .read<ExpireFormController>()
                                         .categoryChanged(model);
 
                                     Get.back();
@@ -545,7 +550,9 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                       ],
                       onChanged: (value) {
                         if (value != null) {
-                          formCtx.read<ExpireFormCubit>().descChanged(value);
+                          formCtx
+                              .read<ExpireFormController>()
+                              .descChanged(value);
                         }
                       },
                     ),
@@ -563,7 +570,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                   : DateTime.parse(state.expireDate),
                               pickDate: (pickedDate) {
                                 formCtx
-                                    .read<ExpireFormCubit>()
+                                    .read<ExpireFormController>()
                                     .expireChanged(pickedDate);
                               },
                             ),

@@ -1,22 +1,21 @@
 import 'package:expireance/common/theme/app_color.dart';
-import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class ExpireItemPriority extends StatelessWidget {
-  final List<ExpireItemModel> models;
+  final int priorityCount;
 
   const ExpireItemPriority({
     Key? key,
-    required this.models,
+    required this.priorityCount,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed("/expired-list", arguments: {models});
+        Get.toNamed("/expired-list");
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -42,7 +41,9 @@ class ExpireItemPriority extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${models.length} item(s) will expire in a week",
+                    priorityCount > 1
+                        ? "$priorityCount items will expire in a week"
+                        : "$priorityCount item will expire in a week",
                     style: Get.textTheme.headline6?.copyWith(
                       color: Get.theme.canvasColor,
                     ),
@@ -51,7 +52,9 @@ class ExpireItemPriority extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "Take care of your item(s) before it goes waste",
+                    priorityCount > 1
+                        ? "Take care of your items before it goes waste"
+                        : "Take care of your item before it goes waste",
                     style: Get.textTheme.bodyText2?.copyWith(
                       color: AppColor.gray,
                       fontWeight: FontWeight.normal,
@@ -65,7 +68,7 @@ class ExpireItemPriority extends StatelessWidget {
             const SizedBox(width: 16),
             GestureDetector(
               onTap: () {
-                Get.toNamed("/expire-list", arguments: {models});
+                Get.toNamed("/expire-list");
               },
               child: SvgPicture.asset(
                 "assets/icons/caret-right.svg",

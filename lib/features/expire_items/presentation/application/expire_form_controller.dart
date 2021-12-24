@@ -10,8 +10,8 @@ part 'expire_form_controller.freezed.dart';
 
 enum ExpireFormError { category, expireDate }
 
-class ExpireFormCubit extends Cubit<ExpireFormState> {
-  ExpireFormCubit() : super(const ExpireFormState());
+class ExpireFormController extends Cubit<ExpireFormState> {
+  ExpireFormController() : super(const ExpireFormState());
 
   void populateInitialData(ExpireItemModel model) {
     emit(

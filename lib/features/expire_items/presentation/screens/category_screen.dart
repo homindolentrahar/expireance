@@ -1,7 +1,8 @@
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/category_controller.dart';
+import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_body.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_category.dart';
 import 'package:expireance/core/presentation/buttons.dart';
@@ -19,8 +20,8 @@ class CategoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final categoryId = Get.arguments?.toString();
 
-    return BlocProvider<FilteredItemCubit>(
-      create: (ctx) => FilteredItemCubit(injector.get<IExpireRepository>())
+    return BlocProvider<FilteredExpireWatcher>(
+      create: (ctx) => FilteredExpireWatcher(injector.get<IExpireRepository>())
         ..filterItem(categoryId: categoryId),
       child: Builder(builder: (builderCtx) {
         return SafeArea(
@@ -32,8 +33,9 @@ class CategoryScreen extends StatelessWidget {
                 style: Get.textTheme.headline6,
               ),
             ),
-            body: BlocBuilder<FilteredItemCubit, FilteredItemState>(
-              bloc: builderCtx.read<FilteredItemCubit>(),
+            body:
+                BlocBuilder<FilteredExpireWatcher, FilteredExpireWatcherState>(
+              bloc: builderCtx.read<FilteredExpireWatcher>(),
               builder: (ctx, filteredState) => Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -43,8 +45,8 @@ class CategoryScreen extends StatelessWidget {
                     SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
-                      child: BlocBuilder<CategoryCubit, List<CategoryModel>>(
-                        bloc: builderCtx.read<CategoryCubit>(),
+                      child: BlocBuilder<CategoryWatcher, List<CategoryModel>>(
+                        bloc: builderCtx.read<CategoryWatcher>(),
                         builder: (ctx, categories) => Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,11 +60,11 @@ class CategoryScreen extends StatelessWidget {
                               selectCategory: (category) {
                                 if (category.id == selectedCategory) {
                                   builderCtx
-                                      .read<FilteredItemCubit>()
+                                      .read<FilteredExpireWatcher>()
                                       .filterItem();
                                 } else {
                                   builderCtx
-                                      .read<FilteredItemCubit>()
+                                      .read<FilteredExpireWatcher>()
                                       .filterItem(categoryId: category.id);
                                 }
                               },
@@ -89,9 +91,9 @@ class CategoryScreen extends StatelessWidget {
                               return ExpireItemList(model: model);
                             },
                           );
-                        } else if (filteredState.errorMessage.isNotEmpty) {
+                        } else if (filteredState.error.isNotEmpty) {
                           return Center(
-                            child: Text(filteredState.errorMessage),
+                            child: Text(filteredState.error),
                           );
                         } else {
                           return const SizedBox.shrink();

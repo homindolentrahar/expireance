@@ -1,7 +1,9 @@
 import 'package:expireance/common/theme/app_theme.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/category_controller.dart';
+import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
+import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_actor.dart';
 import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +31,10 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(
-          value: CategoryCubit(injector.get<ICategoryRepository>()),
+          value: CategoryWatcher(injector.get<ICategoryRepository>()),
+        ),
+        BlocProvider.value(
+          value: ExpireActor(injector.get<IExpireRepository>()),
         ),
       ],
       child: GetMaterialApp(

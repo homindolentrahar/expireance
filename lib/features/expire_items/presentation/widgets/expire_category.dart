@@ -1,7 +1,7 @@
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/core/presentation/tiles.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/category_controller.dart';
+import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/screens/category_screen.dart';
 import 'package:expireance/core/presentation/buttons.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,6 @@ class ExpireCategorySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final String _selectedCategory = value.id.isEmpty ? "Category" : value.name;
     final String _selectedCategory = value?.name ?? "Category";
 
     return InkWell(
@@ -139,8 +138,8 @@ class ExpireCategoryMenu extends StatelessWidget {
         children: [
           SizedBox(
             height: 128,
-            child: BlocBuilder<CategoryCubit, List<CategoryModel>>(
-              bloc: context.read<CategoryCubit>(),
+            child: BlocBuilder<CategoryWatcher, List<CategoryModel>>(
+              bloc: context.read<CategoryWatcher>(),
               builder: (ctx, state) => GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

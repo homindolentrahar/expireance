@@ -1,10 +1,8 @@
 import 'package:expireance/core/presentation/tiles.dart';
-import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/core/presentation/buttons.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-enum ExpireItemSort { all, name, expired }
 
 const Map<ExpireItemSort, String> expireItemSortName = {
   ExpireItemSort.all: "All",
@@ -14,18 +12,12 @@ const Map<ExpireItemSort, String> expireItemSortName = {
 
 class ExpireSort extends StatelessWidget {
   final ExpireItemSort sortingRule;
-  final String categoryFilteringRule;
-  final List<CategoryModel> categories;
   final ValueChanged<ExpireItemSort> setSortingRule;
-  final ValueChanged<CategoryModel> setCategoryFilteringRule;
 
   const ExpireSort({
     Key? key,
     required this.sortingRule,
-    required this.categoryFilteringRule,
-    required this.categories,
     required this.setSortingRule,
-    required this.setCategoryFilteringRule,
   }) : super(key: key);
 
   @override

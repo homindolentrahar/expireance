@@ -1,11 +1,9 @@
-import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/expire_search_controller.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_search_controller.dart';
 import 'package:expireance/features/expire_items/presentation/screens/category_screen.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/expire_controller.dart';
 import 'package:expireance/features/expire_items/presentation/screens/search.dart';
-import 'package:expireance/features/expire_items/presentation/screens/expired_list.dart';
-import 'package:expireance/features/expire_items/presentation/screens/root.dart';
+import 'package:expireance/features/expire_items/presentation/screens/priority_expire_screen.dart';
+import 'package:expireance/features/expire_items/presentation/screens/root_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/splash.dart';
 import 'package:get/get.dart';
 
@@ -17,23 +15,15 @@ final appRoutes = [
     transition: Transition.cupertino,
   ),
   GetPage(
-    name: "/",
+    name: RootScreen.route,
     title: "Root",
-    page: () => const Root(),
-    binding: BindingsBuilder(() {
-      Get.put<ExpireController>(
-        ExpireController(
-          expireRepository: Get.find<IExpireRepository>(),
-          categoryRepository: Get.find<ICategoryRepository>(),
-        ),
-      );
-    }),
+    page: () => const RootScreen(),
     transition: Transition.cupertino,
   ),
   GetPage(
-    name: "/expired-list",
+    name: PriorityExpireScreen.route,
     title: "Expire List",
-    page: () => const ExpiredList(),
+    page: () => const PriorityExpireScreen(),
     transition: Transition.cupertino,
   ),
   GetPage(

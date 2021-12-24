@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/core/presentation/fields.dart';
-import 'package:expireance/features/expire_items/presentation/controllers/expire_search_controller.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_search_controller.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
