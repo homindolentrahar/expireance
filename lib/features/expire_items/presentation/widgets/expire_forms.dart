@@ -11,7 +11,7 @@ import 'package:expireance/features/expire_items/presentation/application/catego
 import 'package:expireance/features/expire_items/presentation/application/expire_actor.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_form_controller.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
-import 'package:expireance/features/expire_items/presentation/widgets/expire_badges.dart';
+import 'package:expireance/features/expire_items/presentation/widgets/expire_badge.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_category.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_image.dart';
 import 'package:expireance/core/presentation/buttons.dart';
@@ -575,7 +575,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                               },
                             ),
                             const SizedBox(width: 32),
-                            ExpireTimeBadge(
+                            ExpireBadge(
                               expiredDate: DateTime.parse(state.expireDate),
                             ),
                           ],

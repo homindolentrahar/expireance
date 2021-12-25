@@ -80,7 +80,7 @@ class CategoryScreen extends StatelessWidget {
                           return const Center(
                               child: CircularProgressIndicator());
                         } else if (filteredState.items.isEmpty) {
-                          return const ExpireItemsNotFound();
+                          return const ExpireItemEmpty();
                         } else if (filteredState.items.isNotEmpty) {
                           return ListView.builder(
                             physics: const BouncingScrollPhysics(),

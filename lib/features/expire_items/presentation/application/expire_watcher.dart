@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
-import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
+import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 
 part 'expire_watcher.freezed.dart';
 
@@ -131,8 +132,6 @@ class SingleExpireWatcher extends Cubit<ExpireItemModel?> {
       ),
     );
   }
-
-// void fetchSingleExpireItem(String id) {}
 }
 
 class FilteredExpireWatcher extends Cubit<FilteredExpireWatcherState> {
@@ -149,7 +148,48 @@ class FilteredExpireWatcher extends Cubit<FilteredExpireWatcherState> {
     expireItemsSubscription =
         _expireRepository.listenExpireItems(categoryId: categoryId).listen(
       (either) {
-        emit(either.fold(
+        emit(
+          either.fold(
+            (error) => state.copyWith(
+              error: error.message,
+              items: [],
+              loading: false,
+            ),
+            (success) => state.copyWith(
+              items: success.sorted((a, b) => a.date.compareTo(b.date)),
+              loading: false,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Future<void> close() async {
+    await expireItemsSubscription?.cancel();
+
+    return super.close();
+  }
+}
+
+class SearchedExpireWatcher extends Cubit<SearchedExpireWatcherState> {
+  final IExpireRepository _expireRepository;
+  StreamSubscription? expireItemsSubscription;
+
+  SearchedExpireWatcher(this._expireRepository)
+      : super(const SearchedExpireWatcherState());
+
+  Future<void> searchItem(String query) async {
+    emit(state.copyWith(loading: true, query: query));
+
+    await expireItemsSubscription?.cancel();
+    expireItemsSubscription = _expireRepository
+        .searchExpireItems(query: query)
+        .debounceTime(const Duration(milliseconds: 300))
+        .listen((either) {
+      emit(
+        either.fold(
           (error) => state.copyWith(
             error: error.message,
             items: [],
@@ -159,8 +199,18 @@ class FilteredExpireWatcher extends Cubit<FilteredExpireWatcherState> {
             items: success,
             loading: false,
           ),
-        ));
-      },
+        ),
+      );
+    });
+  }
+
+  void clearSearchedItem() {
+    emit(
+      state.copyWith(
+        error: "",
+        items: [],
+        loading: false,
+      ),
     );
   }
 
@@ -175,11 +225,21 @@ class FilteredExpireWatcher extends Cubit<FilteredExpireWatcherState> {
 @freezed
 class FilteredExpireWatcherState with _$FilteredExpireWatcherState {
   const factory FilteredExpireWatcherState({
-    @Default(false) bool loading,
     @Default(null) String? selectedCategoryId,
+    @Default(false) bool loading,
     @Default([]) List<ExpireItemModel> items,
     @Default("") String error,
   }) = _FilteredExpireWatcherState;
+}
+
+@freezed
+class SearchedExpireWatcherState with _$SearchedExpireWatcherState {
+  const factory SearchedExpireWatcherState({
+    @Default("") String query,
+    @Default(false) bool loading,
+    @Default([]) List<ExpireItemModel> items,
+    @Default("") String error,
+  }) = _SearchedExpireWatcherState;
 }
 
 @freezed

@@ -56,28 +56,6 @@ class ExpireAmount extends StatelessWidget {
                 ),
               ),
             ),
-            // Expanded(
-            //   child: OutlinedField(
-            //     // controller: TextEditingController(text: value.toString()),
-            //     initialValue: value.toString(),
-            //     name: "amount",
-            //     textAlign: TextAlign.center,
-            //     placeholder: "0",
-            //     validators: [
-            //       FormBuilderValidators.required(context),
-            //       FormBuilderValidators.min(
-            //         context,
-            //         1,
-            //         errorText: "Item cannot be empty",
-            //       ),
-            //     ],
-            //     onChanged: (value) {
-            //       if (value != null) {
-            //         listenTyping(value);
-            //       }
-            //     },
-            //   ),
-            // ),
             const SizedBox(width: 16),
             _AmountButton(
               icon: SvgPicture.asset(

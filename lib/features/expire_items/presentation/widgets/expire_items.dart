@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
-import 'package:expireance/features/expire_items/presentation/widgets/expire_badges.dart';
-import 'package:expireance/features/expire_items/presentation/widgets/expire_sheets.dart';
+import 'package:expireance/features/expire_items/presentation/widgets/expire_badge.dart';
+import 'package:expireance/features/expire_items/presentation/widgets/expire_forms_sheet.dart';
+import 'package:expireance/utils/expire_date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -15,9 +16,11 @@ class ExpireItemGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isExpired = ExpireDateUtils.isExpired(model.date);
+
     return GestureDetector(
       onTap: () {
-        ExpireSheets.updateExpireItem(model.id);
+        ExpireFormsSheet.updateExpireItem(model.id);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -67,13 +70,13 @@ class ExpireItemGrid extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: Get.theme.primaryColor,
+                      color: isExpired ? AppColor.dark : Get.theme.primaryColor,
                       borderRadius: BorderRadius.circular(2),
                     ),
                     child: Text(
                       model.amount.toString(),
-                      style: const TextStyle(
-                        color: AppColor.white,
+                      style: TextStyle(
+                        color: isExpired ? AppColor.light : AppColor.white,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),
@@ -95,15 +98,18 @@ class ExpireItemGrid extends StatelessWidget {
                     children: [
                       Text(
                         model.name,
-                        style: Get.textTheme.headline5,
+                        style: Get.textTheme.headline5?.copyWith(
+                          color: isExpired ? AppColor.gray : AppColor.black,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 2),
                       Text(
                         model.category.name,
-                        style: Get.textTheme.bodyText2
-                            ?.copyWith(color: AppColor.gray),
+                        style: Get.textTheme.bodyText2?.copyWith(
+                          color: AppColor.gray,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -112,7 +118,7 @@ class ExpireItemGrid extends StatelessWidget {
                   const SizedBox(height: 8),
                   Align(
                     alignment: Alignment.bottomRight,
-                    child: ExpireTimeBadge(expiredDate: model.date),
+                    child: ExpireBadge(expiredDate: model.date),
                   )
                 ],
               ),
@@ -131,9 +137,11 @@ class ExpireItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isExpired = DateTime.now().isAfter(model.date);
+
     return GestureDetector(
       onTap: () {
-        ExpireSheets.updateExpireItem(model.id);
+        ExpireFormsSheet.updateExpireItem(model.id);
       },
       child: Container(
         color: Get.theme.canvasColor,
@@ -178,13 +186,14 @@ class ExpireItemList extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Get.theme.primaryColor,
+                      color: isExpired ? AppColor.dark : Get.theme.primaryColor,
                       borderRadius: BorderRadius.circular(2),
                     ),
                     child: Text(
                       model.amount.toString(),
                       style: TextStyle(
-                        color: Get.theme.canvasColor,
+                        color:
+                            isExpired ? AppColor.light : Get.theme.canvasColor,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
@@ -201,7 +210,9 @@ class ExpireItemList extends StatelessWidget {
                 children: [
                   Text(
                     model.name,
-                    style: Get.textTheme.headline5,
+                    style: Get.textTheme.headline5?.copyWith(
+                      color: isExpired ? AppColor.gray : AppColor.black,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -219,7 +230,7 @@ class ExpireItemList extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            ExpireTimeBadge(
+            ExpireBadge(
               expiredDate: model.date,
             ),
           ],

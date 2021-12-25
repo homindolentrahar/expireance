@@ -3,9 +3,10 @@ import 'package:expireance/features/expire_items/domain/models/expire_item_model
 import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shimmer/shimmer.dart';
 
-class ExpireItemsNotFound extends StatelessWidget {
-  const ExpireItemsNotFound({Key? key}) : super(key: key);
+class ExpireItemEmpty extends StatelessWidget {
+  const ExpireItemEmpty({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class ExpireItemsNotFound extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         const Text(
-          "No items found",
+          "No expire items",
           style: TextStyle(
             color: AppColor.gray,
             fontSize: 12,
@@ -33,10 +34,10 @@ class ExpireItemsNotFound extends StatelessWidget {
   }
 }
 
-class ExpireItemsGrid extends StatelessWidget {
+class ExpireItemGridSuccess extends StatelessWidget {
   final List<ExpireItemModel> items;
 
-  const ExpireItemsGrid({
+  const ExpireItemGridSuccess({
     Key? key,
     required this.items,
   }) : super(key: key);
@@ -57,6 +58,129 @@ class ExpireItemsGrid extends StatelessWidget {
 
         return ExpireItemGrid(model: model);
       },
+    );
+  }
+}
+
+class SearchedItemEmpty extends StatelessWidget {
+  const SearchedItemEmpty({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          "assets/icons/search.svg",
+          width: 32,
+          height: 32,
+          color: AppColor.gray,
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          "Search expire item",
+          style: TextStyle(
+            color: AppColor.gray,
+            fontSize: 12,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SearchedItemNotFound extends StatelessWidget {
+  const SearchedItemNotFound({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          "assets/icons/search.svg",
+          width: 32,
+          height: 32,
+          color: AppColor.gray,
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          "Searched item not found",
+          style: TextStyle(
+            color: AppColor.gray,
+            fontSize: 12,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ExpireItemError extends StatelessWidget {
+  final String message;
+
+  const ExpireItemError({
+    Key? key,
+    required this.message,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          "assets/icons/cloud-error.svg",
+          width: 32,
+          height: 32,
+          color: AppColor.gray,
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          "No expire items",
+          style: TextStyle(
+            color: AppColor.gray,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          message,
+          style: const TextStyle(
+            color: AppColor.gray,
+            fontSize: 12,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ExpireItemLoading extends StatelessWidget {
+  final bool enabled;
+  final Widget child;
+
+  const ExpireItemLoading({
+    Key? key,
+    required this.enabled,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      enabled: enabled,
+      baseColor: AppColor.gray.withOpacity(0.5),
+      highlightColor: AppColor.gray.withOpacity(0.25),
+      direction: ShimmerDirection.ltr,
+      child: child,
     );
   }
 }

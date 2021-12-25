@@ -11,8 +11,6 @@ abstract class IExpireRepository {
     required String query,
   });
 
-  Either<AppError, List<ExpireItemModel>> fetchExpireItems();
-
   Either<AppError, ExpireItemModel> fetchSingleExpireItem({
     required String id,
   });

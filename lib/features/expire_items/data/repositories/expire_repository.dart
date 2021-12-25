@@ -61,8 +61,9 @@ class ExpireRepository implements IExpireRepository {
 
           final searchedExpireItems = _expireItemBox.values
               .map((item) => item.toModel())
-              .where((item) =>
-                  item.name.toLowerCase().contains(query.toLowerCase()))
+              .where(
+                (item) => item.name.toLowerCase().contains(query.toLowerCase()),
+              )
               .toList();
 
           return right<AppError, List<ExpireItemModel>>(searchedExpireItems);
@@ -76,20 +77,8 @@ class ExpireRepository implements IExpireRepository {
               .where((item) =>
                   item.name.toLowerCase().contains(query.toLowerCase()))
               .toList()),
-        )
-        .debounceTime(const Duration(milliseconds: 300));
-  }
-
-  @override
-  Either<AppError, List<ExpireItemModel>> fetchExpireItems() {
-    try {
-      final result =
-          _expireItemBox.values.map((item) => item.toModel()).toList();
-
-      return right(result);
-    } on Exception catch (error) {
-      return left(AppError(error.toString()));
-    }
+        );
+    // .debounceTime(const Duration(milliseconds: 300));
   }
 
   @override

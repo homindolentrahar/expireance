@@ -2,7 +2,7 @@ import 'package:expireance/features/expire_items/presentation/widgets/expire_for
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ExpireSheets {
+class ExpireFormsSheet {
   static void addExpireItem() {
     Get.bottomSheet(
       const AddExpireForm(),

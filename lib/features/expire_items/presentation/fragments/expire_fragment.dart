@@ -109,9 +109,23 @@ class ExpireFragment extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           Expanded(
-                            child: state.items.isNotEmpty
-                                ? ExpireItemsGrid(items: state.items)
-                                : const ExpireItemsNotFound(),
+                            child: Builder(builder: (_) {
+                              if (state.loading) {
+                                return ExpireItemLoading(
+                                  enabled: state.loading,
+                                  child: const ExpireItemGridSuccess(items: []),
+                                );
+                              } else if (state.error.isNotEmpty) {
+                                return ExpireItemError(message: state.error);
+                              } else if (state.items.isNotEmpty) {
+                                return ExpireItemGridSuccess(
+                                    items: state.items);
+                              } else if (state.items.isEmpty) {
+                                return const ExpireItemEmpty();
+                              } else {
+                                return const ExpireItemEmpty();
+                              }
+                            }),
                           ),
                         ],
                       ),

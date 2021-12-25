@@ -1,17 +1,15 @@
-import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
-import 'package:expireance/features/expire_items/presentation/application/expire_search_controller.dart';
 import 'package:expireance/features/expire_items/presentation/screens/category_screen.dart';
-import 'package:expireance/features/expire_items/presentation/screens/search.dart';
+import 'package:expireance/features/expire_items/presentation/screens/search_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/priority_expire_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/root_screen.dart';
-import 'package:expireance/features/expire_items/presentation/screens/splash.dart';
+import 'package:expireance/features/expire_items/presentation/screens/splash_screen.dart';
 import 'package:get/get.dart';
 
 final appRoutes = [
   GetPage(
     name: "/splash",
     title: "Splash",
-    page: () => const Splash(),
+    page: () => const SplashScreen(),
     transition: Transition.cupertino,
   ),
   GetPage(
@@ -35,14 +33,7 @@ final appRoutes = [
   GetPage(
     name: "/search",
     title: "Search",
-    page: () => const Search(),
-    binding: BindingsBuilder(() {
-      Get.lazyPut<ExpireSearchController>(
-        () => ExpireSearchController(
-          expireRepository: Get.find<IExpireRepository>(),
-        ),
-      );
-    }),
+    page: () => const SearchScreen(),
     transition: Transition.cupertino,
   ),
 ];
