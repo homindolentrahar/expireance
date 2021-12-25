@@ -1,4 +1,5 @@
 import 'package:expireance/core/presentation/fields.dart';
+import 'package:expireance/core/presentation/loading.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
@@ -23,15 +24,17 @@ class SearchScreen extends StatelessWidget {
                 SearchField(
                   onChanged: (value) {
                     if (value != null) {
-                      if (value.length >= 3) {
+                      if (value.isEmpty) {
+                        bodyCtx
+                            .read<SearchedExpireWatcher>()
+                            .clearSearchedItem();
+                      } else if (value.length >= 3) {
                         bodyCtx.read<SearchedExpireWatcher>().searchItem(value);
                       } else {
                         bodyCtx
                             .read<SearchedExpireWatcher>()
                             .clearSearchedItem();
                       }
-                    } else if (value!.isEmpty) {
-                      bodyCtx.read<SearchedExpireWatcher>().clearSearchedItem();
                     } else {
                       bodyCtx.read<SearchedExpireWatcher>().clearSearchedItem();
                     }
@@ -42,15 +45,7 @@ class SearchScreen extends StatelessWidget {
                   builder: (ctx, state) => Expanded(
                     child: Builder(builder: (_) {
                       if (state.loading) {
-                        return ExpireItemLoading(
-                          enabled: state.loading,
-                          child: ListView.builder(
-                            padding: const EdgeInsets.all(16),
-                            itemCount: 0,
-                            itemBuilder: (ctx, index) =>
-                                const SizedBox.shrink(),
-                          ),
-                        );
+                        return const LoadingIndicator();
                       } else if (state.error.isNotEmpty) {
                         return ExpireItemError(message: state.error);
                       } else if (state.items.isNotEmpty) {

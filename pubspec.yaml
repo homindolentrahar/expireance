@@ -53,7 +53,6 @@ dependencies:
 
   #  UI
   flash: ^2.0.3+1
-  shimmer: ^2.0.0
   image_picker: ^0.8.4+4
   cupertino_icons: ^1.0.4
   flutter_spinkit: ^5.1.0

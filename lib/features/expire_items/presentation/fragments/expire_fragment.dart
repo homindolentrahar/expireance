@@ -1,3 +1,4 @@
+import 'package:expireance/core/presentation/loading.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
@@ -111,10 +112,7 @@ class ExpireFragment extends StatelessWidget {
                           Expanded(
                             child: Builder(builder: (_) {
                               if (state.loading) {
-                                return ExpireItemLoading(
-                                  enabled: state.loading,
-                                  child: const ExpireItemGridSuccess(items: []),
-                                );
+                                return const LoadingIndicator();
                               } else if (state.error.isNotEmpty) {
                                 return ExpireItemError(message: state.error);
                               } else if (state.items.isNotEmpty) {

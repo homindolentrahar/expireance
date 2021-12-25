@@ -3,7 +3,6 @@ import 'package:expireance/features/expire_items/domain/models/expire_item_model
 import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shimmer/shimmer.dart';
 
 class ExpireItemEmpty extends StatelessWidget {
   const ExpireItemEmpty({Key? key}) : super(key: key);
@@ -159,28 +158,6 @@ class ExpireItemError extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class ExpireItemLoading extends StatelessWidget {
-  final bool enabled;
-  final Widget child;
-
-  const ExpireItemLoading({
-    Key? key,
-    required this.enabled,
-    required this.child,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      enabled: enabled,
-      baseColor: AppColor.gray.withOpacity(0.5),
-      highlightColor: AppColor.gray.withOpacity(0.25),
-      direction: ShimmerDirection.ltr,
-      child: child,
     );
   }
 }

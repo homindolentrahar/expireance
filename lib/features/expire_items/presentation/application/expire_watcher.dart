@@ -196,6 +196,7 @@ class SearchedExpireWatcher extends Cubit<SearchedExpireWatcherState> {
             loading: false,
           ),
           (success) => state.copyWith(
+            error: "",
             items: success,
             loading: false,
           ),
@@ -205,13 +206,7 @@ class SearchedExpireWatcher extends Cubit<SearchedExpireWatcherState> {
   }
 
   void clearSearchedItem() {
-    emit(
-      state.copyWith(
-        error: "",
-        items: [],
-        loading: false,
-      ),
-    );
+    emit(const SearchedExpireWatcherState());
   }
 
   @override
