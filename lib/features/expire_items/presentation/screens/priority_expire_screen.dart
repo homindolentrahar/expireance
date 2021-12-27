@@ -5,10 +5,10 @@ import 'package:expireance/features/expire_items/presentation/widgets/expire_ite
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:auto_route/auto_route.dart';
 
 class PriorityExpireScreen extends StatelessWidget {
-  static const route = "/expired-list";
+  static const route = "/priority";
 
   const PriorityExpireScreen({Key? key}) : super(key: key);
 
@@ -19,22 +19,22 @@ class PriorityExpireScreen extends StatelessWidget {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Get.theme.canvasColor,
+            backgroundColor: Theme.of(context).canvasColor,
             elevation: 0,
             leading: IconButton(
               onPressed: () {
-                Get.back();
+                context.router.pop();
               },
               icon: SvgPicture.asset(
                 "assets/icons/back.svg",
                 width: 24,
                 height: 24,
-                color: Get.theme.primaryColor,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             title: Text(
               "Expire items in a week",
-              style: Get.textTheme.headline6,
+              style: Theme.of(context).textTheme.headline6,
             ),
           ),
           body: Builder(builder: (bodyCtx) {

@@ -1,7 +1,10 @@
+import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:auto_route/auto_route.dart';
 
 class SplashScreen extends StatefulWidget {
+  static const route = "/splash";
+
   const SplashScreen({Key? key}) : super(key: key);
 
   @override
@@ -15,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(
       const Duration(milliseconds: 2500),
       () {
-        Get.offAllNamed("/");
+        context.router.replace(const RootRoute());
       },
     );
 
@@ -29,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Center(
           child: Text(
             "Exp",
-            style: Get.textTheme.headline1,
+            style: Theme.of(context).textTheme.headline1,
           ),
         ),
       ),

@@ -5,21 +5,23 @@ import 'package:expireance/features/expire_items/presentation/application/catego
 import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_body.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_category.dart';
-import 'package:expireance/core/presentation/buttons.dart';
+import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 
 class CategoryScreen extends StatelessWidget {
   static const route = "/category";
 
-  const CategoryScreen({Key? key}) : super(key: key);
+  final String? categoryId;
+
+  const CategoryScreen({
+    Key? key,
+    this.categoryId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final categoryId = Get.arguments?.toString();
-
     return BlocProvider<FilteredExpireWatcher>(
       create: (ctx) => FilteredExpireWatcher(injector.get<IExpireRepository>())
         ..filterItem(categoryId: categoryId),
@@ -30,7 +32,7 @@ class CategoryScreen extends StatelessWidget {
               leading: const IconBackButton(),
               title: Text(
                 "Expire Categories",
-                style: Get.textTheme.headline6,
+                style: Theme.of(context).textTheme.headline6,
               ),
             ),
             body:

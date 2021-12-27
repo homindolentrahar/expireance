@@ -1,7 +1,8 @@
 import 'package:expireance/common/theme/app_color.dart';
+import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:auto_route/auto_route.dart';
 
 class ExpireItemPriority extends StatelessWidget {
   final int priorityCount;
@@ -15,13 +16,13 @@ class ExpireItemPriority extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed("/expired-list");
+        context.router.push(const PriorityExpireRoute());
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Get.theme.primaryColor,
+          color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(2),
         ),
         child: Row(
@@ -44,9 +45,9 @@ class ExpireItemPriority extends StatelessWidget {
                     priorityCount > 1
                         ? "$priorityCount items will expire in a week"
                         : "$priorityCount item will expire in a week",
-                    style: Get.textTheme.headline6?.copyWith(
-                      color: Get.theme.canvasColor,
-                    ),
+                    style: Theme.of(context).textTheme.headline6?.copyWith(
+                          color: Theme.of(context).canvasColor,
+                        ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -55,10 +56,10 @@ class ExpireItemPriority extends StatelessWidget {
                     priorityCount > 1
                         ? "Take care of your items before it goes waste"
                         : "Take care of your item before it goes waste",
-                    style: Get.textTheme.bodyText2?.copyWith(
-                      color: AppColor.gray,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                          color: AppColor.gray,
+                          fontWeight: FontWeight.normal,
+                        ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -68,7 +69,7 @@ class ExpireItemPriority extends StatelessWidget {
             const SizedBox(width: 16),
             GestureDetector(
               onTap: () {
-                Get.toNamed("/expire-list");
+                context.router.push(const PriorityExpireRoute());
               },
               child: SvgPicture.asset(
                 "assets/icons/caret-right.svg",

@@ -1,7 +1,6 @@
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 
 class IconTiles extends StatelessWidget {
   final Widget icon;
@@ -34,7 +33,10 @@ class IconTiles extends StatelessWidget {
               Text(
                 title,
                 style: textStyle ??
-                    Get.textTheme.bodyText2?.copyWith(color: AppColor.dark),
+                    Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(color: AppColor.dark),
               )
             ],
           ),
@@ -59,7 +61,7 @@ class TextTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? Get.theme.primaryColor : Colors.transparent,
+      color: selected ? Theme.of(context).primaryColor : Colors.transparent,
       child: InkWell(
         onTap: onTap,
         splashColor: AppColor.light,
@@ -86,11 +88,12 @@ class TextTiles extends StatelessWidget {
                   : const SizedBox.shrink(),
               Text(
                 title,
-                style: Get.textTheme.bodyText2?.copyWith(
-                  color:
-                      selected ? Get.theme.canvasColor : Get.theme.primaryColor,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                ),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      color: selected
+                          ? Theme.of(context).canvasColor
+                          : Theme.of(context).primaryColor,
+                      fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    ),
               ),
             ],
           ),

@@ -1,7 +1,7 @@
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:auto_route/auto_route.dart';
 
 class PlainBackButton extends StatelessWidget {
   const PlainBackButton({Key? key}) : super(key: key);
@@ -9,7 +9,7 @@ class PlainBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.back(),
+      onTap: () => context.router.pop(),
       child: SvgPicture.asset(
         "assets/icons/back.svg",
         color: AppColor.black,
@@ -33,13 +33,13 @@ class SortButton extends StatelessWidget {
       elevation: 0,
       highlightElevation: 0,
       padding: const EdgeInsets.all(4),
-      color: Get.theme.primaryColor,
+      color: Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
       child: SvgPicture.asset(
         "assets/icons/sort.svg",
         width: 16,
         height: 16,
-        color: Get.theme.canvasColor,
+        color: Theme.of(context).canvasColor,
       ),
       onPressed: onPressed,
     );
@@ -90,9 +90,9 @@ class FAB extends StatelessWidget {
       height: 0,
       padding: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-      color: Get.theme.primaryColor,
-      splashColor: Get.theme.canvasColor.withOpacity(0.15),
-      highlightColor: Get.theme.canvasColor.withOpacity(0.15),
+      color: Theme.of(context).primaryColor,
+      splashColor: Theme.of(context).canvasColor.withOpacity(0.15),
+      highlightColor: Theme.of(context).canvasColor.withOpacity(0.15),
       elevation: 2,
       highlightElevation: 2,
       child: SvgPicture.asset(
@@ -139,15 +139,15 @@ class PrimaryButton extends StatelessWidget {
       height: 0,
       elevation: 0,
       highlightElevation: 0,
-      color: Get.theme.primaryColor,
+      color: Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
       padding: EdgeInsets.all(padding),
       child: Text(
         title,
-        style: Get.textTheme.button?.copyWith(
-          color: AppColor.white,
-          fontSize: fontSize,
-        ),
+        style: Theme.of(context).textTheme.button?.copyWith(
+              color: AppColor.white,
+              fontSize: fontSize,
+            ),
       ),
       onPressed: onPressed,
     );
@@ -187,19 +187,19 @@ class SecondaryButton extends StatelessWidget {
       height: 0,
       elevation: 0,
       highlightElevation: 0,
-      color: Get.theme.canvasColor,
+      color: Theme.of(context).canvasColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
         side: BorderSide(
-          color: Get.theme.primaryColor,
+          color: Theme.of(context).primaryColor,
           width: 1.3,
         ),
       ),
       padding: EdgeInsets.all(padding),
       child: Text(
         title,
-        style: Get.textTheme.button
-            ?.copyWith(color: Get.theme.primaryColor, fontSize: fontSize),
+        style: Theme.of(context).textTheme.button?.copyWith(
+            color: Theme.of(context).primaryColor, fontSize: fontSize),
       ),
       onPressed: onPressed,
     );
@@ -255,7 +255,7 @@ class IconBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        Get.back();
+        context.router.pop();
 
         followedAction?.call();
       },
@@ -263,7 +263,7 @@ class IconBackButton extends StatelessWidget {
         "assets/icons/back.svg",
         width: 24,
         height: 24,
-        color: Get.theme.primaryColor,
+        color: Theme.of(context).primaryColor,
       ),
     );
   }

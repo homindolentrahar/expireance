@@ -1,4 +1,4 @@
 class BoxConstants {
-  static const EXPIRE_ITEMS_BOX = "expire_items";
-  static const EPXIRE_CATEGORIES_BOX = "expire_categories";
+  static const expireItemBox = "expire_item";
+  static const expireCategoryBox = "expire_category";
 }

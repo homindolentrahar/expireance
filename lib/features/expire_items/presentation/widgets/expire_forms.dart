@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:expireance/common/theme/app_color.dart';
-import 'package:expireance/core/presentation/dialogs.dart';
-import 'package:expireance/core/presentation/fields.dart';
+import 'package:expireance/core/presentation/widgets/dialogs.dart';
+import 'package:expireance/core/presentation/widgets/fields.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
@@ -14,16 +14,16 @@ import 'package:expireance/features/expire_items/presentation/application/expire
 import 'package:expireance/features/expire_items/presentation/widgets/expire_badge.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_category.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_image.dart';
-import 'package:expireance/core/presentation/buttons.dart';
+import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_amount.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+import 'package:auto_route/auto_route.dart';
 
 class AddExpireForm extends StatefulWidget {
   const AddExpireForm({Key? key}) : super(key: key);
@@ -72,13 +72,13 @@ class _AddExpireFormState extends State<AddExpireForm> {
 
       await context.read<ExpireActor>().storeExpireItem(model);
 
-      Get.back();
+      context.router.pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<ExpireFormController>(
       create: (ctx) => ExpireFormController(),
       child: BlocBuilder<ExpireFormController, ExpireFormState>(
         builder: (formCtx, state) => FormBuilder(
@@ -91,17 +91,12 @@ class _AddExpireFormState extends State<AddExpireForm> {
             padding: const EdgeInsets.all(24),
             physics: const BouncingScrollPhysics(),
             children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const PlainBackButton(),
-                  const SizedBox(width: 8),
-                  Text(
-                    "Add Expire Item",
-                    style: Get.textTheme.headline6,
-                  ),
-                ],
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Add Expire Item",
+                  style: Theme.of(context).textTheme.headline6,
+                ),
               ),
               const SizedBox(height: 32),
               Column(
@@ -110,32 +105,28 @@ class _AddExpireFormState extends State<AddExpireForm> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        children: [
-                          ExpireImage(
-                            imageFile:
-                                state.image.isEmpty ? null : File(state.image),
-                            removeImage: () {
-                              formCtx.read<ExpireFormController>().clearImage();
+                      ExpireImage(
+                        imageFile:
+                            state.image.isEmpty ? null : File(state.image),
+                        removeImage: () {
+                          formCtx.read<ExpireFormController>().clearImage();
 
-                              Get.back();
-                            },
-                            pickImage: () {
-                              formCtx
-                                  .read<ExpireFormController>()
-                                  .setImage(ImageSource.gallery);
+                          context.router.pop();
+                        },
+                        pickImage: () {
+                          formCtx
+                              .read<ExpireFormController>()
+                              .setImage(ImageSource.gallery);
 
-                              Get.back();
-                            },
-                            capturePhoto: () {
-                              formCtx
-                                  .read<ExpireFormController>()
-                                  .setImage(ImageSource.camera);
+                          context.router.pop();
+                        },
+                        capturePhoto: () {
+                          formCtx
+                              .read<ExpireFormController>()
+                              .setImage(ImageSource.camera);
 
-                              Get.back();
-                            },
-                          ),
-                        ],
+                          context.router.pop();
+                        },
                       ),
                       const SizedBox(width: 16),
                       Expanded(
@@ -196,7 +187,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
                                       .read<ExpireFormController>()
                                       .categoryChanged(model);
 
-                                  Get.back();
+                                  context.router.pop();
                                 },
                               ),
                             ),
@@ -349,7 +340,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
 
       await context.read<ExpireActor>().updateExpireItem(widget.id, model);
 
-      Get.back();
+      context.router.pop();
     }
   }
 
@@ -371,25 +362,18 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
               physics: const BouncingScrollPhysics(),
               children: [
                 Row(
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const PlainBackButton(),
-                        const SizedBox(width: 8),
-                        Text(
-                          "Update Expire Item",
-                          style: Get.textTheme.headline6,
-                        ),
-                      ],
+                    Text(
+                      "Update Expire Item",
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                     DeleteButton(
                       onPressed: () {
-                        Get.dialog(
-                          DangerConfirmationDialog(
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => DangerConfirmationDialog(
                             title: "Delete ${state.name}?",
                             message:
                                 "You cannot recover this items once it's deleted",
@@ -398,16 +382,16 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                   .read<ExpireActor>()
                                   .deleteExpireItem(widget.id);
 
-                              Get.back(); // Cancel dialog
-                              Get.back(); // Close sheet
+                              context.router.pop();
+                              context.router.pop();
                             },
                             onNegative: () {
-                              Get.back();
+                              context.router.pop();
                             },
                           ),
                         );
                       },
-                    ),
+                    )
                   ],
                 ),
                 const SizedBox(height: 32),
@@ -423,21 +407,21 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                           removeImage: () {
                             formCtx.read<ExpireFormController>().clearImage();
 
-                            Get.back();
+                            context.router.pop();
                           },
                           pickImage: () {
                             formCtx
                                 .read<ExpireFormController>()
                                 .setImage(ImageSource.gallery);
 
-                            Get.back();
+                            context.router.pop();
                           },
                           capturePhoto: () {
                             formCtx
                                 .read<ExpireFormController>()
                                 .setImage(ImageSource.camera);
 
-                            Get.back();
+                            context.router.pop();
                           },
                         ),
                         const SizedBox(width: 16),
@@ -469,32 +453,28 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                 },
                               ),
                               const SizedBox(height: 8),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 48),
-                                child: ExpireAmount(
-                                  value: state.amount,
-                                  increase: () {
-                                    formCtx
-                                        .read<ExpireFormController>()
-                                        .amountChanged(state.amount + 1);
-                                  },
-                                  decrease: () {
-                                    formCtx
-                                        .read<ExpireFormController>()
-                                        .amountChanged(state.amount - 1);
-                                  },
-                                  incrementalChange: (value) {
-                                    formCtx
-                                        .read<ExpireFormController>()
-                                        .amountChanged(
-                                          state.amount + value,
-                                        );
-                                  },
-                                ),
+                              ExpireAmount(
+                                value: state.amount,
+                                increase: () {
+                                  formCtx
+                                      .read<ExpireFormController>()
+                                      .amountChanged(state.amount + 1);
+                                },
+                                decrease: () {
+                                  formCtx
+                                      .read<ExpireFormController>()
+                                      .amountChanged(state.amount - 1);
+                                },
+                                incrementalChange: (value) {
+                                  formCtx
+                                      .read<ExpireFormController>()
+                                      .amountChanged(
+                                        state.amount + value,
+                                      );
+                                },
                               ),
                               const SizedBox(height: 16),
                               BlocBuilder<CategoryWatcher, List<CategoryModel>>(
-                                bloc: formCtx.watch<CategoryWatcher>(),
                                 builder: (categoryCtx, categories) =>
                                     ExpireCategorySelector(
                                   value: state.category,
@@ -507,7 +487,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                         .read<ExpireFormController>()
                                         .categoryChanged(model);
 
-                                    Get.back();
+                                    context.router.pop();
                                   },
                                 ),
                               ),

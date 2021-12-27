@@ -78,7 +78,6 @@ class ExpireRepository implements IExpireRepository {
                   item.name.toLowerCase().contains(query.toLowerCase()))
               .toList()),
         );
-    // .debounceTime(const Duration(milliseconds: 300));
   }
 
   @override

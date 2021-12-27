@@ -1,7 +1,6 @@
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RefreshHeader extends StatelessWidget {
@@ -36,7 +35,7 @@ class RefreshHeader extends StatelessWidget {
         color: AppColor.dark,
       ),
       failedText: "",
-      textStyle: Get.textTheme.bodyText2!.copyWith(color: AppColor.gray),
+      textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColor.gray),
     );
   }
 }

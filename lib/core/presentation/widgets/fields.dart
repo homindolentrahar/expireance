@@ -3,7 +3,7 @@ import 'package:expireance/common/theme/app_color.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:get/get.dart';
+import 'package:auto_route/auto_route.dart';
 
 class OutlinedField extends StatelessWidget {
   final TextEditingController? controller;
@@ -200,19 +200,19 @@ class _SearchFieldState extends State<SearchField> {
           children: [
             GestureDetector(
               onTap: () {
-                Get.back();
+                context.router.pop();
               },
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Get.theme.primaryColor,
+                  color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.circular(2),
                 ),
                 child: SvgPicture.asset(
                   "assets/icons/back.svg",
                   width: 20,
                   height: 20,
-                  color: Get.theme.canvasColor,
+                  color: Theme.of(context).canvasColor,
                 ),
               ),
             ),

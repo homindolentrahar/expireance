@@ -25,9 +25,9 @@ class AppModule {
   static Future<void> openBoxes() async {
     await Hive.close();
 
-    await Hive.openBox<ExpireItemEntity>(BoxConstants.EXPIRE_ITEMS_BOX);
+    await Hive.openBox<ExpireItemEntity>(BoxConstants.expireItemBox);
     await Hive.openBox<CategoryEntity>(
-      BoxConstants.EPXIRE_CATEGORIES_BOX,
+      BoxConstants.expireCategoryBox,
     );
   }
 

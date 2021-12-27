@@ -1,7 +1,6 @@
 import 'package:flash/flash.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:expireance/common/theme/app_color.dart';
 
 enum FlashbarType { SUCCESS, ERROR }
@@ -49,11 +48,17 @@ class Flashbar {
           ),
           title: Text(
             _title,
-            style: Get.textTheme.headline5?.copyWith(color: AppColor.white),
+            style: Theme.of(_context)
+                .textTheme
+                .headline5
+                ?.copyWith(color: AppColor.white),
           ),
           content: Text(
             _content,
-            style: Get.textTheme.bodyText2?.copyWith(color: AppColor.dark),
+            style: Theme.of(_context)
+                .textTheme
+                .bodyText2
+                ?.copyWith(color: AppColor.dark),
           ),
           padding: const EdgeInsets.all(20),
         ),

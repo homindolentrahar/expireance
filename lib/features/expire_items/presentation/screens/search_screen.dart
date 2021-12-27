@@ -1,5 +1,5 @@
-import 'package:expireance/core/presentation/fields.dart';
-import 'package:expireance/core/presentation/loading.dart';
+import 'package:expireance/core/presentation/widgets/fields.dart';
+import 'package:expireance/core/presentation/widgets/loading.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
@@ -7,9 +7,10 @@ import 'package:expireance/features/expire_items/presentation/widgets/expire_bod
 import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 
 class SearchScreen extends StatelessWidget {
+  static const route = "/search";
+
   const SearchScreen({Key? key}) : super(key: key);
 
   @override
@@ -21,25 +22,28 @@ class SearchScreen extends StatelessWidget {
           body: Builder(builder: (bodyCtx) {
             return Column(
               children: [
-                SearchField(
-                  onChanged: (value) {
-                    if (value != null) {
-                      if (value.isEmpty) {
-                        bodyCtx
-                            .read<SearchedExpireWatcher>()
-                            .clearSearchedItem();
-                      } else if (value.length >= 3) {
-                        bodyCtx.read<SearchedExpireWatcher>().searchItem(value);
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SearchField(
+                    onChanged: (value) {
+                      if (value != null) {
+                        if (value.isEmpty) {
+                          bodyCtx
+                              .read<SearchedExpireWatcher>()
+                              .clearSearchedItem();
+                        } else if (value.length >= 3) {
+                          bodyCtx.read<SearchedExpireWatcher>().searchItem(value);
+                        } else {
+                          bodyCtx
+                              .read<SearchedExpireWatcher>()
+                              .clearSearchedItem();
+                        }
                       } else {
-                        bodyCtx
-                            .read<SearchedExpireWatcher>()
-                            .clearSearchedItem();
+                        bodyCtx.read<SearchedExpireWatcher>().clearSearchedItem();
                       }
-                    } else {
-                      bodyCtx.read<SearchedExpireWatcher>().clearSearchedItem();
-                    }
-                  },
-                ).marginAll(16),
+                    },
+                  ),
+                ),
                 const SizedBox(height: 16),
                 BlocBuilder<SearchedExpireWatcher, SearchedExpireWatcherState>(
                   builder: (ctx, state) => Expanded(

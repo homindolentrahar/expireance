@@ -2,10 +2,9 @@ import 'dart:io';
 
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:expireance/common/theme/app_color.dart';
-import 'package:expireance/core/presentation/tiles.dart';
+import 'package:expireance/core/presentation/widgets/tiles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 
 class ExpireImage extends StatelessWidget {
   final File? imageFile;
@@ -28,8 +27,9 @@ class ExpireImage extends StatelessWidget {
             splashColor: AppColor.gray.withOpacity(0.2),
             highlightColor: AppColor.gray.withOpacity(0.25),
             onTap: () {
-              Get.bottomSheet(
-                _ImageSheet(
+              showModalBottomSheet(
+                context: context,
+                builder: (ctx) => _ImageSheet(
                   showRemove: imageFile != null,
                   capturePhoto: capturePhoto,
                   pickImage: pickImage,
@@ -56,8 +56,9 @@ class ExpireImage extends StatelessWidget {
           )
         : GestureDetector(
             onTap: () {
-              Get.bottomSheet(
-                _ImageSheet(
+              showModalBottomSheet(
+                context: context,
+                builder: (ctx) => _ImageSheet(
                   showRemove: imageFile != null,
                   capturePhoto: capturePhoto,
                   pickImage: pickImage,

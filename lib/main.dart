@@ -8,9 +8,10 @@ import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+final _appRouter = AppRouter();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,12 +38,12 @@ class MyApp extends StatelessWidget {
           value: ExpireActor(injector.get<IExpireRepository>()),
         ),
       ],
-      child: GetMaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: true,
         title: 'Expireance',
         theme: AppTheme.lightTheme,
-        getPages: appRoutes,
-        initialRoute: "/splash",
+        routerDelegate: _appRouter.delegate(),
+        routeInformationParser: _appRouter.defaultRouteParser(),
         localizationsDelegates: const [
           FormBuilderLocalizations.delegate,
           RefreshLocalizations.delegate,

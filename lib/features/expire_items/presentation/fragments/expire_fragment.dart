@@ -1,17 +1,18 @@
-import 'package:expireance/core/presentation/loading.dart';
+import 'package:expireance/core/presentation/widgets/loading.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_body.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_category.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_sort.dart';
-import 'package:expireance/core/presentation/refresh_header.dart';
+import 'package:expireance/core/presentation/widgets/refresh_header.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_item_priority.dart';
+import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ExpireFragment extends StatelessWidget {
@@ -36,17 +37,17 @@ class ExpireFragment extends StatelessWidget {
           SliverAppBar(
             title: const Text("Expire Items"),
             centerTitle: true,
-            titleTextStyle: Get.theme.appBarTheme.titleTextStyle,
+            titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
             actions: [
               IconButton(
                 onPressed: () {
-                  Get.toNamed("/search");
+                  context.router.push(const SearchRoute());
                 },
                 icon: SvgPicture.asset(
                   "assets/icons/search.svg",
-                  width: 24,
-                  height: 24,
-                  color: Get.theme.primaryColor,
+                  width: 20,
+                  height: 20,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ],
@@ -105,7 +106,7 @@ class ExpireFragment extends StatelessWidget {
                                   .read<ExpireWatcher>()
                                   .listenExpireItems(sortingRule: selected);
 
-                              Get.back();
+                              context.router.pop();
                             },
                           ),
                           const SizedBox(height: 8),
@@ -117,7 +118,8 @@ class ExpireFragment extends StatelessWidget {
                                 return ExpireItemError(message: state.error);
                               } else if (state.items.isNotEmpty) {
                                 return ExpireItemGridSuccess(
-                                    items: state.items);
+                                  items: state.items,
+                                );
                               } else if (state.items.isEmpty) {
                                 return const ExpireItemEmpty();
                               } else {

@@ -1,13 +1,13 @@
 import 'package:expireance/common/theme/app_color.dart';
-import 'package:expireance/core/presentation/tiles.dart';
+import 'package:expireance/core/presentation/widgets/tiles.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
-import 'package:expireance/features/expire_items/presentation/screens/category_screen.dart';
-import 'package:expireance/core/presentation/buttons.dart';
+import 'package:expireance/core/presentation/widgets/buttons.dart';
+import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:auto_route/auto_route.dart';
 
 class ExpireCategorySelector extends StatelessWidget {
   final CategoryModel? value;
@@ -27,8 +27,9 @@ class ExpireCategorySelector extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Get.bottomSheet(
-          SizedBox(
+        showModalBottomSheet(
+          context: context,
+          builder: (ctx) => SizedBox(
             height: 280,
             child: ListView.builder(
               physics: const BouncingScrollPhysics(),
@@ -46,7 +47,7 @@ class ExpireCategorySelector extends StatelessWidget {
               },
             ),
           ),
-          backgroundColor: Get.theme.canvasColor,
+          backgroundColor: Theme.of(context).canvasColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(2),
           ),
@@ -65,14 +66,14 @@ class ExpireCategorySelector extends StatelessWidget {
           children: [
             Text(
               _selectedCategory,
-              style: Get.textTheme.bodyText2?.copyWith(
-                color: _selectedCategory == "Category"
-                    ? AppColor.gray
-                    : AppColor.black,
-                fontWeight: _selectedCategory == "Category"
-                    ? FontWeight.normal
-                    : FontWeight.w500,
-              ),
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    color: _selectedCategory == "Category"
+                        ? AppColor.gray
+                        : AppColor.black,
+                    fontWeight: _selectedCategory == "Category"
+                        ? FontWeight.normal
+                        : FontWeight.w500,
+                  ),
             ),
             const SizedBox(width: 12),
             SvgPicture.asset(
@@ -104,23 +105,28 @@ class ExpireCategoryBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      elevation: 0,
-      highlightElevation: 0,
-      minWidth: 0,
-      height: 0,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-      color: selected ? Get.theme.primaryColor : AppColor.light,
-      child: Text(
-        model.name,
-        style: Get.textTheme.bodyText2?.copyWith(
-          color: selected ? Get.theme.canvasColor : Get.theme.primaryColor,
-          fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: MaterialButton(
+        elevation: 0,
+        highlightElevation: 0,
+        minWidth: 0,
+        height: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+        color: selected ? Theme.of(context).primaryColor : AppColor.light,
+        child: Text(
+          model.name,
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                color: selected
+                    ? Theme.of(context).canvasColor
+                    : Theme.of(context).primaryColor,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+              ),
         ),
+        onPressed: () => selectCategory(model),
       ),
-      onPressed: () => selectCategory(model),
-    ).marginSymmetric(horizontal: 8);
+    );
   }
 }
 
@@ -163,7 +169,7 @@ class ExpireCategoryMenu extends StatelessWidget {
             text: "All Categories",
             fontSize: 12,
             onTap: () {
-              Get.toNamed(CategoryScreen.route);
+              context.router.push(CategoryRoute());
             },
           ),
         ],
@@ -186,7 +192,7 @@ class _ExpireCategoryMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(CategoryScreen.route, arguments: category.id);
+        context.router.push(CategoryRoute(categoryId: category.id));
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,

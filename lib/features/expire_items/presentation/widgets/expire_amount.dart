@@ -1,7 +1,6 @@
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 
 class ExpireAmount extends StatelessWidget {
   final int value;
@@ -45,15 +44,18 @@ class ExpireAmount extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: value > 1 ? Get.theme.primaryColor : AppColor.light,
+                color:
+                    value > 1 ? Theme.of(context).primaryColor : AppColor.light,
                 borderRadius: BorderRadius.circular(2),
               ),
               child: Text(
                 value.toString(),
-                style: Get.textTheme.bodyText2?.copyWith(
-                  color: value > 1 ? Get.theme.canvasColor : AppColor.dark,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      color: value > 1
+                          ? Theme.of(context).canvasColor
+                          : AppColor.dark,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
             const SizedBox(width: 16),
@@ -114,7 +116,7 @@ class _AmountButton extends StatelessWidget {
       disabledElevation: 0,
       minWidth: 0,
       height: 0,
-      color: Get.theme.primaryColor,
+      color: Theme.of(context).primaryColor,
       disabledColor: AppColor.light,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
       padding: const EdgeInsets.all(4),
@@ -144,16 +146,16 @@ class _AmountChipIncremental extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(2),
-          side: BorderSide(color: Get.theme.primaryColor)),
+          side: BorderSide(color: Theme.of(context).primaryColor)),
       color: Colors.transparent,
-      splashColor: Get.theme.primaryColor.withOpacity(0.15),
-      highlightColor: Get.theme.primaryColor.withOpacity(0.2),
+      splashColor: Theme.of(context).primaryColor.withOpacity(0.15),
+      highlightColor: Theme.of(context).primaryColor.withOpacity(0.2),
       child: Text(
         text,
-        style: Get.textTheme.bodyText2?.copyWith(
-          color: Get.theme.primaryColor,
-          fontWeight: FontWeight.bold,
-        ),
+        style: Theme.of(context).textTheme.bodyText2?.copyWith(
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
       ),
       onPressed: onPressed,
     );

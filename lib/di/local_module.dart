@@ -9,18 +9,18 @@ class LocalModule {
   static void inject() {
     // Get It injection
     injector.registerLazySingleton<Box<ExpireItemEntity>>(
-      () => Hive.box(BoxConstants.EXPIRE_ITEMS_BOX),
+      () => Hive.box(BoxConstants.expireItemBox),
     );
     injector.registerLazySingleton<Box<CategoryEntity>>(
-      () => Hive.box(BoxConstants.EPXIRE_CATEGORIES_BOX),
+      () => Hive.box(BoxConstants.expireCategoryBox),
     );
 
     //  Delete after migration
     Get.put<Box<ExpireItemEntity>>(
-      Hive.box(BoxConstants.EXPIRE_ITEMS_BOX),
+      Hive.box(BoxConstants.expireItemBox),
     );
     Get.put<Box<CategoryEntity>>(
-      Hive.box(BoxConstants.EPXIRE_CATEGORIES_BOX),
+      Hive.box(BoxConstants.expireCategoryBox),
     );
   }
 }

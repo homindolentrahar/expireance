@@ -1,39 +1,21 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:expireance/features/expire_items/presentation/screens/category_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/search_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/priority_expire_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/root_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/splash_screen.dart';
-import 'package:get/get.dart';
+import 'package:flutter/widgets.dart';
 
-final appRoutes = [
-  GetPage(
-    name: "/splash",
-    title: "Splash",
-    page: () => const SplashScreen(),
-    transition: Transition.cupertino,
-  ),
-  GetPage(
-    name: RootScreen.route,
-    title: "Root",
-    page: () => const RootScreen(),
-    transition: Transition.cupertino,
-  ),
-  GetPage(
-    name: PriorityExpireScreen.route,
-    title: "Expire List",
-    page: () => const PriorityExpireScreen(),
-    transition: Transition.cupertino,
-  ),
-  GetPage(
-    name: CategoryScreen.route,
-    title: "Category",
-    page: () => const CategoryScreen(),
-    transition: Transition.cupertino,
-  ),
-  GetPage(
-    name: "/search",
-    title: "Search",
-    page: () => const SearchScreen(),
-    transition: Transition.cupertino,
-  ),
-];
+part 'app_routes.gr.dart';
+
+@MaterialAutoRouter(
+  replaceInRouteName: "Screen,Route",
+  routes: <AutoRoute>[
+    AutoRoute(page: SplashScreen, initial: true, path: SplashScreen.route),
+    AutoRoute(page: RootScreen, path: RootScreen.route),
+    AutoRoute(page: PriorityExpireScreen, path: PriorityExpireScreen.route),
+    AutoRoute(page: CategoryScreen, path: CategoryScreen.route),
+    AutoRoute(page: SearchScreen, path: SearchScreen.route),
+  ],
+)
+class AppRouter extends _$AppRouter {}

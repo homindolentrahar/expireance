@@ -1,7 +1,6 @@
 import 'package:expireance/common/theme/app_color.dart';
-import 'package:expireance/core/presentation/buttons.dart';
+import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class DangerConfirmationDialog extends StatelessWidget {
   final String title;
@@ -22,7 +21,7 @@ class DangerConfirmationDialog extends StatelessWidget {
     return Dialog(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-      backgroundColor: Get.theme.canvasColor,
+      backgroundColor: Theme.of(context).canvasColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Column(
@@ -31,12 +30,12 @@ class DangerConfirmationDialog extends StatelessWidget {
           children: [
             Text(
               title,
-              style: Get.textTheme.headline5,
+              style: Theme.of(context).textTheme.headline5,
             ),
             const SizedBox(height: 16),
             Text(
               message,
-              style: Get.textTheme.bodyText2?.copyWith(color: AppColor.gray),
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColor.gray),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
