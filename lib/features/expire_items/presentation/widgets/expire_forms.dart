@@ -382,8 +382,9 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                   .read<ExpireActor>()
                                   .deleteExpireItem(widget.id);
 
-                              context.router.pop();
-                              context.router.pop();
+                              final currentRoute = context.router.current;
+                              context.router
+                                  .popUntilRouteWithName(currentRoute.name);
                             },
                             onNegative: () {
                               context.router.pop();

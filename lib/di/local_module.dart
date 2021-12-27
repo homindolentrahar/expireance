@@ -2,7 +2,6 @@ import 'package:expireance/common/constants/box_constants.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/data/local/category_entity.dart';
 import 'package:expireance/features/expire_items/data/local/expire_item_entity.dart';
-import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class LocalModule {
@@ -13,14 +12,6 @@ class LocalModule {
     );
     injector.registerLazySingleton<Box<CategoryEntity>>(
       () => Hive.box(BoxConstants.expireCategoryBox),
-    );
-
-    //  Delete after migration
-    Get.put<Box<ExpireItemEntity>>(
-      Hive.box(BoxConstants.expireItemBox),
-    );
-    Get.put<Box<CategoryEntity>>(
-      Hive.box(BoxConstants.expireCategoryBox),
     );
   }
 }

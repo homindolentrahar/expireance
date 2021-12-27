@@ -8,7 +8,6 @@ import 'package:expireance/features/expire_items/domain/models/category_model.da
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
-import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
@@ -77,18 +76,5 @@ class AppModule {
           .get<ICategoryRepository>()
           .populateInitialCategory(getInitialCategories());
     }
-
-    // Deleted after migration
-    // ==============================
-    Get.put<ImagePicker>(ImagePicker());
-
-    Get.put<IExpireRepository>(
-      ExpireRepository(box: Get.find<Box<ExpireItemEntity>>()),
-    );
-
-    Get.put<ICategoryRepository>(
-      CategoryRepository(box: Get.find<Box<CategoryEntity>>()),
-    );
-    // ==============================
   }
 }
