@@ -37,3 +37,20 @@ class CategoryWatcher extends Cubit<List<CategoryModel>> {
     return super.close();
   }
 }
+
+class SingleCategoryWatcher extends Cubit<CategoryModel?> {
+  final ICategoryRepository _categoryRepository;
+  final String id;
+
+  SingleCategoryWatcher(this._categoryRepository, {required this.id})
+      : super(null) {
+    final result = _categoryRepository.fetchSingleCategory(id);
+
+    emit(
+      result.fold(
+        (error) => null,
+        (data) => data,
+      ),
+    );
+  }
+}

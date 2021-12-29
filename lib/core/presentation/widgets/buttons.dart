@@ -56,21 +56,26 @@ class DeleteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      minWidth: 0,
-      height: 0,
-      elevation: 0,
-      highlightElevation: 0,
-      color: AppColor.red.withOpacity(0.15),
-      padding: const EdgeInsets.all(4),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
-      child: SvgPicture.asset(
-        "assets/icons/delete.svg",
-        width: 16,
-        height: 16,
-        color: AppColor.red,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        splashColor: AppColor.red.withOpacity(0.25),
+        highlightColor: AppColor.red.withOpacity(0.35),
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppColor.red.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: SvgPicture.asset(
+            "assets/icons/delete.svg",
+            width: 16,
+            height: 16,
+            color: AppColor.red,
+          ),
+        ),
       ),
-      onPressed: onPressed,
     );
   }
 }

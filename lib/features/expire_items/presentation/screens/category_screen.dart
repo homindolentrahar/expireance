@@ -57,6 +57,25 @@ class CategoryScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             itemCount: categories.length,
             itemBuilder: (ctx, index) => CategoryItemList(
+              onTap: () {
+                showBarModalBottomSheet(
+                  context: context,
+                  builder: (ctx) => Container(
+                    color: Theme.of(context).canvasColor,
+                    padding: const EdgeInsets.all(24),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: UpdateCategoryForm(id: categories[index].id),
+                    ),
+                  ),
+                  expand: false,
+                  bounce: true,
+                  topControl: const SheetIndicator(),
+                  backgroundColor: Theme.of(context).canvasColor,
+                );
+              },
               model: categories[index],
             ),
           ),

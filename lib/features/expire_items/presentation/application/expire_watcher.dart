@@ -123,12 +123,8 @@ class SingleExpireWatcher extends Cubit<ExpireItemModel?> {
 
     emit(
       result.fold(
-        (error) {
-          return null;
-        },
-        (data) {
-          return data;
-        },
+        (error) => null,
+        (data) => data,
       ),
     );
   }
