@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(
       const Duration(milliseconds: 2500),
       () {
-        context.router.replace(const RootRoute());
+        context.router.replace(const ExpireRoute());
       },
     );
 

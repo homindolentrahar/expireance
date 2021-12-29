@@ -2,6 +2,7 @@ import 'package:expireance/common/theme/app_theme.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
+import 'package:expireance/features/expire_items/presentation/application/category_actor.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_actor.dart';
 import 'package:expireance/routes/app_routes.dart';
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider.value(
           value: CategoryWatcher(injector.get<ICategoryRepository>()),
+        ),
+        BlocProvider.value(
+          value: CategoryActor(injector.get<ICategoryRepository>()),
         ),
         BlocProvider.value(
           value: ExpireActor(injector.get<IExpireRepository>()),

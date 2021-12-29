@@ -8,10 +8,10 @@ import 'package:expireance/features/expire_items/presentation/widgets/expire_ite
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchExpireScreen extends StatelessWidget {
   static const route = "/search";
 
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchExpireScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

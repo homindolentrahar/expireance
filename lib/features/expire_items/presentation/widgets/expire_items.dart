@@ -5,7 +5,7 @@ import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_badge.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_forms.dart';
-import 'package:expireance/utils/expire_date_utils.dart';
+import 'package:expireance/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -17,7 +17,7 @@ class ExpireItemGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isExpired = ExpireDateUtils.isExpired(model.date);
+    final isExpired = DateTimeUtils.isExpired(model.date);
 
     return GestureDetector(
       onTap: () {

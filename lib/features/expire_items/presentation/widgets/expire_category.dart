@@ -145,7 +145,7 @@ class ExpireCategoryMenu extends StatelessWidget {
           SizedBox(
             height: 128,
             child: BlocBuilder<CategoryWatcher, List<CategoryModel>>(
-              bloc: context.read<CategoryWatcher>(),
+              bloc: context.read<CategoryWatcher>()..listenCategories(),
               builder: (ctx, state) => GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -169,7 +169,7 @@ class ExpireCategoryMenu extends StatelessWidget {
             text: "All Categories",
             fontSize: 12,
             onTap: () {
-              context.router.push(CategoryRoute());
+              context.router.push(FilteredExpireRoute());
             },
           ),
         ],
@@ -192,7 +192,7 @@ class _ExpireCategoryMenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.router.push(CategoryRoute(categoryId: category.id));
+        context.router.push(FilteredExpireRoute(categoryId: category.id));
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,

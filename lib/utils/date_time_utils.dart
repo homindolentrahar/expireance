@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:expireance/common/theme/app_color.dart';
 
-abstract class ExpireDateUtils {
+abstract class DateTimeUtils {
   static bool isExpired(DateTime expiredDate) {
     return DateTime.now().isAfter(expiredDate);
   }

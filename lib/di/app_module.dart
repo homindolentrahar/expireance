@@ -8,6 +8,7 @@ import 'package:expireance/features/expire_items/domain/models/category_model.da
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
+import 'package:expireance/utils/app_utils.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,7 +44,7 @@ class AppModule {
       ]
           .map((name) => CategoryModel(
                 id: "category_${const Uuid().v4()}",
-                slug: name.toLowerCase(),
+                slug: AppUtils.createSlug(name),
                 name: name,
               ))
           .toList();

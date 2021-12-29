@@ -1,5 +1,5 @@
 import 'package:expireance/common/theme/app_color.dart';
-import 'package:expireance/utils/expire_date_utils.dart';
+import 'package:expireance/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 
 class ExpireBadge extends StatelessWidget {
@@ -12,11 +12,11 @@ class ExpireBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorAndDisplay = ExpireDateUtils.calculateColorAndDisplayExpireBadge(
+    final colorAndDisplay = DateTimeUtils.calculateColorAndDisplayExpireBadge(
       expiredDate: expiredDate,
     );
 
-    return ExpireDateUtils.isExpired(expiredDate)
+    return DateTimeUtils.isExpired(expiredDate)
         ? const _Expired()
         : _ExpireTime(
             text: colorAndDisplay.values.toList()[0],

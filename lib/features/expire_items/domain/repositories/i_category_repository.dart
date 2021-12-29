@@ -3,6 +3,8 @@ import 'package:expireance/common/error/app_error.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 
 abstract class ICategoryRepository {
+  Stream<Either<AppError, List<CategoryModel>>> listenAllCategory();
+
   Either<AppError, List<CategoryModel>> fetchAllCategory();
 
   Either<AppError, CategoryModel> fetchSingleCategory(String id);

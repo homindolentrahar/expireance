@@ -268,3 +268,41 @@ class IconBackButton extends StatelessWidget {
     );
   }
 }
+
+class IconAddButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const IconAddButton({Key? key, required this.onPressed}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onPressed,
+      icon: SvgPicture.asset(
+        "assets/icons/plus.svg",
+        width: 24,
+        height: 24,
+        color: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+}
+
+class IconHamburgerButton extends StatelessWidget {
+  const IconHamburgerButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        Scaffold.of(context).openDrawer();
+      },
+      icon: SvgPicture.asset(
+        "assets/icons/hamburger.svg",
+        width: 20,
+        height: 20,
+        color: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+}

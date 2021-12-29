@@ -99,176 +99,170 @@ class _AddExpireFormState extends State<AddExpireForm> {
                 ),
               ),
               const SizedBox(height: 32),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExpireImage(
+                    imageFile: state.image.isEmpty ? null : File(state.image),
+                    removeImage: () {
+                      formCtx.read<ExpireFormController>().clearImage();
+
+                      context.router.pop();
+                    },
+                    pickImage: () {
+                      formCtx
+                          .read<ExpireFormController>()
+                          .setImage(ImageSource.gallery);
+
+                      context.router.pop();
+                    },
+                    capturePhoto: () {
+                      formCtx
+                          .read<ExpireFormController>()
+                          .setImage(ImageSource.camera);
+
+                      context.router.pop();
+                    },
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        OutlinedField(
+                          name: "name",
+                          placeholder: "Name your item",
+                          validators: [
+                            FormBuilderValidators.required(context),
+                            FormBuilderValidators.minLength(
+                              context,
+                              3,
+                              errorText: "Must have at least 3 characters",
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) {
+                              formCtx
+                                  .read<ExpireFormController>()
+                                  .nameChanged(value);
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        ExpireAmount(
+                          value: state.amount,
+                          increase: () {
+                            formCtx
+                                .read<ExpireFormController>()
+                                .amountChanged(state.amount + 1);
+                          },
+                          decrease: () {
+                            formCtx
+                                .read<ExpireFormController>()
+                                .amountChanged(state.amount - 1);
+                          },
+                          incrementalChange: (value) {
+                            formCtx
+                                .read<ExpireFormController>()
+                                .amountChanged(state.amount + value);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        BlocBuilder<CategoryWatcher, List<CategoryModel>>(
+                          bloc: formCtx.read<CategoryWatcher>()
+                            ..listenCategories(),
+                          builder: (categoryCtx, categories) =>
+                              ExpireCategorySelector(
+                            value: state.category,
+                            models: categories,
+                            selectCategory: (model) {
+                              formCtx
+                                  .read<ExpireFormController>()
+                                  .removeErrors(ExpireFormError.category);
+                              formCtx
+                                  .read<ExpireFormController>()
+                                  .categoryChanged(model);
+
+                              context.router.pop();
+                            },
+                          ),
+                        ),
+                        state.runValidation && state.categoryErrorMsg.isNotEmpty
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    state.categoryErrorMsg,
+                                    style: const TextStyle(
+                                      color: AppColor.red,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  )
+                                ],
+                              )
+                            : const SizedBox.shrink()
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              UnderlinedField(
+                name: "desc",
+                placeholder: "Describe your item",
+                validators: [
+                  FormBuilderValidators.required(context),
+                  FormBuilderValidators.minLength(
+                    context,
+                    3,
+                    errorText: "Must have at least 3 characters",
+                  ),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    formCtx.read<ExpireFormController>().descChanged(value);
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ExpireImage(
-                        imageFile:
-                            state.image.isEmpty ? null : File(state.image),
-                        removeImage: () {
-                          formCtx.read<ExpireFormController>().clearImage();
-
-                          context.router.pop();
-                        },
-                        pickImage: () {
-                          formCtx
-                              .read<ExpireFormController>()
-                              .setImage(ImageSource.gallery);
-
-                          context.router.pop();
-                        },
-                        capturePhoto: () {
-                          formCtx
-                              .read<ExpireFormController>()
-                              .setImage(ImageSource.camera);
-
-                          context.router.pop();
-                        },
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            OutlinedField(
-                              name: "name",
-                              placeholder: "Name your item",
-                              validators: [
-                                FormBuilderValidators.required(context),
-                                FormBuilderValidators.minLength(
-                                  context,
-                                  3,
-                                  errorText: "Must have at least 3 characters",
-                                ),
-                              ],
-                              onChanged: (value) {
-                                if (value != null) {
-                                  formCtx
-                                      .read<ExpireFormController>()
-                                      .nameChanged(value);
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 8),
-                            ExpireAmount(
-                              value: state.amount,
-                              increase: () {
-                                formCtx
-                                    .read<ExpireFormController>()
-                                    .amountChanged(state.amount + 1);
-                              },
-                              decrease: () {
-                                formCtx
-                                    .read<ExpireFormController>()
-                                    .amountChanged(state.amount - 1);
-                              },
-                              incrementalChange: (value) {
-                                formCtx
-                                    .read<ExpireFormController>()
-                                    .amountChanged(state.amount + value);
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            BlocBuilder<CategoryWatcher, List<CategoryModel>>(
-                              builder: (categoryCtx, categories) =>
-                                  ExpireCategorySelector(
-                                value: state.category,
-                                models: categories,
-                                selectCategory: (model) {
-                                  formCtx
-                                      .read<ExpireFormController>()
-                                      .removeErrors(ExpireFormError.category);
-                                  formCtx
-                                      .read<ExpireFormController>()
-                                      .categoryChanged(model);
-
-                                  context.router.pop();
-                                },
-                              ),
-                            ),
-                            state.runValidation &&
-                                    state.categoryErrorMsg.isNotEmpty
-                                ? Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        state.categoryErrorMsg,
-                                        style: const TextStyle(
-                                          color: AppColor.red,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.normal,
-                                        ),
-                                      )
-                                    ],
-                                  )
-                                : const SizedBox.shrink()
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  UnderlinedField(
-                    name: "desc",
-                    placeholder: "Describe your item",
-                    validators: [
-                      FormBuilderValidators.required(context),
-                      FormBuilderValidators.minLength(
-                        context,
-                        3,
-                        errorText: "Must have at least 3 characters",
-                      ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        formCtx.read<ExpireFormController>().descChanged(value);
-                      }
+                  ExpireDate(
+                    date: state.expireDate.isEmpty
+                        ? null
+                        : DateTime.parse(state.expireDate),
+                    pickDate: (pickedDate) {
+                      formCtx
+                          .read<ExpireFormController>()
+                          .removeErrors(ExpireFormError.expireDate);
+                      formCtx
+                          .read<ExpireFormController>()
+                          .expireChanged(pickedDate);
                     },
                   ),
-                  const SizedBox(height: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ExpireDate(
-                        date: state.expireDate.isEmpty
-                            ? null
-                            : DateTime.parse(state.expireDate),
-                        pickDate: (pickedDate) {
-                          formCtx
-                              .read<ExpireFormController>()
-                              .removeErrors(ExpireFormError.expireDate);
-                          formCtx
-                              .read<ExpireFormController>()
-                              .expireChanged(pickedDate);
-                        },
-                      ),
-                      state.runValidation && state.expireDateErrorMsg.isNotEmpty
-                          ? Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 4),
-                                Text(
-                                  state.expireDateErrorMsg,
-                                  style: const TextStyle(
-                                    color: AppColor.red,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                )
-                              ],
+                  state.runValidation && state.expireDateErrorMsg.isNotEmpty
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 4),
+                            Text(
+                              state.expireDateErrorMsg,
+                              style: const TextStyle(
+                                color: AppColor.red,
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
+                              ),
                             )
-                          : const SizedBox.shrink()
-                    ],
-                  ),
+                          ],
+                        )
+                      : const SizedBox.shrink()
                 ],
               ),
               const SizedBox(height: 32),
@@ -476,6 +470,8 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                               ),
                               const SizedBox(height: 16),
                               BlocBuilder<CategoryWatcher, List<CategoryModel>>(
+                                bloc: formCtx.read<CategoryWatcher>()
+                                  ..listenCategories(),
                                 builder: (categoryCtx, categories) =>
                                     ExpireCategorySelector(
                                   value: state.category,
