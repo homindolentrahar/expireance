@@ -35,10 +35,12 @@ class ExpireItemEmpty extends StatelessWidget {
 
 class ExpireItemGridSuccess extends StatelessWidget {
   final List<ExpireItemModel> items;
+  final ValueChanged<int> onPressedItem;
 
   const ExpireItemGridSuccess({
     Key? key,
     required this.items,
+    required this.onPressedItem,
   }) : super(key: key);
 
   @override
@@ -55,7 +57,10 @@ class ExpireItemGridSuccess extends StatelessWidget {
       itemBuilder: (ctx, index) {
         final model = items[index];
 
-        return ExpireItemGrid(model: model);
+        return ExpireItemGrid(
+          model: model,
+          onPressed: () => onPressedItem(index),
+        );
       },
     );
   }

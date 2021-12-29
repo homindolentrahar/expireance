@@ -1,40 +1,28 @@
 import 'dart:io';
 
 import 'package:expireance/common/theme/app_color.dart';
-import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_badge.dart';
-import 'package:expireance/features/expire_items/presentation/widgets/expire_forms.dart';
 import 'package:expireance/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ExpireItemGrid extends StatelessWidget {
   final ExpireItemModel model;
+  final VoidCallback onPressed;
 
-  const ExpireItemGrid({Key? key, required this.model}) : super(key: key);
+  const ExpireItemGrid({
+    Key? key,
+    required this.model,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final isExpired = DateTimeUtils.isExpired(model.date);
 
     return GestureDetector(
-      onTap: () {
-        showBarModalBottomSheet(
-          context: context,
-          bounce: true,
-          topControl: const SheetIndicator(),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(4),
-              topLeft: Radius.circular(4),
-            ),
-          ),
-          builder: (ctx) => UpdateExpireForm(id: model.id),
-          backgroundColor: Theme.of(context).canvasColor,
-        );
-      },
+      onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(2),
@@ -147,8 +135,13 @@ class ExpireItemGrid extends StatelessWidget {
 
 class ExpireItemList extends StatelessWidget {
   final ExpireItemModel model;
+  final VoidCallback onPressed;
 
-  const ExpireItemList({Key? key, required this.model}) : super(key: key);
+  const ExpireItemList({
+    Key? key,
+    required this.model,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -157,26 +150,7 @@ class ExpireItemList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: GestureDetector(
-        onTap: () {
-          showBarModalBottomSheet(
-            context: context,
-            bounce: true,
-            topControl: const SheetIndicator(),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(4),
-                topRight: Radius.circular(4),
-              ),
-            ),
-            builder: (ctx) => Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: UpdateExpireForm(id: model.id),
-            ),
-            backgroundColor: Theme.of(context).canvasColor,
-          );
-        },
+        onTap: onPressed,
         child: Container(
           color: Theme.of(context).canvasColor,
           child: Row(

@@ -31,7 +31,7 @@ class ExpireScreen extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         drawer: const RootDrawer(),
         appBar: AppBar(
           leading: const IconHamburgerButton(),
@@ -128,6 +128,31 @@ class ExpireScreen extends StatelessWidget {
                                 } else if (state.items.isNotEmpty) {
                                   return ExpireItemGridSuccess(
                                     items: state.items,
+                                    onPressedItem: (index) {
+                                      showBarModalBottomSheet(
+                                        context: context,
+                                        bounce: true,
+                                        expand: false,
+                                        topControl: const SheetIndicator(),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(4),
+                                            topLeft: Radius.circular(4),
+                                          ),
+                                        ),
+                                        builder: (ctx) => Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom,
+                                          ),
+                                          child: UpdateExpireForm(
+                                              id: state.items[index].id),
+                                        ),
+                                        backgroundColor:
+                                            Theme.of(context).canvasColor,
+                                      );
+                                    },
                                   );
                                 } else if (state.items.isEmpty) {
                                   return const ExpireItemEmpty();
@@ -151,6 +176,7 @@ class ExpireScreen extends StatelessWidget {
             showBarModalBottomSheet(
               context: context,
               bounce: true,
+              expand: false,
               topControl: const SheetIndicator(),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -158,7 +184,12 @@ class ExpireScreen extends StatelessWidget {
                   topRight: Radius.circular(4),
                 ),
               ),
-              builder: (ctx) => const AddExpireForm(),
+              builder: (ctx) => Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: const AddExpireForm(),
+              ),
               backgroundColor: Theme.of(context).canvasColor,
             );
           },
