@@ -81,6 +81,24 @@ class ExpireRepository implements IExpireRepository {
   }
 
   @override
+  Either<AppError, List<ExpireItemModel>> fetchPriorityExpireItems() {
+    try {
+      final result = _expireItemBox.values
+          .map((item) => item.toModel())
+          .where(
+            (item) =>
+                item.date.difference(DateTime.now()).inDays <= 7 &&
+                item.date.difference(DateTime.now()).inMinutes > 1,
+          )
+          .toList();
+
+      return right(result);
+    } on Exception catch (error) {
+      return left(AppError(error.toString()));
+    }
+  }
+
+  @override
   Either<AppError, ExpireItemModel> fetchSingleExpireItem(
       {required String id}) {
     try {

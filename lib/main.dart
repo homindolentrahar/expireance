@@ -1,4 +1,5 @@
 import 'package:expireance/common/theme/app_theme.dart';
+import 'package:expireance/core/services/notification_service.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
@@ -19,8 +20,10 @@ void main() async {
   await Hive.initFlutter();
   await AppModule.registerAdapters();
   await AppModule.openBoxes();
+  await NotificationService().init();
 
   AppModule.inject();
+  await NotificationService().scheduleDailyNotification();
 
   runApp(const MyApp());
 }

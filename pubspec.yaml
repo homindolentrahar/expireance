@@ -51,6 +51,7 @@ dependencies:
   flutter_svg: ^1.0.0
   path_provider: ^2.0.8
   pull_to_refresh: ^2.0.0
+  flutter_local_notifications: ^9.1.5
 
   #  UI
   flash: ^2.0.3+1
@@ -61,7 +62,7 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   flutter_form_builder: ^7.0.0
   form_builder_validators: ^7.2.0
-  syncfusion_flutter_datepicker: ^19.4.38
+  syncfusion_flutter_datepicker: ^19.4.40
 
 dev_dependencies:
   flutter_test:
