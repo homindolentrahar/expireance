@@ -35,7 +35,7 @@ class Flashbar {
         position: FlashPosition.top,
         backgroundColor: AppColor.black,
         margin: const EdgeInsets.all(16),
-        borderRadius: BorderRadius.circular(2.0),
+        borderRadius: BorderRadius.circular(16),
         forwardAnimationCurve: Curves.easeInQuint,
         reverseAnimationCurve: Curves.easeOutQuint,
         child: FlashBar(
@@ -58,7 +58,7 @@ class Flashbar {
             style: Theme.of(_context)
                 .textTheme
                 .bodyText2
-                ?.copyWith(color: AppColor.dark),
+                ?.copyWith(color: AppColor.gray),
           ),
           padding: const EdgeInsets.all(20),
         ),

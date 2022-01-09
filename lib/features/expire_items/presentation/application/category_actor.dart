@@ -19,7 +19,8 @@ class CategoryActor extends Cubit<CategoryActorState> {
     emit(
       result.fold(
         (error) => CategoryActorState.error(error.message),
-        (_) => const CategoryActorState.success(),
+        (_) =>
+            const CategoryActorState.success("Category stored successfully!"),
       ),
     );
   }
@@ -32,7 +33,8 @@ class CategoryActor extends Cubit<CategoryActorState> {
     emit(
       result.fold(
         (error) => CategoryActorState.error(error.message),
-        (_) => const CategoryActorState.success(),
+        (_) =>
+            const CategoryActorState.success("Category updated successfully!"),
       ),
     );
   }
@@ -45,7 +47,8 @@ class CategoryActor extends Cubit<CategoryActorState> {
     emit(
       result.fold(
         (error) => CategoryActorState.error(error.message),
-        (_) => const CategoryActorState.success(),
+        (_) =>
+            const CategoryActorState.success("Category deleted successfully!"),
       ),
     );
   }
@@ -57,7 +60,7 @@ class CategoryActorState with _$CategoryActorState {
 
   const factory CategoryActorState.loading() = _Loading;
 
-  const factory CategoryActorState.success() = _Success;
+  const factory CategoryActorState.success(String message) = _Success;
 
   const factory CategoryActorState.error(String message) = _Error;
 }

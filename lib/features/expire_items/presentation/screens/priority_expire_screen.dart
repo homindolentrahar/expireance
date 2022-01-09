@@ -1,6 +1,8 @@
+import 'package:expireance/core/presentation/widgets/flashbar.dart';
 import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
+import 'package:expireance/features/expire_items/presentation/application/expire_actor.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_forms.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
@@ -21,6 +23,7 @@ class PriorityExpireScreen extends StatelessWidget {
       create: (ctx) => PriorityExpireWatcher(injector.get<IExpireRepository>()),
       child: SafeArea(
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: Theme.of(context).canvasColor,
             elevation: 0,
@@ -40,42 +43,68 @@ class PriorityExpireScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
-          body: Builder(builder: (bodyCtx) {
-            return BlocBuilder<PriorityExpireWatcher, ExpireWatcherState>(
-              bloc: bodyCtx.read<PriorityExpireWatcher>()
-                ..listenPriorityExpireItems(),
-              builder: (ctx, state) => ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.all(16),
-                itemCount: state.items.length,
-                itemBuilder: (ctx, index) {
-                  final model = state.items[index];
-
-                  return ExpireItemList(model: model,onPressed: (){
-                    showBarModalBottomSheet(
+          body: MultiBlocListener(
+            listeners: [
+              BlocListener<ExpireActor, ExpireActorState>(
+                listener: (ctx, state) {
+                  state.maybeWhen(
+                    success: (message) => Flashbar(
                       context: context,
-                      bounce: true,
-                      expand: false,
-                      topControl: const SheetIndicator(),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4),
-                        ),
-                      ),
-                      builder: (ctx) => Padding(
-                        padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom,
-                        ),
-                        child: UpdateExpireForm(id: model.id),
-                      ),
-                      backgroundColor: Theme.of(context).canvasColor,
-                    );
-                  },);
+                      title: "Yeay!",
+                      content: message,
+                      type: FlashbarType.SUCCESS,
+                    ).flash(),
+                    error: (message) => Flashbar(
+                      context: context,
+                      title: "Something happened!",
+                      content: message,
+                      type: FlashbarType.ERROR,
+                    ).flash(),
+                    orElse: () {},
+                  );
                 },
               ),
-            );
-          }),
+            ],
+            child: Builder(builder: (bodyCtx) {
+              return BlocBuilder<PriorityExpireWatcher, ExpireWatcherState>(
+                bloc: bodyCtx.read<PriorityExpireWatcher>()
+                  ..listenPriorityExpireItems(),
+                builder: (ctx, state) => ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.all(16),
+                  itemCount: state.items.length,
+                  itemBuilder: (ctx, index) {
+                    final model = state.items[index];
+
+                    return ExpireItemList(
+                      model: model,
+                      onPressed: () {
+                        showBarModalBottomSheet(
+                          context: context,
+                          bounce: true,
+                          expand: false,
+                          topControl: const SheetIndicator(),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(4),
+                              topRight: Radius.circular(4),
+                            ),
+                          ),
+                          builder: (ctx) => Padding(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                            ),
+                            child: UpdateExpireForm(id: model.id),
+                          ),
+                          backgroundColor: Theme.of(context).canvasColor,
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            }),
+          ),
         ),
       ),
     );

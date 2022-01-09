@@ -37,7 +37,7 @@ dependencies:
   dartz: ^0.10.1
   get_it: ^7.2.0
   rxdart: ^0.27.3
-  flutter_bloc: ^8.0.0
+  flutter_bloc: ^8.0.1
   freezed_annotation: ^1.1.0
 
   # Local
@@ -47,14 +47,14 @@ dependencies:
   #  Util
   intl: ^0.17.0
   uuid: ^3.0.5
-  auto_route: ^3.2.0
+  auto_route: ^3.2.1
   flutter_svg: ^1.0.0
   path_provider: ^2.0.8
   pull_to_refresh: ^2.0.0
-  flutter_local_notifications: ^9.1.5
+  flutter_local_notifications: ^9.2.0
 
   #  UI
-  flash: ^2.0.3+1
+  flash: ^2.0.3+2
   image_picker: ^0.8.4+4
   cupertino_icons: ^1.0.4
   flutter_spinkit: ^5.1.0
@@ -62,7 +62,7 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   flutter_form_builder: ^7.0.0
   form_builder_validators: ^7.2.0
-  syncfusion_flutter_datepicker: ^19.4.40
+  syncfusion_flutter_datepicker: ^19.4.41
 
 dev_dependencies:
   flutter_test:

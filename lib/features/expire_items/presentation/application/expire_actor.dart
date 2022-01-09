@@ -18,7 +18,7 @@ class ExpireActor extends Cubit<ExpireActorState> {
     emit(
       result.fold(
         (error) => ExpireActorState.error(error.message),
-        (_) => const ExpireActorState.success(),
+        (_) => const ExpireActorState.success("Item stored successfully!"),
       ),
     );
   }
@@ -34,7 +34,7 @@ class ExpireActor extends Cubit<ExpireActorState> {
     emit(
       result.fold(
         (error) => ExpireActorState.error(error.message),
-        (_) => const ExpireActorState.success(),
+        (_) => const ExpireActorState.success("Item updated successfully!"),
       ),
     );
   }
@@ -47,7 +47,7 @@ class ExpireActor extends Cubit<ExpireActorState> {
     emit(
       result.fold(
         (error) => ExpireActorState.error(error.message),
-        (_) => const ExpireActorState.success(),
+        (_) => const ExpireActorState.success("Item deleted successfully!"),
       ),
     );
   }
@@ -59,7 +59,7 @@ class ExpireActorState with _$ExpireActorState {
 
   const factory ExpireActorState.loading() = _Loading;
 
-  const factory ExpireActorState.success() = _Success;
+  const factory ExpireActorState.success(String message) = _Success;
 
   const factory ExpireActorState.error(String message) = _Error;
 }
