@@ -5,6 +5,7 @@ import 'package:expireance/features/expire_items/presentation/screens/search_exp
 import 'package:expireance/features/expire_items/presentation/screens/priority_expire_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/expire_screen.dart';
 import 'package:expireance/features/expire_items/presentation/screens/splash_screen.dart';
+import 'package:expireance/features/settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/widgets.dart';
 
 part 'app_routes.gr.dart';
@@ -18,6 +19,7 @@ part 'app_routes.gr.dart';
     AutoRoute(page: FilteredExpireScreen, path: FilteredExpireScreen.route),
     AutoRoute(page: SearchExpireScreen, path: SearchExpireScreen.route),
     AutoRoute(page: CategoryScreen, path: CategoryScreen.route),
+    AutoRoute(page: SettingsScreen, path: SettingsScreen.route),
   ],
 )
 class AppRouter extends _$AppRouter {}

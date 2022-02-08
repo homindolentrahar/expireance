@@ -114,7 +114,8 @@ class ExpireScreen extends StatelessWidget {
                         builder: (ctx, state) => state.items.isEmpty
                             ? const SizedBox.shrink()
                             : ExpireItemPriority(
-                                priorityCount: state.items.length),
+                                priorityCount: state.items.length,
+                              ),
                       ),
                       const SizedBox(height: 32),
                       const ExpireCategoryMenu(),

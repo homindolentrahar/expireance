@@ -143,7 +143,7 @@ class ExpireCategoryMenu extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            height: 128,
+            height: 144,
             child: BlocBuilder<CategoryWatcher, List<CategoryModel>>(
               bloc: context.read<CategoryWatcher>()..listenCategories(),
               builder: (ctx, state) => GridView.builder(
@@ -199,7 +199,8 @@ class _ExpireCategoryMenuItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            width: 40,
+            height: 40,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(2),
@@ -214,12 +215,15 @@ class _ExpireCategoryMenuItem extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             category.name,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: AppColor.gray,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
           ),

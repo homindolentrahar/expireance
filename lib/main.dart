@@ -12,18 +12,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:workmanager/workmanager.dart';
+import 'package:expireance/common/constants/work_manager_constants.dart';
 
 final _appRouter = AppRouter();
 
+void callbackDispatcher() {
+  Workmanager().executeTask(
+    (taskName, inputData) {
+      debugPrint("Running work: $taskName");
+
+      return scheduleNotification();
+    },
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
   await AppModule.registerAdapters();
   await AppModule.openBoxes();
-  await NotificationService().init();
 
   AppModule.inject();
-  await NotificationService().scheduleDailyNotification();
+
+  //  Initialize & Register background task
+  Workmanager().initialize(callbackDispatcher);
+  Workmanager().registerPeriodicTask(
+    WorkMangerConstants.notificationUniqueName,
+    WorkMangerConstants.notificationTaskName,
+    frequency: const Duration(days: 1),
+    existingWorkPolicy: ExistingWorkPolicy.replace,
+    constraints: Constraints(
+      networkType: NetworkType.not_required,
+      requiresBatteryNotLow: true,
+      requiresCharging: false,
+      requiresDeviceIdle: false,
+      requiresStorageNotLow: false,
+    ),
+  );
 
   runApp(const MyApp());
 }

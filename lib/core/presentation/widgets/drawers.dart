@@ -1,4 +1,5 @@
 import 'package:expireance/common/theme/app_color.dart';
+import 'package:expireance/features/settings/presentation/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:auto_route/auto_route.dart';
@@ -18,6 +19,11 @@ class RootDrawer extends StatelessWidget {
         "assets/icons/category.svg",
         "category",
         "Category",
+      ),
+      DrawerMenuModel(
+        "assets/icons/setting.svg",
+        "settings",
+        "Settings",
       ),
     ];
 
@@ -57,7 +63,11 @@ class RootDrawer extends StatelessWidget {
                   isActive: activeRoute,
                   onTap: () {
                     //  Navigate somewhere with slug
-                    context.router.replaceNamed("/${menus[index].slug}");
+                    if ("/${menus[index].slug}" == SettingsScreen.route) {
+                      context.router.pushNamed("/${menus[index].slug}");
+                    } else {
+                      context.router.replaceNamed("/${menus[index].slug}");
+                    }
 
                     context.router.pop();
                   },
