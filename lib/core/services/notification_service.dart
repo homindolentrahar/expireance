@@ -5,34 +5,30 @@ import 'package:expireance/features/expire_items/data/local/expire_item_entity.d
 import 'package:expireance/features/expire_items/data/repositories/expire_repository.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
-
-enum NotificationType { once, periodic }
-
-Future<bool> scheduleNotification() async {
-  await Hive.initFlutter();
-  await AppModule.registerAdapters();
-  await AppModule.openBoxes();
-
-  final box = Hive.box<ExpireItemEntity>(BoxConstants.expireItemBox);
-
-  injector.registerLazySingleton<IExpireRepository>(
-    () => ExpireRepository(box: box),
-  );
-
-  await NotificationService().init();
-  await NotificationService().showNotification();
-
-  return Future.value(true);
-}
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
+  static Future<bool> scheduleNotification() async {
+    await Hive.initFlutter();
+    await AppModule.registerAdapters();
+    await AppModule.openBoxes();
+
+    final box = Hive.box<ExpireItemEntity>(BoxConstants.expireItemBox);
+
+    injector.registerLazySingleton<IExpireRepository>(
+      () => ExpireRepository(box: box),
+    );
+
+    await NotificationService().init();
+    await NotificationService().showNotification();
+
+    return Future.value(true);
+  }
 
   static final NotificationService _notificationService =
       NotificationService._internal();
@@ -43,10 +39,7 @@ class NotificationService {
 
   NotificationService._internal();
 
-  Future<void> showNotification({
-    NotificationType type = NotificationType.once,
-    Duration duration = const Duration(days: 1),
-  }) async {
+  Future<void> showNotification() async {
     //  Creating notification
     const channel = AndroidNotificationDetails(
       NotificationConstant.priorityItemNotificationID,
@@ -86,27 +79,6 @@ class NotificationService {
       message,
       notification,
     );
-
-    if (type == NotificationType.once) {
-      await flutterLocalNotificationsPlugin.show(
-        id,
-        title,
-        message,
-        notification,
-      );
-    } else if (type == NotificationType.periodic) {
-      await flutterLocalNotificationsPlugin.periodicallyShow(
-        id,
-        title,
-        message,
-        RepeatInterval.daily,
-        notification,
-        androidAllowWhileIdle: true,
-      );
-    } else {
-      debugPrint("Notification type unavailable!!!");
-      return;
-    }
   }
 
   Future<void> init() async {

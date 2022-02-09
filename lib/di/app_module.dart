@@ -8,6 +8,10 @@ import 'package:expireance/features/expire_items/domain/models/category_model.da
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
+import 'package:expireance/features/settings/data/local/settings_entity.dart';
+import 'package:expireance/features/settings/data/repositories/settings_repository.dart';
+import 'package:expireance/features/settings/domain/models/settings_model.dart';
+import 'package:expireance/features/settings/domain/repositories/i_settings_repository.dart';
 import 'package:expireance/utils/app_utils.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
@@ -18,6 +22,7 @@ final injector = GetIt.instance;
 
 class AppModule {
   static registerAdapters() {
+    Hive.registerAdapter(SettingsEntityAdapter(), override: true);
     Hive.registerAdapter(ExpireItemEntityAdapter(), override: true);
     Hive.registerAdapter(CategoryEntityAdapter(), override: true);
   }
@@ -25,10 +30,9 @@ class AppModule {
   static Future<void> openBoxes() async {
     await Hive.close();
 
+    await Hive.openBox<SettingsEntity>(BoxConstants.settingsBox);
     await Hive.openBox<ExpireItemEntity>(BoxConstants.expireItemBox);
-    await Hive.openBox<CategoryEntity>(
-      BoxConstants.expireCategoryBox,
-    );
+    await Hive.openBox<CategoryEntity>(BoxConstants.expireCategoryBox);
   }
 
   static List<CategoryModel> getInitialCategories() => [
@@ -57,6 +61,9 @@ class AppModule {
     injector.registerLazySingleton<ImagePicker>(() => ImagePicker());
 
     //  Repositories
+    injector.registerLazySingleton<ISettingsRepository>(
+      () => SettingsRepository(box: injector.get<Box<SettingsEntity>>()),
+    );
     injector.registerLazySingleton<IExpireRepository>(
       () => ExpireRepository(box: injector.get<Box<ExpireItemEntity>>()),
     );
@@ -69,8 +76,15 @@ class AppModule {
       () => CategoryWatcher(injector.get<ICategoryRepository>()),
     );
 
-    //  Populate initial category
+    //  Populate initial data
+    final settingsBox = injector.get<Box<SettingsEntity>>();
     final categoryBox = injector.get<Box<CategoryEntity>>();
+
+    if (settingsBox.isEmpty) {
+      injector.get<ISettingsRepository>().populateInitialSettings(
+            model: SettingsModel(enableNotification: true),
+          );
+    }
 
     if (categoryBox.isEmpty) {
       injector

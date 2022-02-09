@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:expireance/features/expire_items/data/local/expire_item_entity.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
-import 'package:expireance/utils/image_utlis.dart';
+import 'package:expireance/utils/image_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expireance/common/error/app_error.dart';
