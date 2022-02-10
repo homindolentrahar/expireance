@@ -75,7 +75,6 @@ class SearchExpireScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  const SizedBox(height: 16),
                   BlocBuilder<SearchedExpireWatcher,
                       SearchedExpireWatcherState>(
                     builder: (ctx, state) => Expanded(
@@ -87,7 +86,7 @@ class SearchExpireScreen extends StatelessWidget {
                         } else if (state.items.isNotEmpty) {
                           return ListView.builder(
                             physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             itemCount: state.items.length,
                             itemBuilder: (ctx, index) {
                               final model = state.items[index];

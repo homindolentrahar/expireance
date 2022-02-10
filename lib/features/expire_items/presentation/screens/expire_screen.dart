@@ -117,9 +117,9 @@ class ExpireScreen extends StatelessWidget {
                                 priorityCount: state.items.length,
                               ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
                       const ExpireCategoryMenu(),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
                       BlocBuilder<ExpireWatcher, ExpireWatcherState>(
                         bloc: bodyCtx.read<ExpireWatcher>()
                           ..listenExpireItems(

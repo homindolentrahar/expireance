@@ -103,7 +103,6 @@ class FilteredExpireScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
                       Expanded(
                         child: Builder(builder: (_) {
                           if (filteredState.loading) {

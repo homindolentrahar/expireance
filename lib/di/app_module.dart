@@ -35,24 +35,6 @@ class AppModule {
     await Hive.openBox<CategoryEntity>(BoxConstants.expireCategoryBox);
   }
 
-  static List<CategoryModel> getInitialCategories() => [
-        "Food",
-        "Beverage",
-        "Spices",
-        "Meat",
-        "Dairy",
-        "Veggies",
-        "Fruits",
-        "Meds",
-        "Other"
-      ]
-          .map((name) => CategoryModel(
-                id: "category_${const Uuid().v4()}",
-                slug: AppUtils.createSlug(name),
-                name: name,
-              ))
-          .toList();
-
   static void inject() {
     //  Get It injection
     LocalModule.inject();
@@ -87,9 +69,27 @@ class AppModule {
     }
 
     if (categoryBox.isEmpty) {
+      final initialCategories = [
+        "Food",
+        "Beverage",
+        "Spices",
+        "Meat",
+        "Dairy",
+        "Veggies",
+        "Fruits",
+        "Meds",
+        "Other"
+      ]
+          .map((name) => CategoryModel(
+                id: "category_${const Uuid().v4()}",
+                slug: AppUtils.createSlug(name),
+                name: name,
+              ))
+          .toList();
+
       injector
           .get<ICategoryRepository>()
-          .populateInitialCategory(getInitialCategories());
+          .populateInitialCategory(initialCategories);
     }
   }
 }

@@ -2,7 +2,6 @@ import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/core/presentation/widgets/tiles.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
-import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -136,18 +135,45 @@ class ExpireCategoryMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 32),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          GestureDetector(
+            onTap: () {
+              context.router.push(FilteredExpireRoute());
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "All Categories",
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SvgPicture.asset(
+                  "assets/icons/caret-right.svg",
+                  width: 24,
+                  height: 24,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
           SizedBox(
             height: 144,
             child: BlocBuilder<CategoryWatcher, List<CategoryModel>>(
               bloc: context.read<CategoryWatcher>()..listenCategories(),
               builder: (ctx, state) => GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   mainAxisSpacing: 8,
                   crossAxisSpacing: 64,
@@ -163,14 +189,6 @@ class ExpireCategoryMenu extends StatelessWidget {
                 },
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          TextualButton(
-            text: "All Categories",
-            fontSize: 12,
-            onTap: () {
-              context.router.push(FilteredExpireRoute());
-            },
           ),
         ],
       ),

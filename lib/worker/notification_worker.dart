@@ -19,7 +19,7 @@ class NotificationWorker {
     Workmanager().registerPeriodicTask(
       WorkMangerConstants.notificationUniqueName,
       WorkMangerConstants.notificationTaskName,
-      // frequency: const Duration(days: 1),
+      frequency: const Duration(days: 1),
       existingWorkPolicy: ExistingWorkPolicy.replace,
       constraints: constraints,
     );
