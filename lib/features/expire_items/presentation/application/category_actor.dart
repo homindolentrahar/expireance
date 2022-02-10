@@ -1,5 +1,6 @@
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
+import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -7,9 +8,12 @@ part 'category_actor.freezed.dart';
 
 class CategoryActor extends Cubit<CategoryActorState> {
   final ICategoryRepository _categoryRepository;
+  final IExpireRepository _expireRepository;
 
-  CategoryActor(this._categoryRepository)
-      : super(const CategoryActorState.initial());
+  CategoryActor(
+    this._categoryRepository,
+    this._expireRepository,
+  ) : super(const CategoryActorState.initial());
 
   Future<void> addCategory(CategoryModel model) async {
     emit(const CategoryActorState.loading());
@@ -47,8 +51,22 @@ class CategoryActor extends Cubit<CategoryActorState> {
     emit(
       result.fold(
         (error) => CategoryActorState.error(error.message),
-        (_) =>
-            const CategoryActorState.success("Category deleted successfully!"),
+        (_) {
+          // Updating expire items with deleted category
+          final uncategorizedCategory = _categoryRepository
+              .fetchAllCategory()
+              .getOrElse(() => [])
+              .where((item) => item.slug == "uncategorized")
+              .first;
+          _expireRepository.updateUncategorizedExpireItem(
+            categoryId: id,
+            uncategorizedCategory: uncategorizedCategory,
+          );
+
+          return const CategoryActorState.success(
+            "Category deleted successfully!",
+          );
+        },
       ),
     );
   }

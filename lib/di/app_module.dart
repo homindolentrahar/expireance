@@ -78,13 +78,15 @@ class AppModule {
         "Veggies",
         "Fruits",
         "Meds",
-        "Other"
+        "Uncategorized"
       ]
-          .map((name) => CategoryModel(
-                id: "category_${const Uuid().v4()}",
-                slug: AppUtils.createSlug(name),
-                name: name,
-              ))
+          .map(
+            (name) => CategoryModel(
+              id: "category_${const Uuid().v4()}",
+              slug: AppUtils.createSlug(name),
+              name: name,
+            ),
+          )
           .toList();
 
       injector

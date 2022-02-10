@@ -1,10 +1,13 @@
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
+import 'package:expireance/features/expire_items/data/local/category_entity.dart';
 import 'package:expireance/features/expire_items/data/local/expire_item_entity.dart';
+import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/utils/image_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expireance/common/error/app_error.dart';
@@ -165,6 +168,43 @@ class ExpireRepository implements IExpireRepository {
       }
 
       await _expireItemBox.put(id, ExpireItemEntity.fromModel(expireModel));
+
+      return right(unit);
+    } on Exception catch (error) {
+      return left(AppError(error.toString()));
+    }
+  }
+
+  @override
+  Future<Either<AppError, Unit>> updateUncategorizedExpireItem({
+    required String categoryId,
+    required CategoryModel uncategorizedCategory,
+  }) async {
+    try {
+      final result = _expireItemBox.values
+          .where((item) => item.category.id == categoryId)
+          .map(
+            (item) => item.copyWith(
+              category: CategoryEntity.fromModel(uncategorizedCategory),
+            ),
+          )
+          .toList();
+      final Map<String, ExpireItemEntity> resultMap = Map.fromEntries(
+        result.map(
+          (item) => MapEntry(item.id, item),
+        ),
+      );
+
+      await _expireItemBox.putAll(resultMap);
+      debugPrint("Changed items: ${resultMap.map(
+        (key, value) => MapEntry(
+          key,
+          {
+            value.name,
+            value.category.name,
+          },
+        ),
+      )}");
 
       return right(unit);
     } on Exception catch (error) {

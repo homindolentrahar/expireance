@@ -64,7 +64,10 @@ class MyApp extends StatelessWidget {
           value: CategoryWatcher(injector.get<ICategoryRepository>()),
         ),
         BlocProvider.value(
-          value: CategoryActor(injector.get<ICategoryRepository>()),
+          value: CategoryActor(
+            injector.get<ICategoryRepository>(),
+            injector.get<IExpireRepository>(),
+          ),
         ),
         BlocProvider.value(
           value: ExpireActor(injector.get<IExpireRepository>()),
@@ -74,7 +77,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        debugShowCheckedModeBanner: true,
+        debugShowCheckedModeBanner: false,
         title: 'Expireance',
         theme: AppTheme.lightTheme,
         routerDelegate: _appRouter.delegate(),

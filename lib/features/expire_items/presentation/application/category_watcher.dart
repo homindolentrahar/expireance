@@ -14,19 +14,21 @@ class CategoryWatcher extends Cubit<List<CategoryModel>> {
   Future<void> listenCategories() async {
     await categoriesSubscription?.cancel();
     categoriesSubscription = _categoryRepository.listenAllCategory().listen(
-          (either) => either.fold(
-            (error) {
-              log("Error: ${error.message}");
+          (either) => either.fold((error) {
+            log("Error: ${error.message}");
 
-              return emit([]);
-            },
-            (success) => emit(
-              success
-                ..sort(
-                  (a, b) => a.name.compareTo(b.name),
-                ),
-            ),
-          ),
+            return emit([]);
+          }, (success) {
+            final uncategorized =
+                success.firstWhere((item) => item.slug == "uncategorized");
+
+            final sorted = success
+              ..sort((a, b) => a.name.compareTo(b.name))
+              ..remove(uncategorized)
+              ..add(uncategorized);
+
+            emit(sorted);
+          }),
         );
   }
 

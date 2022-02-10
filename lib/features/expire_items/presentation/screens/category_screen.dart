@@ -84,20 +84,21 @@ class CategoryScreen extends StatelessWidget {
                 onTap: () {
                   showBarModalBottomSheet(
                     context: context,
-                    builder: (ctx) => Container(
-                      color: Theme.of(context).canvasColor,
-                      padding: const EdgeInsets.all(24),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom,
-                        ),
-                        child: UpdateCategoryForm(id: categories[index].id),
+                    builder: (ctx) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
                       ),
+                      child: UpdateCategoryForm(id: categories[index].id),
                     ),
                     expand: false,
                     bounce: true,
                     topControl: const SheetIndicator(),
                     backgroundColor: Theme.of(context).canvasColor,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4)),
+                    ),
                   );
                 },
                 model: categories[index],

@@ -9,26 +9,29 @@ class ExpireItemEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SvgPicture.asset(
-          "assets/icons/expire-items.svg",
-          width: 32,
-          height: 32,
-          color: AppColor.gray,
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          "No expire items",
-          style: TextStyle(
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            "assets/icons/expire-items.svg",
+            width: 32,
+            height: 32,
             color: AppColor.gray,
-            fontSize: 12,
-            fontWeight: FontWeight.normal,
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          const Text(
+            "No expire items",
+            style: TextStyle(
+              color: AppColor.gray,
+              fontSize: 12,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

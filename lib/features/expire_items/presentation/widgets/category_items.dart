@@ -16,10 +16,12 @@ class CategoryItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final immutable = model.slug == "uncategorized";
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: immutable ? null : onTap,
         splashColor: AppColor.light,
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -48,27 +50,31 @@ class CategoryItemList extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 16),
-              DeleteButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => DangerConfirmationDialog(
-                      title: "Delete category ${model.name}",
-                      message:
-                          "After this action, you'll not be able to use ${model.name} as your item's category",
-                      onPositive: () {
-                        //  Delete category
-                        context.read<CategoryActor>().deleteCategory(model.id);
+              immutable
+                  ? const SizedBox.shrink()
+                  : DeleteButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => DangerConfirmationDialog(
+                            title: "Delete category ${model.name}",
+                            message:
+                                "After this action, you'll not be able to use ${model.name} as your item's category",
+                            onPositive: () {
+                              //  Delete category
+                              context
+                                  .read<CategoryActor>()
+                                  .deleteCategory(model.id);
 
-                        context.router.pop();
-                      },
-                      onNegative: () {
-                        context.router.pop();
+                              context.router.pop();
+                            },
+                            onNegative: () {
+                              context.router.pop();
+                            },
+                          ),
+                        );
                       },
                     ),
-                  );
-                },
-              ),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:expireance/common/theme/app_color.dart';
+import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/core/presentation/widgets/tiles.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ExpireCategorySelector extends StatelessWidget {
   final CategoryModel? value;
@@ -26,30 +28,52 @@ class ExpireCategorySelector extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        showModalBottomSheet(
+        showBarModalBottomSheet(
           context: context,
-          builder: (ctx) => SizedBox(
-            height: 280,
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: models.length,
-              itemBuilder: (ctx, index) {
-                final model = models[index];
-
-                return TextTiles(
-                  title: model.name,
-                  selected: model.id == value?.id,
-                  onTap: () {
-                    selectCategory(model);
-                  },
-                );
-              },
+          bounce: true,
+          expand: false,
+          enableDrag: false,
+          topControl: const SheetIndicator(),
+          backgroundColor: Theme.of(context).canvasColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(4),
+              topLeft: Radius.circular(4),
             ),
           ),
-          backgroundColor: Theme.of(context).canvasColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(2),
-          ),
+          builder: (ctx) => models.length > 3
+              ? SizedBox(
+                  height: 256,
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: models.length,
+                    itemBuilder: (ctx, index) {
+                      final model = models[index];
+
+                      return TextTiles(
+                        title: model.name,
+                        selected: model.id == value?.id,
+                        onTap: () {
+                          selectCategory(model);
+                        },
+                      );
+                    },
+                  ),
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: models
+                      .map(
+                        (model) => TextTiles(
+                          title: model.name,
+                          selected: model.id == value?.id,
+                          onTap: () {
+                            selectCategory(model);
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
         );
       },
       borderRadius: BorderRadius.circular(2),
@@ -167,11 +191,11 @@ class ExpireCategoryMenu extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          SizedBox(
-            height: 144,
-            child: BlocBuilder<CategoryWatcher, List<CategoryModel>>(
-              bloc: context.read<CategoryWatcher>()..listenCategories(),
-              builder: (ctx, state) => GridView.builder(
+          BlocBuilder<CategoryWatcher, List<CategoryModel>>(
+            bloc: context.read<CategoryWatcher>()..listenCategories(),
+            builder: (ctx, state) => SizedBox(
+              height: state.length > 3 ? 144 : 72,
+              child: GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

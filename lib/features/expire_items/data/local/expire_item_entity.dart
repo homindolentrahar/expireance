@@ -31,6 +31,24 @@ class ExpireItemEntity extends HiveObject {
     this.category,
   );
 
+  ExpireItemEntity copyWith({
+    String? name,
+    String? desc,
+    int? amount,
+    String? date,
+    String? image,
+    CategoryEntity? category,
+  }) =>
+      ExpireItemEntity(
+        id,
+        name ?? this.name,
+        desc ?? this.desc,
+        amount ?? this.amount,
+        date ?? this.date,
+        image ?? this.image,
+        category ?? this.category,
+      );
+
   factory ExpireItemEntity.empty() => ExpireItemEntity(
         "",
         "",

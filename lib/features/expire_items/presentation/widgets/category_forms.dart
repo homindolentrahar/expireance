@@ -160,58 +160,56 @@ class _UpdateCategoryFormState extends State<UpdateCategoryForm> {
         ..populateInitialData(
           _singleWatcher.state!,
         ),
-      child: Builder(builder: (builderCtx) {
-        return BlocBuilder<CategoryFormController, CategoryFormState>(
-          builder: (formCtx, state) => FormBuilder(
-            key: _formKey,
-            autovalidateMode: state.runValidation
-                ? AutovalidateMode.always
-                : AutovalidateMode.disabled,
-            autoFocusOnValidationFailure: true,
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Update Category",
-                      style: Theme.of(context).textTheme.headline6,
+      child: BlocBuilder<CategoryFormController, CategoryFormState>(
+        builder: (formCtx, state) => FormBuilder(
+          key: _formKey,
+          autovalidateMode: state.runValidation
+              ? AutovalidateMode.always
+              : AutovalidateMode.disabled,
+          autoFocusOnValidationFailure: true,
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Update Category",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                OutlinedField(
+                  initialValue: state.name,
+                  name: "name",
+                  placeholder: "Category name",
+                  validators: [
+                    FormBuilderValidators.required(context),
+                    FormBuilderValidators.minLength(
+                      context,
+                      3,
+                      errorText: "Must have at least 3 characters",
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  OutlinedField(
-                    initialValue: state.name,
-                    name: "name",
-                    placeholder: "Category name",
-                    validators: [
-                      FormBuilderValidators.required(context),
-                      FormBuilderValidators.minLength(
-                        context,
-                        3,
-                        errorText: "Must have at least 3 characters",
-                      ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        formCtx
-                            .read<CategoryFormController>()
-                            .nameChanged(value);
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 32),
-                  PrimaryButton(
-                    title: "Update",
-                    onPressed: () => handleSave(formCtx),
-                  ),
-                ],
-              ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      formCtx
+                          .read<CategoryFormController>()
+                          .nameChanged(value);
+                    }
+                  },
+                ),
+                const SizedBox(height: 32),
+                PrimaryButton(
+                  title: "Update",
+                  onPressed: () => handleSave(formCtx),
+                ),
+              ],
             ),
           ),
-        );
-      }),
+        ),
+      ),
     );
   }
 }

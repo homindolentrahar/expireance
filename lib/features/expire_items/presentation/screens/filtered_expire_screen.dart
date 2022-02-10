@@ -68,7 +68,7 @@ class FilteredExpireScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
