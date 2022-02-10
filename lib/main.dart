@@ -1,5 +1,4 @@
 import 'package:expireance/common/theme/app_theme.dart';
-import 'package:expireance/core/services/notification_service.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
@@ -10,6 +9,7 @@ import 'package:expireance/features/settings/domain/models/settings_model.dart';
 import 'package:expireance/features/settings/domain/repositories/i_settings_repository.dart';
 import 'package:expireance/features/settings/presentation/application/settings_controller.dart';
 import 'package:expireance/routes/app_routes.dart';
+import 'package:expireance/services/notification_service.dart';
 import 'package:expireance/worker/notification_worker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

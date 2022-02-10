@@ -90,6 +90,12 @@ class CategoryRepository implements ICategoryRepository {
   @override
   Future<Either<AppError, Unit>> storeCategory(CategoryModel model) async {
     try {
+      final slugs = _categoryBox.values.map((item) => item.slug).toList();
+
+      if (slugs.contains(model.slug)) {
+        return left(AppError("Category ${model.name} has already exist"));
+      }
+
       await _categoryBox.put(model.id, CategoryEntity.fromModel(model));
 
       return right(unit);
