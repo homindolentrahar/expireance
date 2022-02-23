@@ -20,7 +20,7 @@ class DangerConfirmationDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       backgroundColor: Theme.of(context).canvasColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -32,7 +32,7 @@ class DangerConfirmationDialog extends StatelessWidget {
               title,
               style: Theme.of(context).textTheme.headline5,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             Text(
               message,
               style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColor.gray),
@@ -53,6 +53,7 @@ class DangerConfirmationDialog extends StatelessWidget {
                 Expanded(
                   child: PrimaryButton.small(
                     title: "Delete",
+                    color: AppColor.red,
                     onPressed: onPositive,
                   ),
                 ),

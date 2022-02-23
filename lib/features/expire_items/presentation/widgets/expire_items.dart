@@ -150,21 +150,21 @@ class ExpireItemList extends StatelessWidget {
                 clipBehavior: Clip.none,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(2),
+                    borderRadius: BorderRadius.circular(8),
                     child: model.image.isNotEmpty
                         ? Image.file(
                             File(model.image),
-                            width: 48,
-                            height: 48,
+                            width: 52,
+                            height: 52,
                             fit: BoxFit.cover,
                           )
                         : Container(
-                            width: 48,
-                            height: 48,
+                            width: 52,
+                            height: 52,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: AppColor.light,
-                              borderRadius: BorderRadius.circular(2),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             child: SvgPicture.asset(
                               "assets/icons/image.svg",
@@ -175,8 +175,8 @@ class ExpireItemList extends StatelessWidget {
                           ),
                   ),
                   Positioned(
-                    right: -2,
-                    top: -2,
+                    right: -6,
+                    top: -6,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 6,
@@ -186,7 +186,7 @@ class ExpireItemList extends StatelessWidget {
                         color: isExpired
                             ? AppColor.dark
                             : Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(360),
                       ),
                       child: Text(
                         model.amount.toString(),
@@ -194,7 +194,7 @@ class ExpireItemList extends StatelessWidget {
                           color: isExpired
                               ? AppColor.light
                               : Theme.of(context).canvasColor,
-                          fontSize: 10,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

@@ -43,7 +43,7 @@ class ExpireImage extends StatelessWidget {
               alignment: Alignment.center,
               decoration: DottedDecoration(
                 color: AppColor.gray,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(8),
                 shape: Shape.box,
               ),
               child: SvgPicture.asset(
@@ -67,10 +67,10 @@ class ExpireImage extends StatelessWidget {
               );
             },
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(2),
+              borderRadius: BorderRadius.circular(8),
               child: Image.file(
                 imageFile!,
-                width: 104,
+                width: 120,
                 height: 152,
                 fit: BoxFit.cover,
               ),

@@ -123,21 +123,15 @@ class FilteredExpireScreen extends StatelessWidget {
                                     showBarModalBottomSheet(
                                       context: context,
                                       bounce: true,
-                                      expand: false,
                                       topControl: const SheetIndicator(),
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(4),
-                                          topRight: Radius.circular(4),
+                                          topLeft: Radius.circular(16),
+                                          topRight: Radius.circular(16),
                                         ),
                                       ),
-                                      builder: (ctx) => Padding(
-                                        padding: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context)
-                                              .viewInsets
-                                              .bottom,
-                                        ),
-                                        child: UpdateExpireForm(id: model.id),
+                                      builder: (ctx) => UpdateExpireForm(
+                                        id: model.id,
                                       ),
                                       backgroundColor:
                                           Theme.of(context).canvasColor,

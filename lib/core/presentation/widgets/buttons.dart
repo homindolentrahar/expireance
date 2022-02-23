@@ -121,6 +121,7 @@ class PrimaryButton extends StatelessWidget {
   final double width;
   final double padding;
   final double fontSize;
+  final Color color;
   final VoidCallback onPressed;
 
   const PrimaryButton({
@@ -129,16 +130,19 @@ class PrimaryButton extends StatelessWidget {
     this.width = double.infinity,
     this.padding = 16,
     this.fontSize = 16,
+    this.color = AppColor.black,
     required this.onPressed,
   }) : super(key: key);
 
   factory PrimaryButton.small({
     required String title,
     required VoidCallback onPressed,
+    Color color = AppColor.black,
   }) =>
       PrimaryButton(
         title: title,
-        fontSize: 14,
+        fontSize: 12,
+        color: color,
         onPressed: onPressed,
       );
 
@@ -149,7 +153,7 @@ class PrimaryButton extends StatelessWidget {
       height: 0,
       elevation: 0,
       highlightElevation: 0,
-      color: Theme.of(context).primaryColor,
+      color: color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       padding: EdgeInsets.all(padding),
       child: Text(
@@ -186,7 +190,7 @@ class SecondaryButton extends StatelessWidget {
   }) =>
       SecondaryButton(
         title: title,
-        fontSize: 14,
+        fontSize: 12,
         onPressed: onPressed,
       );
 
@@ -197,19 +201,17 @@ class SecondaryButton extends StatelessWidget {
       height: 0,
       elevation: 0,
       highlightElevation: 0,
-      color: Theme.of(context).canvasColor,
+      color: AppColor.light,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(2),
-        side: BorderSide(
-          color: Theme.of(context).primaryColor,
-          width: 1.3,
-        ),
+        borderRadius: BorderRadius.circular(8),
       ),
       padding: EdgeInsets.all(padding),
       child: Text(
         title,
         style: Theme.of(context).textTheme.button?.copyWith(
-            color: Theme.of(context).primaryColor, fontSize: fontSize),
+              color: AppColor.dark,
+              fontSize: fontSize,
+            ),
       ),
       onPressed: onPressed,
     );

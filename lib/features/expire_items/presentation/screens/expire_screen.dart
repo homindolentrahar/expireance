@@ -122,7 +122,6 @@ class ExpireScreen extends StatelessWidget {
                                 ],
                               ),
                       ),
-                      // const ExpireCategoryMenu(),
                       const ExpireCategoryBanner(),
                       const SizedBox(height: 16),
                       BlocBuilder<ExpireWatcher, ExpireWatcherState>(
@@ -165,7 +164,6 @@ class ExpireScreen extends StatelessWidget {
                                         showBarModalBottomSheet(
                                           context: context,
                                           bounce: true,
-                                          expand: false,
                                           topControl: const SheetIndicator(),
                                           shape: const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.only(
@@ -173,14 +171,8 @@ class ExpireScreen extends StatelessWidget {
                                               topLeft: Radius.circular(16),
                                             ),
                                           ),
-                                          builder: (ctx) => Padding(
-                                            padding: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
-                                                  .viewInsets
-                                                  .bottom,
-                                            ),
-                                            child: UpdateExpireForm(
-                                                id: state.items[index].id),
+                                          builder: (ctx) => UpdateExpireForm(
+                                            id: state.items[index].id,
                                           ),
                                           backgroundColor:
                                               Theme.of(context).canvasColor,

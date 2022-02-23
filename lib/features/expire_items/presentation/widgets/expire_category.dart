@@ -2,10 +2,8 @@ import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/core/presentation/widgets/tiles.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
-import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
 import 'package:expireance/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -140,7 +138,7 @@ class ExpireCategoryBadge extends StatelessWidget {
         minWidth: 0,
         height: 0,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         color: selected ? Theme.of(context).primaryColor : AppColor.light,
         child: Text(
           model.name,
@@ -148,77 +146,10 @@ class ExpireCategoryBadge extends StatelessWidget {
                 color: selected
                     ? Theme.of(context).canvasColor
                     : Theme.of(context).primaryColor,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
               ),
         ),
         onPressed: () => selectCategory(model),
-      ),
-    );
-  }
-}
-
-class ExpireCategoryMenu extends StatelessWidget {
-  const ExpireCategoryMenu({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              context.router.push(FilteredExpireRoute());
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "All Categories",
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SvgPicture.asset(
-                  "assets/icons/caret-right.svg",
-                  width: 24,
-                  height: 24,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          BlocBuilder<CategoryWatcher, List<CategoryModel>>(
-            bloc: context.read<CategoryWatcher>()..listenCategories(),
-            builder: (ctx, state) => SizedBox(
-              height: state.length > 3 ? 144 : 72,
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  mainAxisSpacing: 8,
-                  crossAxisSpacing: 64,
-                  crossAxisCount: 3,
-                  mainAxisExtent: 64,
-                ),
-                itemCount: state.take(6).toList().length,
-                itemBuilder: (ctx, index) {
-                  return _ExpireCategoryMenuItem(
-                    index: index,
-                    category: state.take(6).toList()[index],
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -290,66 +221,11 @@ class ExpireCategoryBanner extends StatelessWidget {
                 "assets/icons/caret-right.svg",
                 width: 24,
                 height: 24,
-                color: AppColor.gray,
+                color: Theme.of(context).canvasColor,
               ),
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ExpireCategoryMenuItem extends StatelessWidget {
-  final int index;
-  final CategoryModel category;
-
-  const _ExpireCategoryMenuItem({
-    Key? key,
-    required this.index,
-    required this.category,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        context.router.push(FilteredExpireRoute(categoryId: category.id));
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2),
-              color: AppColor.getColor(index: index).withOpacity(0.15),
-            ),
-            child: Text(
-              category.name.substring(0, 2),
-              style: TextStyle(
-                color: AppColor.getColor(index: index),
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            category.name,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              color: AppColor.gray,
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }
