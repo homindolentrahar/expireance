@@ -1,7 +1,6 @@
 import 'package:expireance/core/presentation/widgets/fields.dart';
 import 'package:expireance/core/presentation/widgets/flashbar.dart';
 import 'package:expireance/core/presentation/widgets/loading.dart';
-import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_actor.dart';
@@ -9,9 +8,9 @@ import 'package:expireance/features/expire_items/presentation/application/expire
 import 'package:expireance/features/expire_items/presentation/widgets/expire_body.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_forms.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
+import 'package:expireance/utils/sheet_dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class SearchExpireScreen extends StatelessWidget {
   static const route = "/search";
@@ -94,27 +93,9 @@ class SearchExpireScreen extends StatelessWidget {
                               return ExpireItemList(
                                 model: model,
                                 onPressed: () {
-                                  showBarModalBottomSheet(
+                                  SheetDialogUtils.showAppBarSheet(
                                     context: context,
-                                    bounce: true,
-                                    expand: false,
-                                    topControl: const SheetIndicator(),
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(4),
-                                        topRight: Radius.circular(4),
-                                      ),
-                                    ),
-                                    builder: (ctx) => Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom,
-                                      ),
-                                      child: UpdateExpireForm(id: model.id),
-                                    ),
-                                    backgroundColor:
-                                        Theme.of(context).canvasColor,
+                                    child: UpdateExpireForm(id: model.id),
                                   );
                                 },
                               );

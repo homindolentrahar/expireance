@@ -258,8 +258,8 @@ class _SearchFieldState extends State<SearchField> {
           vertical: 12,
         ),
         decoration: BoxDecoration(
-          color: AppColor.light,
-          borderRadius: BorderRadius.circular(2),
+          color: AppColor.light.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -272,7 +272,7 @@ class _SearchFieldState extends State<SearchField> {
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(360),
                 ),
                 child: SvgPicture.asset(
                   "assets/icons/back.svg",

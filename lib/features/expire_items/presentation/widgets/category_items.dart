@@ -3,6 +3,7 @@ import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/core/presentation/widgets/dialogs.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_actor.dart';
+import 'package:expireance/utils/sheet_dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,9 +55,9 @@ class CategoryItemList extends StatelessWidget {
                   ? const SizedBox.shrink()
                   : DeleteButton(
                       onPressed: () {
-                        showDialog(
+                        SheetDialogUtils.showAppDialog(
                           context: context,
-                          builder: (ctx) => DangerConfirmationDialog(
+                          child: DangerConfirmationDialog(
                             title: "Delete category ${model.name}",
                             message:
                                 "After this action, you'll not be able to use ${model.name} as your item's category",

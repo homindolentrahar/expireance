@@ -17,6 +17,7 @@ import 'package:expireance/features/expire_items/presentation/widgets/expire_ima
 import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_amount.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_date.dart';
+import 'package:expireance/utils/sheet_dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -383,9 +384,9 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                     ),
                     DeleteButton(
                       onPressed: () {
-                        showDialog(
+                        SheetDialogUtils.showAppDialog(
                           context: context,
-                          builder: (ctx) => DangerConfirmationDialog(
+                          child: DangerConfirmationDialog(
                             title: "Delete ${state.name}?",
                             message:
                                 "You cannot recover this items once it's deleted",

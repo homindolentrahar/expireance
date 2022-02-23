@@ -2,7 +2,6 @@ import 'package:expireance/core/presentation/widgets/drawers.dart';
 import 'package:expireance/core/presentation/widgets/flashbar.dart';
 import 'package:expireance/core/presentation/widgets/loading.dart';
 import 'package:expireance/core/presentation/widgets/refresh_header.dart';
-import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_actor.dart';
@@ -14,12 +13,12 @@ import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_item_priority.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_sort.dart';
 import 'package:expireance/routes/app_routes.dart';
+import 'package:expireance/utils/sheet_dialog_utils.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ExpireScreen extends StatelessWidget {
@@ -161,21 +160,11 @@ class ExpireScreen extends StatelessWidget {
                                     return ExpireItemGridSuccess(
                                       items: state.items,
                                       onPressedItem: (index) {
-                                        showBarModalBottomSheet(
+                                        SheetDialogUtils.showAppBarSheet(
                                           context: context,
-                                          bounce: true,
-                                          topControl: const SheetIndicator(),
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(16),
-                                              topLeft: Radius.circular(16),
-                                            ),
-                                          ),
-                                          builder: (ctx) => UpdateExpireForm(
+                                          child: UpdateExpireForm(
                                             id: state.items[index].id,
                                           ),
-                                          backgroundColor:
-                                              Theme.of(context).canvasColor,
                                         );
                                       },
                                     );
@@ -198,18 +187,9 @@ class ExpireScreen extends StatelessWidget {
           ),
           floatingActionButton: FAB(
             onPressed: () {
-              showBarModalBottomSheet(
+              SheetDialogUtils.showAppBarSheet(
                 context: context,
-                bounce: true,
-                topControl: const SheetIndicator(),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                ),
-                builder: (ctx) => const AddExpireForm(),
-                backgroundColor: Theme.of(context).canvasColor,
+                child: const AddExpireForm(),
               );
             },
           ),
