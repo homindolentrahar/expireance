@@ -75,7 +75,7 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                OutlinedField(
+                AppTextField.filled(
                   name: "name",
                   placeholder: "Category name",
                   validators: [
@@ -180,7 +180,7 @@ class _UpdateCategoryFormState extends State<UpdateCategoryForm> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                OutlinedField(
+                AppTextField.filled(
                   initialValue: state.name,
                   name: "name",
                   placeholder: "Category name",
@@ -194,9 +194,7 @@ class _UpdateCategoryFormState extends State<UpdateCategoryForm> {
                   ],
                   onChanged: (value) {
                     if (value != null) {
-                      formCtx
-                          .read<CategoryFormController>()
-                          .nameChanged(value);
+                      formCtx.read<CategoryFormController>().nameChanged(value);
                     }
                   },
                 ),

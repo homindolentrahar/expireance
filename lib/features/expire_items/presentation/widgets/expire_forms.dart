@@ -131,7 +131,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        FilledField(
+                        AppTextField.filled(
                           name: "name",
                           placeholder: "Name your item",
                           validators: [
@@ -212,7 +212,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
                 ],
               ),
               const SizedBox(height: 16),
-              UnderlinedField(
+              AppTextField.underlined(
                 name: "desc",
                 placeholder: "Describe your item",
                 validators: [
@@ -444,7 +444,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              FilledField(
+                              AppTextField.filled(
                                 name: "name",
                                 initialValue: state.name,
                                 placeholder: "Name your item",
@@ -531,7 +531,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    UnderlinedField(
+                    AppTextField.underlined(
                       name: "desc",
                       initialValue: state.desc,
                       placeholder: "Describe your item",
