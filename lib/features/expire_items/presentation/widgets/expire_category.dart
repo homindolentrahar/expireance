@@ -27,6 +27,9 @@ class ExpireCategorySelector extends StatelessWidget {
     final String _selectedCategory = value?.name ?? "Category";
 
     return InkWell(
+      splashColor: Theme.of(context).primaryColor.withOpacity(0.025),
+      highlightColor: Theme.of(context).primaryColor.withOpacity(0.05),
+      borderRadius: BorderRadius.circular(8),
       onTap: () {
         showBarModalBottomSheet(
           context: context,
@@ -37,8 +40,8 @@ class ExpireCategorySelector extends StatelessWidget {
           backgroundColor: Theme.of(context).canvasColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topRight: Radius.circular(4),
-              topLeft: Radius.circular(4),
+              topRight: Radius.circular(16),
+              topLeft: Radius.circular(16),
             ),
           ),
           builder: (ctx) => models.length > 3
@@ -76,12 +79,13 @@ class ExpireCategorySelector extends StatelessWidget {
                 ),
         );
       },
-      borderRadius: BorderRadius.circular(2),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColor.gray, width: 1),
-          borderRadius: BorderRadius.circular(2),
+          color: _selectedCategory == "Category"
+              ? AppColor.light.withOpacity(0.5)
+              : Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -92,10 +96,10 @@ class ExpireCategorySelector extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyText2?.copyWith(
                     color: _selectedCategory == "Category"
                         ? AppColor.gray
-                        : AppColor.black,
+                        : Theme.of(context).canvasColor,
                     fontWeight: _selectedCategory == "Category"
-                        ? FontWeight.normal
-                        : FontWeight.w500,
+                        ? FontWeight.w500
+                        : FontWeight.w600,
                   ),
             ),
             const SizedBox(width: 12),
@@ -105,7 +109,7 @@ class ExpireCategorySelector extends StatelessWidget {
               height: 20,
               color: _selectedCategory == "Category"
                   ? AppColor.gray
-                  : AppColor.black,
+                  : Theme.of(context).canvasColor,
             ),
           ],
         ),
@@ -215,6 +219,82 @@ class ExpireCategoryMenu extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ExpireCategoryBanner extends StatelessWidget {
+  const ExpireCategoryBanner({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        context.router.push(FilteredExpireRoute());
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColor.black,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Transform.rotate(
+              angle: 6,
+              child: SvgPicture.asset(
+                "assets/icons/category.svg",
+                width: 24,
+                height: 24,
+                color: Theme.of(context).canvasColor,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Explore your items",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        ?.copyWith(color: Theme.of(context).canvasColor),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Find your items based on their category",
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                          color: AppColor.gray,
+                          fontWeight: FontWeight.normal,
+                        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            GestureDetector(
+              onTap: () {
+                context.router.push(FilteredExpireRoute());
+              },
+              child: SvgPicture.asset(
+                "assets/icons/caret-right.svg",
+                width: 24,
+                height: 24,
+                color: AppColor.gray,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

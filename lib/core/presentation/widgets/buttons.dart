@@ -32,9 +32,9 @@ class SortButton extends StatelessWidget {
       height: 0,
       elevation: 0,
       highlightElevation: 0,
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(6),
       color: Theme.of(context).primaryColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      shape: const CircleBorder(),
       child: SvgPicture.asset(
         "assets/icons/sort.svg",
         width: 16,
@@ -66,7 +66,7 @@ class DeleteButton extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: AppColor.red.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(3636363636360),
           ),
           child: SvgPicture.asset(
             "assets/icons/delete.svg",
@@ -94,17 +94,22 @@ class FAB extends StatelessWidget {
       minWidth: 0,
       height: 0,
       padding: const EdgeInsets.all(8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       color: Theme.of(context).primaryColor,
       splashColor: Theme.of(context).canvasColor.withOpacity(0.15),
       highlightColor: Theme.of(context).canvasColor.withOpacity(0.15),
-      elevation: 2,
-      highlightElevation: 2,
-      child: SvgPicture.asset(
-        "assets/icons/plus.svg",
-        color: AppColor.white,
-        width: 48,
-        height: 48,
+      // elevation: 2,
+      // highlightElevation: 2,
+      elevation: 0,
+      highlightElevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: SvgPicture.asset(
+          "assets/icons/plus.svg",
+          color: AppColor.white,
+          width: 32,
+          height: 32,
+        ),
       ),
       onPressed: onPressed,
     );
@@ -145,7 +150,7 @@ class PrimaryButton extends StatelessWidget {
       elevation: 0,
       highlightElevation: 0,
       color: Theme.of(context).primaryColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       padding: EdgeInsets.all(padding),
       child: Text(
         title,

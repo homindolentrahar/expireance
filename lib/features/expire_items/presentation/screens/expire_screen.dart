@@ -113,12 +113,17 @@ class ExpireScreen extends StatelessWidget {
                           ..listenPriorityExpireItems(),
                         builder: (ctx, state) => state.items.isEmpty
                             ? const SizedBox.shrink()
-                            : ExpireItemPriority(
-                                priorityCount: state.items.length,
+                            : Column(
+                                children: [
+                                  ExpireItemPriority(
+                                    priorityCount: state.items.length,
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
                               ),
                       ),
-                      const SizedBox(height: 16),
-                      const ExpireCategoryMenu(),
+                      // const ExpireCategoryMenu(),
+                      const ExpireCategoryBanner(),
                       const SizedBox(height: 16),
                       BlocBuilder<ExpireWatcher, ExpireWatcherState>(
                         bloc: bodyCtx.read<ExpireWatcher>()
@@ -164,8 +169,8 @@ class ExpireScreen extends StatelessWidget {
                                           topControl: const SheetIndicator(),
                                           shape: const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(4),
-                                              topLeft: Radius.circular(4),
+                                              topRight: Radius.circular(16),
+                                              topLeft: Radius.circular(16),
                                             ),
                                           ),
                                           builder: (ctx) => Padding(
@@ -204,20 +209,14 @@ class ExpireScreen extends StatelessWidget {
               showBarModalBottomSheet(
                 context: context,
                 bounce: true,
-                expand: false,
                 topControl: const SheetIndicator(),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    topRight: Radius.circular(4),
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
                   ),
                 ),
-                builder: (ctx) => Padding(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                  child: const AddExpireForm(),
-                ),
+                builder: (ctx) => const AddExpireForm(),
                 backgroundColor: Theme.of(context).canvasColor,
               );
             },

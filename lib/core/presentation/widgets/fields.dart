@@ -5,6 +5,87 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:auto_route/auto_route.dart';
 
+class FilledField extends StatelessWidget {
+  final TextEditingController? controller;
+  final String? initialValue;
+  final String name;
+  final String placeholder;
+  final TextAlign textAlign;
+  final TextInputAction action;
+  final TextInputType type;
+  final bool obscure;
+  final ValueChanged<String?> onChanged;
+  final List<String? Function(String?)> validators;
+
+  const FilledField({
+    Key? key,
+    this.controller,
+    this.initialValue,
+    required this.name,
+    required this.placeholder,
+    this.textAlign = TextAlign.start,
+    this.action = TextInputAction.done,
+    this.type = TextInputType.text,
+    this.obscure = false,
+    required this.onChanged,
+    required this.validators,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilderTextField(
+      controller: controller,
+      initialValue: initialValue,
+      name: name,
+      textInputAction: action,
+      keyboardType: type,
+      obscureText: obscure,
+      style: const TextStyle(
+        color: AppColor.black,
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+      ),
+      textAlign: textAlign,
+      decoration: InputDecoration(
+        isDense: true,
+        filled: true,
+        fillColor: AppColor.light.withOpacity(0.5),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.transparent)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: AppColor.black, width: 1.3)),
+        errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: AppColor.red, width: 1.3)),
+        focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: AppColor.red, width: 1.3)),
+        hintText: placeholder,
+        hintStyle: const TextStyle(
+          color: AppColor.gray,
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+        ),
+        errorStyle: const TextStyle(
+          color: AppColor.red,
+          fontSize: 12,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+      cursorColor: AppColor.black,
+      cursorRadius: const Radius.circular(2),
+      onChanged: onChanged,
+      validator: FormBuilderValidators.compose(validators),
+    );
+  }
+}
+
 class OutlinedField extends StatelessWidget {
   final TextEditingController? controller;
   final String? initialValue;
@@ -130,16 +211,17 @@ class UnderlinedField extends StatelessWidget {
         ),
         enabledBorder: UnderlineInputBorder(
             borderRadius: BorderRadius.circular(2),
-            borderSide: const BorderSide(color: AppColor.gray, width: 1)),
+            borderSide:
+                BorderSide(color: AppColor.gray.withOpacity(0.25), width: 2)),
         focusedBorder: UnderlineInputBorder(
             borderRadius: BorderRadius.circular(2),
-            borderSide: const BorderSide(color: AppColor.black, width: 1.3)),
+            borderSide: const BorderSide(color: AppColor.black, width: 2)),
         errorBorder: UnderlineInputBorder(
             borderRadius: BorderRadius.circular(2),
-            borderSide: const BorderSide(color: AppColor.red, width: 1.3)),
+            borderSide: const BorderSide(color: AppColor.red, width: 2)),
         focusedErrorBorder: UnderlineInputBorder(
             borderRadius: BorderRadius.circular(2),
-            borderSide: const BorderSide(color: AppColor.red, width: 1.3)),
+            borderSide: const BorderSide(color: AppColor.red, width: 2)),
         hintText: placeholder,
         hintStyle: const TextStyle(
           color: AppColor.gray,

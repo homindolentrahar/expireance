@@ -39,26 +39,26 @@ class ExpireAmount extends StatelessWidget {
               ),
               onPressed: decrease,
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color:
                     value > 1 ? Theme.of(context).primaryColor : AppColor.light,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 value.toString(),
                 style: Theme.of(context).textTheme.bodyText2?.copyWith(
                       color: value > 1
                           ? Theme.of(context).canvasColor
-                          : AppColor.dark,
+                          : Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold,
                     ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 4),
             _AmountButton(
               icon: SvgPicture.asset(
                 "assets/icons/plus.svg",
@@ -71,24 +71,17 @@ class ExpireAmount extends StatelessWidget {
           ],
         ),
         value >= 5
-            ? Column(
+            ? Row(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 0),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: incrementalAmounts
-                        .map(
-                          (amount) => _AmountChipIncremental(
-                            onPressed: () => incrementalChange(amount),
-                            text: "+$amount",
-                          ),
-                        )
-                        .toList(),
-                  )
-                ],
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: incrementalAmounts
+                    .map(
+                      (amount) => _AmountChipIncremental(
+                        onPressed: () => incrementalChange(amount),
+                        text: "+$amount",
+                      ),
+                    )
+                    .toList(),
               )
             : const SizedBox.shrink(),
       ],
@@ -117,8 +110,8 @@ class _AmountButton extends StatelessWidget {
       minWidth: 0,
       height: 0,
       color: Theme.of(context).primaryColor,
-      disabledColor: AppColor.light,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+      disabledColor: AppColor.light.withOpacity(0.5),
+      shape: const CircleBorder(),
       padding: const EdgeInsets.all(4),
       child: icon,
       onPressed: enable ? onPressed : null,
@@ -143,11 +136,9 @@ class _AmountChipIncremental extends StatelessWidget {
       highlightElevation: 0,
       minWidth: 0,
       height: 0,
-      padding: const EdgeInsets.all(6),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(2),
-          side: BorderSide(color: Theme.of(context).primaryColor)),
-      color: Colors.transparent,
+      padding: const EdgeInsets.all(8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      color: AppColor.light,
       splashColor: Theme.of(context).primaryColor.withOpacity(0.15),
       highlightColor: Theme.of(context).primaryColor.withOpacity(0.2),
       child: Text(

@@ -2,8 +2,11 @@ import 'package:expireance/common/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:auto_route/auto_route.dart';
+
+import '../../../../core/presentation/widgets/sheets.dart';
 
 class ExpireDate extends StatelessWidget {
   final DateTime? date;
@@ -23,17 +26,21 @@ class ExpireDate extends StatelessWidget {
       children: [
         _PickerButton(
           onPressed: () {
-            showModalBottomSheet(
+            showBarModalBottomSheet(
               context: context,
-              builder: (ctx) => Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(2),
-                    topRight: Radius.circular(2),
-                  ),
+              bounce: true,
+              expand: false,
+              topControl: const SheetIndicator(),
+              backgroundColor: Theme.of(context).canvasColor,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(16),
+                  topLeft: Radius.circular(16),
                 ),
+              ),
+              builder: (ctx) => Container(
+                height: 456,
+                padding: const EdgeInsets.all(16),
                 child: SfDateRangePicker(
                   backgroundColor: Theme.of(context).canvasColor,
                   headerHeight: 40,
@@ -57,11 +64,8 @@ class ExpireDate extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                     todayCellDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      border: Border.all(
-                        color: Theme.of(context).primaryColor,
-                        width: 1.5,
-                      ),
+                      color: AppColor.light,
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                   monthCellStyle: DateRangePickerMonthCellStyle(
@@ -79,16 +83,14 @@ class ExpireDate extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                     todayCellDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      border: Border.all(
-                        color: Theme.of(context).primaryColor,
-                        width: 1.5,
-                      ),
+                      color: AppColor.light,
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                   showNavigationArrow: true,
                   selectionColor: Theme.of(context).primaryColor,
                   selectionShape: DateRangePickerSelectionShape.rectangle,
+                  selectionRadius: 16,
                   selectionTextStyle:
                       Theme.of(context).textTheme.bodyText2?.copyWith(
                             color: Theme.of(context).canvasColor,
@@ -153,7 +155,8 @@ class _PickerButton extends StatelessWidget {
       minWidth: 0,
       height: 0,
       color: Theme.of(context).primaryColor,
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(8),
+      shape: const CircleBorder(),
       child: SvgPicture.asset(
         "assets/icons/date.svg",
         width: 16,

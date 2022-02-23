@@ -21,113 +21,102 @@ class ExpireItemGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final isExpired = DateTimeUtils.isExpired(model.date);
 
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      splashColor: Theme.of(context).primaryColor.withOpacity(0.025),
+      highlightColor: Theme.of(context).primaryColor.withOpacity(0.05),
       onTap: onPressed,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(2),
-          boxShadow: [
-            BoxShadow(
-              color: AppColor.black.withOpacity(0.04),
-              offset: const Offset(2, 2),
-              spreadRadius: 0,
-              blurRadius: 8,
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              alignment: Alignment.topRight,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            alignment: Alignment.topRight,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: model.image.isNotEmpty
+                    ? Image.file(
+                        File(model.image),
+                        width: double.infinity,
+                        height: 176,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: double.infinity,
+                        height: 176,
+                        alignment: Alignment.center,
+                        color: AppColor.light,
+                        child: SvgPicture.asset(
+                          "assets/icons/image.svg",
+                          width: 32,
+                          height: 32,
+                          color: AppColor.gray,
+                        ),
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isExpired
+                        ? AppColor.dark
+                        : Theme.of(context).primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    model.amount.toString(),
+                    style: TextStyle(
+                      color: isExpired ? AppColor.light : AppColor.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: model.image.isNotEmpty
-                      ? Image.file(
-                          File(model.image),
-                          width: double.infinity,
-                          height: 176,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          width: double.infinity,
-                          height: 176,
-                          alignment: Alignment.center,
-                          color: AppColor.light,
-                          child: SvgPicture.asset(
-                            "assets/icons/image.svg",
-                            width: 32,
-                            height: 32,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      model.name,
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                            color: isExpired ? AppColor.gray : AppColor.black,
+                          ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      model.category.name,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(
                             color: AppColor.gray,
                           ),
-                        ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isExpired
-                          ? AppColor.dark
-                          : Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                    child: Text(
-                      model.amount.toString(),
-                      style: TextStyle(
-                        color: isExpired ? AppColor.light : AppColor.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ExpireBadge(expiredDate: model.date),
+                )
               ],
             ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              color: Theme.of(context).canvasColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        model.name,
-                        style: Theme.of(context).textTheme.headline5?.copyWith(
-                              color: isExpired ? AppColor.gray : AppColor.black,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        model.category.name,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                              color: AppColor.gray,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: ExpireBadge(expiredDate: model.date),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

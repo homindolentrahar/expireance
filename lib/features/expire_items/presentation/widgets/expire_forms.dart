@@ -131,7 +131,7 @@ class _AddExpireFormState extends State<AddExpireForm> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        OutlinedField(
+                        FilledField(
                           name: "name",
                           placeholder: "Name your item",
                           validators: [
@@ -233,18 +233,36 @@ class _AddExpireFormState extends State<AddExpireForm> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ExpireDate(
-                    date: state.expireDate.isEmpty
-                        ? null
-                        : DateTime.parse(state.expireDate),
-                    pickDate: (pickedDate) {
-                      formCtx
-                          .read<ExpireFormController>()
-                          .removeErrors(ExpireFormError.expireDate);
-                      formCtx
-                          .read<ExpireFormController>()
-                          .expireChanged(pickedDate);
-                    },
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ExpireDate(
+                        date: state.expireDate.isEmpty
+                            ? null
+                            : DateTime.parse(state.expireDate),
+                        pickDate: (pickedDate) {
+                          formCtx
+                              .read<ExpireFormController>()
+                              .removeErrors(ExpireFormError.expireDate);
+                          formCtx
+                              .read<ExpireFormController>()
+                              .expireChanged(pickedDate);
+                        },
+                      ),
+                      state.expireDate.isEmpty
+                          ? const SizedBox.shrink()
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const SizedBox(width: 32),
+                                ExpireBadge(
+                                  expiredDate: DateTime.parse(state.expireDate),
+                                ),
+                              ],
+                            ),
+                    ],
                   ),
                   state.runValidation && state.expireDateErrorMsg.isNotEmpty
                       ? Column(
@@ -426,7 +444,7 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              OutlinedField(
+                              FilledField(
                                 name: "name",
                                 initialValue: state.name,
                                 placeholder: "Name your item",

@@ -22,17 +22,20 @@ class ExpireItemPriority extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(2),
+          color: AppColor.red,
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              "assets/icons/warning.svg",
-              width: 24,
-              height: 24,
-              color: AppColor.red,
+            Transform.rotate(
+              angle: 6,
+              child: SvgPicture.asset(
+                "assets/icons/warning.svg",
+                width: 24,
+                height: 24,
+                color: Theme.of(context).canvasColor,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -57,7 +60,7 @@ class ExpireItemPriority extends StatelessWidget {
                         ? "Take care of your items before it goes waste"
                         : "Take care of your item before it goes waste",
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                          color: AppColor.gray,
+                          color: AppColor.white.withOpacity(0.5),
                           fontWeight: FontWeight.normal,
                         ),
                     maxLines: 1,
@@ -75,9 +78,9 @@ class ExpireItemPriority extends StatelessWidget {
                 "assets/icons/caret-right.svg",
                 width: 24,
                 height: 24,
-                color: AppColor.gray,
+                color: AppColor.white,
               ),
-            )
+            ),
           ],
         ),
       ),

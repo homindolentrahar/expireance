@@ -24,8 +24,8 @@ class ExpireImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return imageFile == null
         ? InkWell(
-            splashColor: AppColor.gray.withOpacity(0.2),
-            highlightColor: AppColor.gray.withOpacity(0.25),
+            splashColor: Theme.of(context).primaryColor.withOpacity(0.025),
+            highlightColor: Theme.of(context).primaryColor.withOpacity(0.05),
             onTap: () {
               showModalBottomSheet(
                 context: context,
@@ -38,12 +38,12 @@ class ExpireImage extends StatelessWidget {
               );
             },
             child: Container(
-              width: 104,
+              width: 120,
               height: 152,
               alignment: Alignment.center,
               decoration: DottedDecoration(
                 color: AppColor.gray,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(16),
                 shape: Shape.box,
               ),
               child: SvgPicture.asset(

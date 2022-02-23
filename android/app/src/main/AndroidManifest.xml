@@ -2,7 +2,7 @@
     package="com.homindolentrahar.expireance">
 
     <application
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/launcher_icon"
         android:label="expireance">
         <activity
             android:name=".MainActivity"
