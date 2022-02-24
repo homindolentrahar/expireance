@@ -1,15 +1,14 @@
 import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/core/presentation/widgets/drawers.dart';
 import 'package:expireance/core/presentation/widgets/flashbar.dart';
-import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_actor.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/category_forms.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/category_items.dart';
+import 'package:expireance/utils/sheet_dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class CategoryScreen extends StatelessWidget {
   static const route = "/category";
@@ -30,23 +29,9 @@ class CategoryScreen extends StatelessWidget {
           actions: [
             IconAddButton(
               onPressed: () {
-                showBarModalBottomSheet(
+                SheetDialogUtils.showAppBarSheet(
                   context: context,
-                  builder: (ctx) => Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: const AddCategoryForm(),
-                  ),
-                  expand: false,
-                  bounce: true,
-                  topControl: const SheetIndicator(),
-                  backgroundColor: Theme.of(context).canvasColor,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(4),
-                        topRight: Radius.circular(4)),
-                  ),
+                  child: const AddCategoryForm(),
                 );
               },
             ),
@@ -82,23 +67,9 @@ class CategoryScreen extends StatelessWidget {
               itemCount: categories.length,
               itemBuilder: (ctx, index) => CategoryItemList(
                 onTap: () {
-                  showBarModalBottomSheet(
+                  SheetDialogUtils.showAppBarSheet(
                     context: context,
-                    builder: (ctx) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: UpdateCategoryForm(id: categories[index].id),
-                    ),
-                    expand: false,
-                    bounce: true,
-                    topControl: const SheetIndicator(),
-                    backgroundColor: Theme.of(context).canvasColor,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(4),
-                          topRight: Radius.circular(4)),
-                    ),
+                    child: UpdateCategoryForm(id: categories[index].id),
                   );
                 },
                 model: categories[index],

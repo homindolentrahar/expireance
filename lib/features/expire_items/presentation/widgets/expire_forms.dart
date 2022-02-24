@@ -357,6 +357,15 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
     }
   }
 
+  bool isFormNotChanged(ExpireFormState state, ExpireItemModel model) {
+    return state.image == model.image &&
+        state.name == model.name &&
+        state.amount == model.amount &&
+        state.category!.id == model.category.id &&
+        state.desc == model.desc &&
+        state.expireDate == model.date.toIso8601String();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ExpireFormController>(
@@ -601,7 +610,9 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                 const SizedBox(height: 32),
                 PrimaryButton(
                   title: "Save",
-                  onPressed: () => handleSave(formCtx),
+                  onPressed: isFormNotChanged(state, _singleWatcher.state!)
+                      ? null
+                      : () => handleSave(formCtx),
                 ),
               ],
             ),

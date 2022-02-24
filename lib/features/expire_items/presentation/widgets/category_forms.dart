@@ -153,6 +153,10 @@ class _UpdateCategoryFormState extends State<UpdateCategoryForm> {
     }
   }
 
+  bool isFormNotChanged(CategoryFormState state, CategoryModel model) {
+    return state.name == model.name;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CategoryFormController>(
@@ -201,7 +205,9 @@ class _UpdateCategoryFormState extends State<UpdateCategoryForm> {
                 const SizedBox(height: 32),
                 PrimaryButton(
                   title: "Update",
-                  onPressed: () => handleSave(formCtx),
+                  onPressed: isFormNotChanged(state, _singleWatcher.state!)
+                      ? null
+                      : () => handleSave(formCtx),
                 ),
               ],
             ),

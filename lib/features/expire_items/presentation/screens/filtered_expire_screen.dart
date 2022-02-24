@@ -1,5 +1,4 @@
 import 'package:expireance/core/presentation/widgets/flashbar.dart';
-import 'package:expireance/core/presentation/widgets/sheets.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
@@ -11,9 +10,9 @@ import 'package:expireance/features/expire_items/presentation/widgets/expire_cat
 import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_forms.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/expire_items.dart';
+import 'package:expireance/utils/sheet_dialog_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class FilteredExpireScreen extends StatelessWidget {
   static const route = "/filtered";
@@ -120,21 +119,11 @@ class FilteredExpireScreen extends StatelessWidget {
                                 return ExpireItemList(
                                   model: model,
                                   onPressed: () {
-                                    showBarModalBottomSheet(
+                                    SheetDialogUtils.showAppBarSheet(
                                       context: context,
-                                      bounce: true,
-                                      topControl: const SheetIndicator(),
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(16),
-                                          topRight: Radius.circular(16),
-                                        ),
-                                      ),
-                                      builder: (ctx) => UpdateExpireForm(
+                                      child: UpdateExpireForm(
                                         id: model.id,
                                       ),
-                                      backgroundColor:
-                                          Theme.of(context).canvasColor,
                                     );
                                   },
                                 );

@@ -122,7 +122,7 @@ class PrimaryButton extends StatelessWidget {
   final double padding;
   final double fontSize;
   final Color color;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const PrimaryButton({
     Key? key,
@@ -131,12 +131,12 @@ class PrimaryButton extends StatelessWidget {
     this.padding = 16,
     this.fontSize = 16,
     this.color = AppColor.black,
-    required this.onPressed,
+    this.onPressed,
   }) : super(key: key);
 
   factory PrimaryButton.small({
     required String title,
-    required VoidCallback onPressed,
+    VoidCallback? onPressed,
     Color color = AppColor.black,
   }) =>
       PrimaryButton(
@@ -154,13 +154,16 @@ class PrimaryButton extends StatelessWidget {
       elevation: 0,
       highlightElevation: 0,
       color: color,
+      disabledColor: AppColor.light,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       padding: EdgeInsets.all(padding),
       child: Text(
         title,
         style: Theme.of(context).textTheme.button?.copyWith(
-              color: AppColor.white,
               fontSize: fontSize,
+              color: onPressed == null
+                  ? AppColor.gray
+                  : Theme.of(context).canvasColor,
             ),
       ),
       onPressed: onPressed,
@@ -173,7 +176,7 @@ class SecondaryButton extends StatelessWidget {
   final double width;
   final double padding;
   final double fontSize;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const SecondaryButton({
     Key? key,
@@ -181,12 +184,12 @@ class SecondaryButton extends StatelessWidget {
     this.width = double.infinity,
     this.padding = 16,
     this.fontSize = 16,
-    required this.onPressed,
+    this.onPressed,
   }) : super(key: key);
 
   factory SecondaryButton.small({
     required String title,
-    required VoidCallback onPressed,
+    VoidCallback? onPressed,
   }) =>
       SecondaryButton(
         title: title,
@@ -214,43 +217,6 @@ class SecondaryButton extends StatelessWidget {
             ),
       ),
       onPressed: onPressed,
-    );
-  }
-}
-
-class TextualButton extends StatelessWidget {
-  final String text;
-  final Color textColor;
-  final double fontSize;
-  final Color? splashColor;
-  final VoidCallback onTap;
-
-  const TextualButton({
-    Key? key,
-    required this.text,
-    this.textColor = AppColor.black,
-    this.fontSize = 14,
-    this.splashColor,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      splashColor: splashColor,
-      borderRadius: BorderRadius.circular(2),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: textColor,
-            fontSize: fontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
     );
   }
 }

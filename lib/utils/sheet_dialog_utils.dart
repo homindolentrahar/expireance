@@ -17,7 +17,12 @@ abstract class SheetDialogUtils {
           topRight: Radius.circular(16),
         ),
       ),
-      builder: (ctx) => child,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: child,
+      ),
       backgroundColor: Theme.of(context).canvasColor,
     );
   }

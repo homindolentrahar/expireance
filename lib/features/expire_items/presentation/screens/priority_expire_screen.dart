@@ -80,12 +80,7 @@ class PriorityExpireScreen extends StatelessWidget {
                       onPressed: () {
                         SheetDialogUtils.showAppBarSheet(
                           context: context,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom,
-                            ),
-                            child: UpdateExpireForm(id: model.id),
-                          ),
+                          child: UpdateExpireForm(id: model.id),
                         );
                       },
                     );
