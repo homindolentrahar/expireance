@@ -5,12 +5,10 @@ import 'package:expireance/features/expire_items/domain/repositories/i_expire_re
 import 'package:expireance/features/expire_items/presentation/application/category_actor.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/application/expire_actor.dart';
-import 'package:expireance/features/settings/domain/models/settings_model.dart';
 import 'package:expireance/features/settings/domain/repositories/i_settings_repository.dart';
 import 'package:expireance/features/settings/presentation/application/settings_controller.dart';
 import 'package:expireance/routes/app_routes.dart';
 import 'package:expireance/services/notification_service.dart';
-import 'package:expireance/worker/notification_worker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -38,17 +36,6 @@ void main() async {
   await AppModule.openBoxes();
 
   AppModule.inject();
-
-  //  Initialize & Register background task
-  final settingsRepository = injector.get<ISettingsRepository>();
-  final settings = settingsRepository.fetchSettings().fold(
-        (_) => SettingsModel(enableNotification: false),
-        (model) => model,
-      );
-
-  if (settings.enableNotification) {
-    NotificationWorker().registerPeriodicTask();
-  }
 
   runApp(const MyApp());
 }

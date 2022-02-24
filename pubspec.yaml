@@ -42,7 +42,7 @@ dependencies:
   workmanager: ^0.4.1
 
   # Local
-  hive: ^2.0.5
+  hive: ^2.0.6
   hive_flutter: ^1.1.0
 
   #  Util
@@ -100,6 +100,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/icons/
+    - assets/logo-dark.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

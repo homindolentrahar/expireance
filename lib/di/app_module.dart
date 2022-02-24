@@ -64,7 +64,7 @@ class AppModule {
 
     if (settingsBox.isEmpty) {
       injector.get<ISettingsRepository>().populateInitialSettings(
-            model: SettingsModel(enableNotification: true),
+            model: SettingsModel(enableNotification: false),
           );
     }
 
