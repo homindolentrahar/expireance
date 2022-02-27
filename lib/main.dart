@@ -1,3 +1,4 @@
+import 'package:expireance/common/constants/box_constants.dart';
 import 'package:expireance/common/theme/app_theme.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -28,6 +30,27 @@ void callbackDispatcher() {
   );
 }
 
+Future<void> retrieveLostData() async {
+  final imagePicker = injector.get<ImagePicker>();
+  final lostDataBox = injector.get<Box<String>>(
+    instanceName: BoxConstants.lostDataBox,
+  );
+  final response = await imagePicker.retrieveLostData();
+
+  if (response.isEmpty) {
+    return;
+  }
+
+  if (response.file != null) {
+    final file = response.file!;
+
+    final fileName = file.name;
+    final filePath = file.path;
+
+    await lostDataBox.put(fileName, filePath);
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -36,6 +59,8 @@ void main() async {
   await AppModule.openBoxes();
 
   AppModule.inject();
+
+  await retrieveLostData();
 
   runApp(const MyApp());
 }

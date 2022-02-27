@@ -26,6 +26,10 @@ class ExpireFormController extends Cubit<ExpireFormState> {
     );
   }
 
+  void imageChanged(String? imagePath) {
+    emit(state.copyWith(image: imagePath ?? ""));
+  }
+
   Future<void> setImage(ImageSource source) async {
     final imagePicker = injector.get<ImagePicker>();
     final image = await imagePicker.pickImage(source: source);

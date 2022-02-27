@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:expireance/common/constants/box_constants.dart';
 import 'package:expireance/common/theme/app_color.dart';
 import 'package:expireance/core/presentation/widgets/dialogs.dart';
 import 'package:expireance/core/presentation/widgets/fields.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import 'package:auto_route/auto_route.dart';
@@ -35,10 +37,14 @@ class AddExpireForm extends StatefulWidget {
 
 class _AddExpireFormState extends State<AddExpireForm> {
   late GlobalKey<FormBuilderState> _formKey;
+  late Box<String> _lostDataBox;
 
   @override
   void initState() {
     _formKey = GlobalKey<FormBuilderState>();
+    _lostDataBox = injector.get<Box<String>>(
+      instanceName: BoxConstants.lostDataBox,
+    );
 
     super.initState();
   }
@@ -82,216 +88,226 @@ class _AddExpireFormState extends State<AddExpireForm> {
     return BlocProvider<ExpireFormController>(
       create: (ctx) => ExpireFormController(),
       child: BlocBuilder<ExpireFormController, ExpireFormState>(
-        builder: (formCtx, state) => FormBuilder(
-          key: _formKey,
-          autovalidateMode: state.runValidation
-              ? AutovalidateMode.always
-              : AutovalidateMode.disabled,
-          autoFocusOnValidationFailure: true,
-          child: ListView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.all(24),
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Add Expire Item",
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ExpireImage(
-                    imageFile: state.image.isEmpty ? null : File(state.image),
-                    removeImage: () {
-                      formCtx.read<ExpireFormController>().clearImage();
+        builder: (formCtx, state) {
+          if (_lostDataBox.isNotEmpty) {
+            formCtx
+                .read<ExpireFormController>()
+                .imageChanged(_lostDataBox.getAt(0));
+          }
 
-                      context.router.pop();
-                    },
-                    pickImage: () {
-                      formCtx
-                          .read<ExpireFormController>()
-                          .setImage(ImageSource.gallery);
-
-                      context.router.pop();
-                    },
-                    capturePhoto: () {
-                      formCtx
-                          .read<ExpireFormController>()
-                          .setImage(ImageSource.camera);
-
-                      context.router.pop();
-                    },
+          return FormBuilder(
+            key: _formKey,
+            autovalidateMode: state.runValidation
+                ? AutovalidateMode.always
+                : AutovalidateMode.disabled,
+            autoFocusOnValidationFailure: true,
+            child: ListView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(24),
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Add Expire Item",
+                    style: Theme.of(context).textTheme.headline6,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppTextField.filled(
-                          name: "name",
-                          placeholder: "Name your item",
-                          validators: [
-                            FormBuilderValidators.required(context),
-                            FormBuilderValidators.minLength(
-                              context,
-                              3,
-                              errorText: "Must have at least 3 characters",
-                            ),
-                          ],
-                          onChanged: (value) {
-                            if (value != null) {
-                              formCtx
-                                  .read<ExpireFormController>()
-                                  .nameChanged(value);
-                            }
-                          },
-                        ),
-                        const SizedBox(height: 8),
-                        ExpireAmount(
-                          value: state.amount,
-                          increase: () {
-                            formCtx
-                                .read<ExpireFormController>()
-                                .amountChanged(state.amount + 1);
-                          },
-                          decrease: () {
-                            formCtx
-                                .read<ExpireFormController>()
-                                .amountChanged(state.amount - 1);
-                          },
-                          incrementalChange: (value) {
-                            formCtx
-                                .read<ExpireFormController>()
-                                .amountChanged(state.amount + value);
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        BlocBuilder<CategoryWatcher, List<CategoryModel>>(
-                          bloc: formCtx.read<CategoryWatcher>()
-                            ..listenCategories(),
-                          builder: (categoryCtx, categories) =>
-                              ExpireCategorySelector(
-                            value: state.category,
-                            models: categories,
-                            selectCategory: (model) {
-                              formCtx
-                                  .read<ExpireFormController>()
-                                  .removeErrors(ExpireFormError.category);
-                              formCtx
-                                  .read<ExpireFormController>()
-                                  .categoryChanged(model);
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ExpireImage(
+                      imageFile: state.image.isEmpty ? null : File(state.image),
+                      removeImage: () {
+                        formCtx.read<ExpireFormController>().clearImage();
 
-                              context.router.pop();
+                        context.router.pop();
+                      },
+                      pickImage: () {
+                        formCtx
+                            .read<ExpireFormController>()
+                            .setImage(ImageSource.gallery);
+
+                        context.router.pop();
+                      },
+                      capturePhoto: () {
+                        formCtx
+                            .read<ExpireFormController>()
+                            .setImage(ImageSource.camera);
+
+                        context.router.pop();
+                      },
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppTextField.filled(
+                            name: "name",
+                            placeholder: "Name your item",
+                            validators: [
+                              FormBuilderValidators.required(context),
+                              FormBuilderValidators.minLength(
+                                context,
+                                3,
+                                errorText: "Must have at least 3 characters",
+                              ),
+                            ],
+                            onChanged: (value) {
+                              if (value != null) {
+                                formCtx
+                                    .read<ExpireFormController>()
+                                    .nameChanged(value);
+                              }
                             },
                           ),
+                          const SizedBox(height: 8),
+                          ExpireAmount(
+                            value: state.amount,
+                            increase: () {
+                              formCtx
+                                  .read<ExpireFormController>()
+                                  .amountChanged(state.amount + 1);
+                            },
+                            decrease: () {
+                              formCtx
+                                  .read<ExpireFormController>()
+                                  .amountChanged(state.amount - 1);
+                            },
+                            incrementalChange: (value) {
+                              formCtx
+                                  .read<ExpireFormController>()
+                                  .amountChanged(state.amount + value);
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          BlocBuilder<CategoryWatcher, List<CategoryModel>>(
+                            bloc: formCtx.read<CategoryWatcher>()
+                              ..listenCategories(),
+                            builder: (categoryCtx, categories) =>
+                                ExpireCategorySelector(
+                              value: state.category,
+                              models: categories,
+                              selectCategory: (model) {
+                                formCtx
+                                    .read<ExpireFormController>()
+                                    .removeErrors(ExpireFormError.category);
+                                formCtx
+                                    .read<ExpireFormController>()
+                                    .categoryChanged(model);
+
+                                context.router.pop();
+                              },
+                            ),
+                          ),
+                          state.runValidation &&
+                                  state.categoryErrorMsg.isNotEmpty
+                              ? Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      state.categoryErrorMsg,
+                                      style: const TextStyle(
+                                        color: AppColor.red,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : const SizedBox.shrink()
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                AppTextField.underlined(
+                  name: "desc",
+                  placeholder: "Describe your item",
+                  validators: [
+                    FormBuilderValidators.required(context),
+                    FormBuilderValidators.minLength(
+                      context,
+                      3,
+                      errorText: "Must have at least 3 characters",
+                    ),
+                  ],
+                  onChanged: (value) {
+                    if (value != null) {
+                      formCtx.read<ExpireFormController>().descChanged(value);
+                    }
+                  },
+                ),
+                const SizedBox(height: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ExpireDate(
+                          date: state.expireDate.isEmpty
+                              ? null
+                              : DateTime.parse(state.expireDate),
+                          pickDate: (pickedDate) {
+                            formCtx
+                                .read<ExpireFormController>()
+                                .removeErrors(ExpireFormError.expireDate);
+                            formCtx
+                                .read<ExpireFormController>()
+                                .expireChanged(pickedDate);
+                          },
                         ),
-                        state.runValidation && state.categoryErrorMsg.isNotEmpty
-                            ? Column(
+                        state.expireDate.isEmpty
+                            ? const SizedBox.shrink()
+                            : Row(
                                 mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    state.categoryErrorMsg,
-                                    style: const TextStyle(
-                                      color: AppColor.red,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  )
+                                  const SizedBox(width: 32),
+                                  ExpireBadge(
+                                    expiredDate:
+                                        DateTime.parse(state.expireDate),
+                                  ),
                                 ],
-                              )
-                            : const SizedBox.shrink()
+                              ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              AppTextField.underlined(
-                name: "desc",
-                placeholder: "Describe your item",
-                validators: [
-                  FormBuilderValidators.required(context),
-                  FormBuilderValidators.minLength(
-                    context,
-                    3,
-                    errorText: "Must have at least 3 characters",
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value != null) {
-                    formCtx.read<ExpireFormController>().descChanged(value);
-                  }
-                },
-              ),
-              const SizedBox(height: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ExpireDate(
-                        date: state.expireDate.isEmpty
-                            ? null
-                            : DateTime.parse(state.expireDate),
-                        pickDate: (pickedDate) {
-                          formCtx
-                              .read<ExpireFormController>()
-                              .removeErrors(ExpireFormError.expireDate);
-                          formCtx
-                              .read<ExpireFormController>()
-                              .expireChanged(pickedDate);
-                        },
-                      ),
-                      state.expireDate.isEmpty
-                          ? const SizedBox.shrink()
-                          : Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(width: 32),
-                                ExpireBadge(
-                                  expiredDate: DateTime.parse(state.expireDate),
+                    state.runValidation && state.expireDateErrorMsg.isNotEmpty
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              Text(
+                                state.expireDateErrorMsg,
+                                style: const TextStyle(
+                                  color: AppColor.red,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.normal,
                                 ),
-                              ],
-                            ),
-                    ],
-                  ),
-                  state.runValidation && state.expireDateErrorMsg.isNotEmpty
-                      ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 4),
-                            Text(
-                              state.expireDateErrorMsg,
-                              style: const TextStyle(
-                                color: AppColor.red,
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            )
-                          ],
-                        )
-                      : const SizedBox.shrink()
-                ],
-              ),
-              const SizedBox(height: 32),
-              PrimaryButton(
-                title: "Save",
-                onPressed: () => handleSave(formCtx),
-              ),
-            ],
-          ),
-        ),
+                              )
+                            ],
+                          )
+                        : const SizedBox.shrink()
+                  ],
+                ),
+                const SizedBox(height: 32),
+                PrimaryButton(
+                  title: "Save",
+                  onPressed: () => handleSave(formCtx),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
@@ -312,6 +328,7 @@ class UpdateExpireForm extends StatefulWidget {
 class _UpdateExpireFormState extends State<UpdateExpireForm> {
   late GlobalKey<FormBuilderState> _formKey;
   late SingleExpireWatcher _singleWatcher;
+  late Box<String> _lostDataBox;
 
   @override
   void initState() {
@@ -319,6 +336,9 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
     _singleWatcher = SingleExpireWatcher(
       injector.get<IExpireRepository>(),
       id: widget.id,
+    );
+    _lostDataBox = injector.get<Box<String>>(
+      instanceName: BoxConstants.lostDataBox,
     );
 
     super.initState();
@@ -373,6 +393,12 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
           ExpireFormController()..populateInitialData(_singleWatcher.state!),
       child: BlocBuilder<ExpireFormController, ExpireFormState>(
         builder: (formCtx, state) {
+          if (_lostDataBox.isNotEmpty) {
+            formCtx
+                .read<ExpireFormController>()
+                .imageChanged(_lostDataBox.getAt(0));
+          }
+
           return FormBuilder(
             key: _formKey,
             autovalidateMode: state.runValidation

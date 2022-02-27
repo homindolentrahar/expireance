@@ -7,17 +7,19 @@ import 'package:expireance/features/expire_items/domain/models/category_model.da
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
 import 'package:expireance/utils/image_utils.dart';
-import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expireance/common/error/app_error.dart';
 
 class ExpireRepository implements IExpireRepository {
   final Box<ExpireItemEntity> _expireItemBox;
+  final Box<String> _lostDataBox;
 
   ExpireRepository({
     required Box<ExpireItemEntity> box,
-  }) : _expireItemBox = box;
+    required Box<String> lostDataBox,
+  })  : _expireItemBox = box,
+        _lostDataBox = lostDataBox;
 
   @override
   Stream<Either<AppError, List<ExpireItemModel>>> listenExpireItems({
@@ -136,6 +138,10 @@ class ExpireRepository implements IExpireRepository {
         ExpireItemEntity.fromModel(expireModel),
       );
 
+      if (_lostDataBox.isNotEmpty) {
+        await _lostDataBox.deleteAt(0);
+      }
+
       return right(unit);
     } on Exception catch (error) {
       return left(AppError(error.toString()));
@@ -169,6 +175,10 @@ class ExpireRepository implements IExpireRepository {
 
       await _expireItemBox.put(id, ExpireItemEntity.fromModel(expireModel));
 
+      if (_lostDataBox.isNotEmpty) {
+        await _lostDataBox.deleteAt(0);
+      }
+
       return right(unit);
     } on Exception catch (error) {
       return left(AppError(error.toString()));
@@ -196,15 +206,6 @@ class ExpireRepository implements IExpireRepository {
       );
 
       await _expireItemBox.putAll(resultMap);
-      debugPrint("Changed items: ${resultMap.map(
-        (key, value) => MapEntry(
-          key,
-          {
-            value.name,
-            value.category.name,
-          },
-        ),
-      )}");
 
       return right(unit);
     } on Exception catch (error) {

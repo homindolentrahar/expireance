@@ -17,5 +17,9 @@ class LocalModule {
     injector.registerLazySingleton<Box<CategoryEntity>>(
       () => Hive.box(BoxConstants.expireCategoryBox),
     );
+    injector.registerLazySingleton<Box<String>>(
+      () => Hive.box(BoxConstants.lostDataBox),
+      instanceName: BoxConstants.lostDataBox,
+    );
   }
 }

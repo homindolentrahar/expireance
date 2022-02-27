@@ -33,6 +33,7 @@ class AppModule {
     await Hive.openBox<SettingsEntity>(BoxConstants.settingsBox);
     await Hive.openBox<ExpireItemEntity>(BoxConstants.expireItemBox);
     await Hive.openBox<CategoryEntity>(BoxConstants.expireCategoryBox);
+    await Hive.openBox<String>(BoxConstants.lostDataBox);
   }
 
   static void inject() {
@@ -47,7 +48,12 @@ class AppModule {
       () => SettingsRepository(box: injector.get<Box<SettingsEntity>>()),
     );
     injector.registerLazySingleton<IExpireRepository>(
-      () => ExpireRepository(box: injector.get<Box<ExpireItemEntity>>()),
+      () => ExpireRepository(
+        box: injector.get<Box<ExpireItemEntity>>(),
+        lostDataBox: injector.get<Box<String>>(
+          instanceName: BoxConstants.lostDataBox,
+        ),
+      ),
     );
     injector.registerLazySingleton<ICategoryRepository>(
       () => CategoryRepository(box: injector.get<Box<CategoryEntity>>()),

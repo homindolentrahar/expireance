@@ -19,9 +19,13 @@ class NotificationService {
     await AppModule.openBoxes();
 
     final box = Hive.box<ExpireItemEntity>(BoxConstants.expireItemBox);
+    final lostDataBox = Hive.box<String>(BoxConstants.lostDataBox);
 
     injector.registerLazySingleton<IExpireRepository>(
-      () => ExpireRepository(box: box),
+      () => ExpireRepository(
+        box: box,
+        lostDataBox: lostDataBox,
+      ),
     );
 
     await NotificationService().init();
@@ -85,29 +89,14 @@ class NotificationService {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('notif_icon');
 
-    //  IOS Usage
-    //
-    // const IOSInitializationSettings initializationSettingsIOS =
-    //     IOSInitializationSettings(
-    //   requestSoundPermission: false,
-    //   requestBadgePermission: false,
-    //   requestAlertPermission: false,
-    // );
-
     const InitializationSettings initializationSettings =
-        InitializationSettings(
-      android: initializationSettingsAndroid,
-      // iOS: initializationSettingsIOS,
-    );
+        InitializationSettings(android: initializationSettingsAndroid);
 
     tz.initializeTimeZones();
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onSelectNotification: (payload) async {
-        //  Handle the callback of notification
-        //  Navigate to PriorityExpireScreen
-      },
+      onSelectNotification: (payload) async {},
     );
   }
 }
