@@ -49,7 +49,7 @@ class ExpireSort extends StatelessWidget {
                     context: context,
                     bounce: true,
                     expand: false,
-                    enableDrag: false,
+                    enableDrag: true,
                     topControl: const SheetIndicator(),
                     backgroundColor: Theme.of(context).canvasColor,
                     shape: const RoundedRectangleBorder(

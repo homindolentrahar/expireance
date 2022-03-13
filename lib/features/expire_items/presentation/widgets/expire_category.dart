@@ -30,52 +30,34 @@ class ExpireCategorySelector extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       onTap: () {
         showBarModalBottomSheet(
-          context: context,
-          bounce: true,
-          expand: false,
-          enableDrag: false,
-          topControl: const SheetIndicator(),
-          backgroundColor: Theme.of(context).canvasColor,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(16),
-              topLeft: Radius.circular(16),
+            context: context,
+            closeProgressThreshold: 256,
+            bounce: true,
+            expand: true,
+            enableDrag: true,
+            topControl: const SheetIndicator(),
+            backgroundColor: Theme.of(context).canvasColor,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(16),
+                topLeft: Radius.circular(16),
+              ),
             ),
-          ),
-          builder: (ctx) => models.length > 3
-              ? SizedBox(
-                  height: 256,
-                  child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: models.length,
-                    itemBuilder: (ctx, index) {
-                      final model = models[index];
+            builder: (ctx) => ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: models.length,
+                  itemBuilder: (ctx, index) {
+                    final model = models[index];
 
-                      return TextTiles(
-                        title: model.name,
-                        selected: model.id == value?.id,
-                        onTap: () {
-                          selectCategory(model);
-                        },
-                      );
-                    },
-                  ),
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: models
-                      .map(
-                        (model) => TextTiles(
-                          title: model.name,
-                          selected: model.id == value?.id,
-                          onTap: () {
-                            selectCategory(model);
-                          },
-                        ),
-                      )
-                      .toList(),
-                ),
-        );
+                    return TextTiles(
+                      title: model.name,
+                      selected: model.id == value?.id,
+                      onTap: () {
+                        selectCategory(model);
+                      },
+                    );
+                  },
+                ));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
