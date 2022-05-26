@@ -79,9 +79,8 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
                   name: "name",
                   placeholder: "Category name",
                   validators: [
-                    FormBuilderValidators.required(context),
+                    FormBuilderValidators.required(),
                     FormBuilderValidators.minLength(
-                      context,
                       3,
                       errorText: "Must have at least 3 characters",
                     ),
@@ -189,9 +188,8 @@ class _UpdateCategoryFormState extends State<UpdateCategoryForm> {
                   name: "name",
                   placeholder: "Category name",
                   validators: [
-                    FormBuilderValidators.required(context),
+                    FormBuilderValidators.required(),
                     FormBuilderValidators.minLength(
-                      context,
                       3,
                       errorText: "Must have at least 3 characters",
                     ),

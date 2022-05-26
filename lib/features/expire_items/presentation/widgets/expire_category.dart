@@ -22,7 +22,7 @@ class ExpireCategorySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String _selectedCategory = value?.name ?? "Category";
+    final String selectedCategory = value?.name ?? "Category";
 
     return InkWell(
       splashColor: Theme.of(context).primaryColor.withOpacity(0.025),
@@ -62,7 +62,7 @@ class ExpireCategorySelector extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: _selectedCategory == "Category"
+          color: selectedCategory == "Category"
               ? AppColor.light.withOpacity(0.5)
               : Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(8),
@@ -72,12 +72,12 @@ class ExpireCategorySelector extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              _selectedCategory,
+              selectedCategory,
               style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                    color: _selectedCategory == "Category"
+                    color: selectedCategory == "Category"
                         ? AppColor.gray
                         : Theme.of(context).canvasColor,
-                    fontWeight: _selectedCategory == "Category"
+                    fontWeight: selectedCategory == "Category"
                         ? FontWeight.w500
                         : FontWeight.w600,
                   ),
@@ -87,7 +87,7 @@ class ExpireCategorySelector extends StatelessWidget {
               "assets/icons/caret-down.svg",
               width: 20,
               height: 20,
-              color: _selectedCategory == "Category"
+              color: selectedCategory == "Category"
                   ? AppColor.gray
                   : Theme.of(context).canvasColor,
             ),
@@ -178,8 +178,6 @@ class ExpireCategoryBanner extends StatelessWidget {
                         .textTheme
                         .headline6
                         ?.copyWith(color: Theme.of(context).canvasColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -188,8 +186,6 @@ class ExpireCategoryBanner extends StatelessWidget {
                           color: AppColor.gray,
                           fontWeight: FontWeight.normal,
                         ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

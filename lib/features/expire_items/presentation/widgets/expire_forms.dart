@@ -149,9 +149,8 @@ class _AddExpireFormState extends State<AddExpireForm> {
                             name: "name",
                             placeholder: "Name your item",
                             validators: [
-                              FormBuilderValidators.required(context),
+                              FormBuilderValidators.required(),
                               FormBuilderValidators.minLength(
-                                context,
                                 3,
                                 errorText: "Must have at least 3 characters",
                               ),
@@ -231,9 +230,8 @@ class _AddExpireFormState extends State<AddExpireForm> {
                   name: "desc",
                   placeholder: "Describe your item",
                   validators: [
-                    FormBuilderValidators.required(context),
+                    FormBuilderValidators.required(),
                     FormBuilderValidators.minLength(
-                      context,
                       3,
                       errorText: "Must have at least 3 characters",
                     ),
@@ -485,9 +483,8 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                                 initialValue: state.name,
                                 placeholder: "Name your item",
                                 validators: [
-                                  FormBuilderValidators.required(context),
+                                  FormBuilderValidators.required(),
                                   FormBuilderValidators.minLength(
-                                    context,
                                     3,
                                     errorText:
                                         "Must have at least 3 characters",
@@ -572,9 +569,8 @@ class _UpdateExpireFormState extends State<UpdateExpireForm> {
                       initialValue: state.desc,
                       placeholder: "Describe your item",
                       validators: [
-                        FormBuilderValidators.required(context),
+                        FormBuilderValidators.required(),
                         FormBuilderValidators.minLength(
-                          context,
                           3,
                           errorText: "Must have at least 3 characters",
                         ),

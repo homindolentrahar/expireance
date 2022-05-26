@@ -34,21 +34,40 @@ class RootDrawer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          Container(
             padding: const EdgeInsets.all(16),
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Expirance",
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: AppColor.light,
+                  width: 1.3,
                 ),
               ),
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    "assets/logo-dark.png",
+                    width: 32,
+                    height: 32,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  "Expireance",
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(
               itemCount: menus.length,

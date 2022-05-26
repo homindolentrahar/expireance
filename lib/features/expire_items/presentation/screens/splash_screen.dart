@@ -30,12 +30,12 @@ class _SplashScreenState extends State<SplashScreen> {
     return SafeArea(
       child: Scaffold(
         body: Center(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              "assets/logo-dark.png",
-              width: 64,
-              height: 64,
+          child: Text(
+            "Expireance",
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

@@ -89,15 +89,16 @@ class ExpireWatcher extends Cubit<ExpireWatcherState> {
                             ? DateTime.now().isAfter(item.date)
                             : true,
                       )
-                      .sorted(
-                    (a, b) {
-                      if (sortingRule == ExpireItemSort.name) {
-                        return a.name.compareTo(b.name);
-                      } else {
-                        return a.date.compareTo(b.date);
-                      }
-                    },
-                  ).toList(),
+                      .toList()
+                    ..sort(
+                      (a, b) {
+                        if (sortingRule == ExpireItemSort.name) {
+                          return a.name.compareTo(b.name);
+                        } else {
+                          return a.date.compareTo(b.date);
+                        }
+                      },
+                    ),
                 ),
               );
             },
@@ -152,7 +153,7 @@ class FilteredExpireWatcher extends Cubit<FilteredExpireWatcherState> {
               loading: false,
             ),
             (success) => state.copyWith(
-              items: success.sorted((a, b) => a.date.compareTo(b.date)),
+              items: success..sort((a, b) => a.date.compareTo(b.date)),
               loading: false,
             ),
           ),
