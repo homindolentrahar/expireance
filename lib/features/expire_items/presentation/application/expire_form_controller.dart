@@ -1,9 +1,11 @@
+import 'package:expireance/common/constants/box_constants.dart';
 import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/models/expire_item_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 part 'expire_form_controller.freezed.dart';
@@ -26,7 +28,15 @@ class ExpireFormController extends Cubit<ExpireFormState> {
     );
   }
 
-  void imageChanged(String? imagePath) {
+  Future<void> imageChanged(String? imagePath) async {
+    final lostDataBox = injector.get<Box<String>>(
+      instanceName: BoxConstants.lostDataBox,
+    );
+
+    if (lostDataBox.isNotEmpty) {
+      await lostDataBox.deleteAt(0);
+    }
+
     emit(state.copyWith(image: imagePath ?? ""));
   }
 

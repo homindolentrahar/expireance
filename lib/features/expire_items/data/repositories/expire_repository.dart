@@ -186,16 +186,16 @@ class ExpireRepository implements IExpireRepository {
   }
 
   @override
-  Future<Either<AppError, Unit>> updateUncategorizedExpireItem({
+  Future<Either<AppError, Unit>> updateCategorizedExpireItem({
     required String categoryId,
-    required CategoryModel uncategorizedCategory,
+    required CategoryModel category,
   }) async {
     try {
       final result = _expireItemBox.values
           .where((item) => item.category.id == categoryId)
           .map(
             (item) => item.copyWith(
-              category: CategoryEntity.fromModel(uncategorizedCategory),
+              category: CategoryEntity.fromModel(category),
             ),
           )
           .toList();

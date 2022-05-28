@@ -51,8 +51,6 @@ class ExpireItemPriority extends StatelessWidget {
                     style: Theme.of(context).textTheme.headline6?.copyWith(
                           color: Theme.of(context).canvasColor,
                         ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -63,8 +61,6 @@ class ExpireItemPriority extends StatelessWidget {
                           color: AppColor.white.withOpacity(0.5),
                           fontWeight: FontWeight.normal,
                         ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

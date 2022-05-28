@@ -27,9 +27,9 @@ abstract class IExpireRepository {
     required ExpireItemModel model,
   });
 
-  Future<Either<AppError, Unit>> updateUncategorizedExpireItem({
+  Future<Either<AppError, Unit>> updateCategorizedExpireItem({
     required String categoryId,
-    required CategoryModel uncategorizedCategory,
+    required CategoryModel category,
   });
 
   Future<Either<AppError, Unit>> deleteExpireItem({

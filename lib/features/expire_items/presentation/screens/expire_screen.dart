@@ -43,6 +43,7 @@ class ExpireScreen extends StatelessWidget {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           drawer: const RootDrawer(),
+          drawerEnableOpenDragGesture: true,
           appBar: AppBar(
             leading: const IconHamburgerButton(),
             title: const Text("Expire Items"),

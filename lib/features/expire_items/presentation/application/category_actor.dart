@@ -37,8 +37,21 @@ class CategoryActor extends Cubit<CategoryActorState> {
     emit(
       result.fold(
         (error) => CategoryActorState.error(error.message),
-        (_) =>
-            const CategoryActorState.success("Category updated successfully!"),
+        (_) {
+          final updatedCategory = _categoryRepository
+              .fetchAllCategory()
+              .getOrElse(() => [])
+              .where((item) => item.slug == model.slug)
+              .first;
+
+          _expireRepository.updateCategorizedExpireItem(
+            categoryId: id,
+            category: updatedCategory,
+          );
+
+          return const CategoryActorState.success(
+              "Category updated successfully!");
+        },
       ),
     );
   }
@@ -58,9 +71,10 @@ class CategoryActor extends Cubit<CategoryActorState> {
               .getOrElse(() => [])
               .where((item) => item.slug == "uncategorized")
               .first;
-          _expireRepository.updateUncategorizedExpireItem(
+
+          _expireRepository.updateCategorizedExpireItem(
             categoryId: id,
-            uncategorizedCategory: uncategorizedCategory,
+            category: uncategorizedCategory,
           );
 
           return const CategoryActorState.success(

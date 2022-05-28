@@ -7,7 +7,6 @@ import 'package:expireance/features/expire_items/data/repositories/expire_reposi
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/domain/repositories/i_expire_repository.dart';
-import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
 import 'package:expireance/features/settings/data/local/settings_entity.dart';
 import 'package:expireance/features/settings/data/repositories/settings_repository.dart';
 import 'package:expireance/features/settings/domain/models/settings_model.dart';
@@ -57,11 +56,6 @@ class AppModule {
     );
     injector.registerLazySingleton<ICategoryRepository>(
       () => CategoryRepository(box: injector.get<Box<CategoryEntity>>()),
-    );
-
-    //  Controllers
-    injector.registerLazySingleton<CategoryWatcher>(
-      () => CategoryWatcher(injector.get<ICategoryRepository>()),
     );
 
     //  Populate initial data

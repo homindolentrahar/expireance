@@ -1,7 +1,9 @@
 import 'package:expireance/core/presentation/widgets/buttons.dart';
 import 'package:expireance/core/presentation/widgets/drawers.dart';
 import 'package:expireance/core/presentation/widgets/flashbar.dart';
+import 'package:expireance/di/app_module.dart';
 import 'package:expireance/features/expire_items/domain/models/category_model.dart';
+import 'package:expireance/features/expire_items/domain/repositories/i_category_repository.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_actor.dart';
 import 'package:expireance/features/expire_items/presentation/application/category_watcher.dart';
 import 'package:expireance/features/expire_items/presentation/widgets/category_forms.dart';
@@ -17,64 +19,72 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        drawer: const RootDrawer(),
-        appBar: AppBar(
-          leading: const IconHamburgerButton(),
-          title: const Text("Categories"),
-          centerTitle: true,
-          titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
-          actions: [
-            IconAddButton(
-              onPressed: () {
-                SheetDialogUtils.showAppBarSheet(
-                  context: context,
-                  child: const AddCategoryForm(),
-                );
-              },
-            ),
-          ],
-        ),
-        body: MultiBlocListener(
-          listeners: [
-            BlocListener<CategoryActor, CategoryActorState>(
-              listener: (ctx, state) {
-                state.maybeWhen(
-                  success: (message) => Flashbar(
-                    context: context,
-                    title: "Yeay!",
-                    content: message,
-                    type: FlashbarType.SUCCESS,
-                  ).flash(),
-                  error: (message) => Flashbar(
-                    context: context,
-                    title: "Something happened!",
-                    content: message,
-                    type: FlashbarType.ERROR,
-                  ).flash(),
-                  orElse: () {},
-                );
-              },
-            ),
-          ],
-          child: BlocBuilder<CategoryWatcher, List<CategoryModel>>(
-            bloc: context.read<CategoryWatcher>()..listenCategories(),
-            builder: (builderCtx, categories) => ListView.builder(
-              padding: const EdgeInsets.all(16),
-              physics: const BouncingScrollPhysics(),
-              itemCount: categories.length,
-              itemBuilder: (ctx, index) => CategoryItemList(
-                onTap: () {
+    return BlocProvider(
+      create: (_) => CategoryWatcher(
+        injector.get<ICategoryRepository>(),
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          drawer: const RootDrawer(),
+          drawerEnableOpenDragGesture: true,
+          appBar: AppBar(
+            leading: const IconHamburgerButton(),
+            title: const Text("Categories"),
+            centerTitle: true,
+            titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
+            actions: [
+              IconAddButton(
+                onPressed: () {
                   SheetDialogUtils.showAppBarSheet(
                     context: context,
-                    child: UpdateCategoryForm(id: categories[index].id),
+                    child: const AddCategoryForm(),
                   );
                 },
-                model: categories[index],
               ),
-            ),
+            ],
+          ),
+          body: MultiBlocListener(
+            listeners: [
+              BlocListener<CategoryActor, CategoryActorState>(
+                listener: (ctx, state) {
+                  state.maybeWhen(
+                    success: (message) => Flashbar(
+                      context: context,
+                      title: "Yeay!",
+                      content: message,
+                      type: FlashbarType.SUCCESS,
+                    ).flash(),
+                    error: (message) => Flashbar(
+                      context: context,
+                      title: "Something happened!",
+                      content: message,
+                      type: FlashbarType.ERROR,
+                    ).flash(),
+                    orElse: () {},
+                  );
+                },
+              ),
+            ],
+            child: Builder(builder: (bodyCtx) {
+              return BlocBuilder<CategoryWatcher, List<CategoryModel>>(
+                bloc: bodyCtx.read<CategoryWatcher>()..listenCategories(),
+                builder: (builderCtx, categories) => ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: categories.length,
+                  itemBuilder: (ctx, index) => CategoryItemList(
+                    onTap: () {
+                      SheetDialogUtils.showAppBarSheet(
+                        context: context,
+                        child: UpdateCategoryForm(id: categories[index].id),
+                      );
+                    },
+                    model: categories[index],
+                  ),
+                ),
+              );
+            }),
           ),
         ),
       ),
